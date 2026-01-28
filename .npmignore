@@ -1,0 +1,39 @@
+# Source files (we publish only dist/)
+src/
+
+# Config files
+tsconfig.json
+tsdown.config.ts
+.eslintrc.cjs
+.prettierrc.json
+jest.config.cjs
+
+# Development files
+.gitignore
+.npmignore
+QUESTIONNAIRE.md
+CLAUDE.md
+.cursor/
+
+# Tests
+**/__tests__/
+**/*.test.ts
+**/*.spec.ts
+coverage/
+
+# Build artifacts
+*.tsbuildinfo
+.tsbuildinfo
+
+# CI/CD
+.github/
+.husky/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+yarn-error.log
+npm-debug.log
