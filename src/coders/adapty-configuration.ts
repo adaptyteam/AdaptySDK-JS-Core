@@ -1,18 +1,25 @@
+import type {
+  IPlatformAdapter,
+  ISdkMetadataAdapter,
+} from '@/adapters/interfaces';
 import * as Input from '@/types/inputs';
 import type { Def } from '@/types/schema';
-import { Platform } from '@/platform';
 import { AdaptyUiMediaCacheCoder } from '@/coders/adapty-ui-media-cache';
-import version from '@/version';
 
 type Model = Input.ActivateParamsInput;
 type Serializable = Def['AdaptyConfiguration'];
 
 export class AdaptyConfigurationCoder {
+  constructor(
+    private readonly platform: IPlatformAdapter,
+    private readonly sdkMetadata: ISdkMetadataAdapter,
+  ) {}
+
   encode(apiKey: string, params: Model): Serializable {
     const config: Serializable = {
       api_key: apiKey,
-      cross_platform_sdk_name: 'react-native',
-      cross_platform_sdk_version: version,
+      cross_platform_sdk_name: this.sdkMetadata.sdkName,
+      cross_platform_sdk_version: this.sdkMetadata.sdkVersion,
     };
 
     if (params.customerUserId) {
@@ -48,7 +55,7 @@ export class AdaptyConfigurationCoder {
       },
     );
 
-    if (Platform.OS === 'ios') {
+    if (this.platform.OS === 'ios') {
       config['apple_idfa_collection_disabled'] =
         params.ios?.idfaCollectionDisabled ?? false;
       if (params.ios?.appAccountToken) {
@@ -61,7 +68,7 @@ export class AdaptyConfigurationCoder {
       }
     }
 
-    if (Platform.OS === 'android') {
+    if (this.platform.OS === 'android') {
       config['google_adid_collection_disabled'] =
         params.android?.adIdCollectionDisabled ?? false;
       config['google_enable_pending_prepaid_plans'] =

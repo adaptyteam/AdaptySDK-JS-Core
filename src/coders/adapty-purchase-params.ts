@@ -1,5 +1,5 @@
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import * as Input from '@/types/inputs';
-import { Platform } from '@/platform';
 
 type Model = Input.MakePurchaseParamsInput;
 type Serializable = Record<string, any>;
@@ -16,8 +16,10 @@ function isDeprecatedType(
 }
 
 export class AdaptyPurchaseParamsCoder {
+  constructor(private readonly platform: IPlatformAdapter) {}
+
   encode(data: Model): Serializable {
-    if (Platform.OS !== 'android') {
+    if (this.platform.OS !== 'android') {
       return {};
     }
 

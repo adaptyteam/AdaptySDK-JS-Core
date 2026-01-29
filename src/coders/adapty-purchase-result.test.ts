@@ -1,8 +1,8 @@
-import type { AdaptyPurchaseResult } from '@/types';
-import type { Def } from '@/types/schema';
+import type { IPlatformAdapter, PlatformOS } from '@/adapters/interfaces';
 import { AdaptyPurchaseResultCoder } from '@/coders/adapty-purchase-result';
 import { AdaptyProfileCoder } from '@/coders/adapty-profile';
-import { Platform } from '@/platform';
+import type { AdaptyPurchaseResult } from '@/types';
+import type { Def } from '@/types/schema';
 
 type Model = AdaptyPurchaseResult;
 type TestAdaptyPurchaseResultDef =
@@ -203,16 +203,21 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
   { type: 'user_cancelled' },
 ];
 
-function toModel(mock: (typeof mocks)[number]): Model {
-  const _profile = new AdaptyProfileCoder();
+function toModel(
+  mock: (typeof mocks)[number],
+  platformOS: PlatformOS,
+): Model {
+  const _profile = new AdaptyProfileCoder({
+    OS: platformOS,
+  } as IPlatformAdapter);
   if (mock.type === 'success') {
     return {
       type: mock.type,
       profile: _profile.decode(mock.profile as any),
-      ...(Platform.OS === 'ios' && mock.apple_jws_transaction
+      ...(platformOS === 'ios' && mock.apple_jws_transaction
         ? { ios: { jwsTransaction: mock.apple_jws_transaction } }
         : {}),
-      ...(Platform.OS === 'android' && mock.google_purchase_token
+      ...(platformOS === 'android' && mock.google_purchase_token
         ? { android: { purchaseToken: mock.google_purchase_token } }
         : {}),
     };
@@ -223,49 +228,35 @@ function toModel(mock: (typeof mocks)[number]): Model {
   }
 }
 
-jest.mock('@/platform', () => ({
-  Platform: {
-    OS: 'ios',
-  },
-}));
-
 describe('AdaptyPurchaseResultCoder', () => {
-  let coder: AdaptyPurchaseResultCoder;
-
-  beforeEach(() => {
-    coder = new AdaptyPurchaseResultCoder();
-  });
+  const resolvePlatformOS = (
+    mock: (typeof mocks)[number],
+  ): PlatformOS => {
+    if (mock.type === 'success' && mock.apple_jws_transaction) {
+      return 'ios';
+    }
+    if (mock.type === 'success' && mock.google_purchase_token) {
+      return 'android';
+    }
+    return 'ios';
+  };
 
   it.each(mocks)('should decode to expected result', mock => {
-    const originalPlatform = require('@/platform').Platform;
-    if (mock.apple_jws_transaction) {
-      require('@/platform').Platform = { OS: 'ios' };
-    }
-    if (mock.google_purchase_token) {
-      require('@/platform').Platform = { OS: 'android' };
-    }
-
+    const platformOS = resolvePlatformOS(mock);
+    const platform: IPlatformAdapter = { OS: platformOS };
+    const coder = new AdaptyPurchaseResultCoder(platform);
     const decoded = coder.decode(mock as any);
 
-    expect(decoded).toStrictEqual(toModel(mock));
-
-    require('@/platform').Platform = originalPlatform;
+    expect(decoded).toStrictEqual(toModel(mock, platformOS));
   });
 
   it.each(mocks)('should decode/encode', mock => {
-    const originalPlatform = require('@/platform').Platform;
-    if (mock.apple_jws_transaction) {
-      require('@/platform').Platform = { OS: 'ios' };
-    }
-    if (mock.google_purchase_token) {
-      require('@/platform').Platform = { OS: 'android' };
-    }
-
+    const platformOS = resolvePlatformOS(mock);
+    const platform: IPlatformAdapter = { OS: platformOS };
+    const coder = new AdaptyPurchaseResultCoder(platform);
     const decoded = coder.decode(mock as any);
     const encoded = coder.encode(decoded);
 
     expect(encoded).toStrictEqual(mock);
-
-    require('@/platform').Platform = originalPlatform;
   });
 });

@@ -1,16 +1,25 @@
+import type {
+  IPlatformAdapter,
+  ISdkMetadataAdapter,
+  PlatformOS,
+} from '@/adapters/interfaces';
 import { AdaptyConfigurationCoder } from '@/coders/adapty-configuration';
 import { LogLevel } from '@/types/inputs';
 import version from '@/version';
 
-jest.mock('@/platform', () => ({
-  Platform: {
-    OS: 'ios',
-  },
-}));
-
 describe('AdaptyConfigurationCoder', () => {
-  const coder = new AdaptyConfigurationCoder();
+  const sdkMetadata: ISdkMetadataAdapter = {
+    sdkName: 'react-native',
+    sdkVersion: version,
+  };
+  const createCoder = (OS: PlatformOS = 'ios') =>
+    new AdaptyConfigurationCoder({ OS } as IPlatformAdapter, sdkMetadata);
   const apiKey = 'test-api-key';
+  let coder: AdaptyConfigurationCoder;
+
+  beforeEach(() => {
+    coder = createCoder();
+  });
 
   it('should encode minimal configuration', () => {
     const params = {};
@@ -87,8 +96,7 @@ describe('AdaptyConfigurationCoder', () => {
   });
 
   it('should encode full configuration with all parameters on android', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'android' };
+    coder = createCoder('android');
     const params = {
       customerUserId: 'user123',
       observerMode: true,
@@ -141,7 +149,6 @@ describe('AdaptyConfigurationCoder', () => {
       },
     });
 
-    require('@/platform').Platform = originalPlatform;
   });
 
   it('should handle partial parameters', () => {

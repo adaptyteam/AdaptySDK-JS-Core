@@ -38,30 +38,24 @@ export const extractBase64Data = (input: string): string => {
 };
 
 import type { FileLocation } from '@/types/inputs';
-
-type PlatformSelector<T> = { ios: T; android: T };
+import type { PlatformOS } from '@/adapters/interfaces';
 
 export const resolveAssetId = (
   asset: { relativeAssetPath: string } | { fileLocation: FileLocation },
-  select: <T>(spec: PlatformSelector<T>) => T | undefined,
+  platformOS: PlatformOS,
 ): string => {
   if ('relativeAssetPath' in asset) {
-    return (
-      select({
-        ios: asset.relativeAssetPath,
-        android: `${asset.relativeAssetPath}a`,
-      }) || ''
-    );
+    return platformOS === 'android'
+      ? `${asset.relativeAssetPath}a`
+      : asset.relativeAssetPath;
   }
 
   const fileLocation = asset.fileLocation;
-  return (
-    select({
-      ios: fileLocation.ios.fileName,
-      android:
-        'relativeAssetPath' in fileLocation.android
-          ? `${fileLocation.android.relativeAssetPath}a`
-          : `${(fileLocation.android as any).rawResName}r`,
-    }) || ''
-  );
+  if (platformOS === 'android') {
+    return 'relativeAssetPath' in fileLocation.android
+      ? `${fileLocation.android.relativeAssetPath}a`
+      : `${(fileLocation.android as { rawResName: string }).rawResName}r`;
+  }
+
+  return fileLocation.ios.fileName;
 };

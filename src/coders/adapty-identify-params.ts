@@ -1,5 +1,5 @@
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import * as Input from '@/types/inputs';
-import { Platform } from '@/platform';
 
 type Model = Input.IdentifyParamsInput;
 type Serializable = {
@@ -9,6 +9,8 @@ type Serializable = {
 };
 
 export class AdaptyIdentifyParamsCoder {
+  constructor(private readonly platform: IPlatformAdapter) {}
+
   encode(params?: Model): Serializable | undefined {
     if (!params) {
       return undefined;
@@ -16,11 +18,11 @@ export class AdaptyIdentifyParamsCoder {
 
     const result: Serializable = {};
 
-    if (Platform.OS === 'ios' && params.ios?.appAccountToken) {
+    if (this.platform.OS === 'ios' && params.ios?.appAccountToken) {
       result.app_account_token = params.ios.appAccountToken;
     }
 
-    if (Platform.OS === 'android' && params.android?.obfuscatedAccountId) {
+    if (this.platform.OS === 'android' && params.android?.obfuscatedAccountId) {
       result.obfuscated_account_id = params.android.obfuscatedAccountId;
     }
 

@@ -1,21 +1,24 @@
+import type { IPlatformAdapter, PlatformOS } from '@/adapters/interfaces';
 import { AdaptyIdentifyParamsCoder } from '@/coders/adapty-identify-params';
 
 describe('AdaptyIdentifyParamsCoder', () => {
-  const coder = new AdaptyIdentifyParamsCoder();
+  const createCoder = (OS: PlatformOS = 'ios') =>
+    new AdaptyIdentifyParamsCoder({ OS } as IPlatformAdapter);
 
   it('should return undefined for empty params', () => {
+    const coder = createCoder();
     const result = coder.encode({});
     expect(result).toBeUndefined();
   });
 
   it('should return undefined for undefined params', () => {
+    const coder = createCoder();
     const result = coder.encode(undefined);
     expect(result).toBeUndefined();
   });
 
   it('should encode iOS app account token on iOS platform', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'ios' };
+    const coder = createCoder('ios');
 
     const params = {
       ios: {
@@ -27,13 +30,10 @@ describe('AdaptyIdentifyParamsCoder', () => {
     expect(result).toEqual({
       app_account_token: 'ios-token-123',
     });
-
-    require('@/platform').Platform = originalPlatform;
   });
 
   it('should encode Android obfuscated account ID on Android platform', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'android' };
+    const coder = createCoder('android');
 
     const params = {
       android: {
@@ -45,13 +45,10 @@ describe('AdaptyIdentifyParamsCoder', () => {
     expect(result).toEqual({
       obfuscated_account_id: 'android-id-456',
     });
-
-    require('@/platform').Platform = originalPlatform;
   });
 
   it('should only encode iOS parameters when on iOS platform', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'ios' };
+    const coder = createCoder('ios');
 
     const params = {
       ios: {
@@ -66,13 +63,10 @@ describe('AdaptyIdentifyParamsCoder', () => {
     expect(result).toEqual({
       app_account_token: 'ios-token-123',
     });
-
-    require('@/platform').Platform = originalPlatform;
   });
 
   it('should only encode Android parameters when on Android platform', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'android' };
+    const coder = createCoder('android');
 
     const params = {
       ios: {
@@ -87,13 +81,10 @@ describe('AdaptyIdentifyParamsCoder', () => {
     expect(result).toEqual({
       obfuscated_account_id: 'android-id-456',
     });
-
-    require('@/platform').Platform = originalPlatform;
   });
 
   it('should ignore iOS parameters on Android platform', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'android' };
+    const coder = createCoder('android');
 
     const params = {
       ios: {
@@ -103,13 +94,10 @@ describe('AdaptyIdentifyParamsCoder', () => {
 
     const result = coder.encode(params);
     expect(result).toBeUndefined();
-
-    require('@/platform').Platform = originalPlatform;
   });
 
   it('should ignore Android parameters on iOS platform', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'ios' };
+    const coder = createCoder('ios');
 
     const params = {
       android: {
@@ -119,13 +107,10 @@ describe('AdaptyIdentifyParamsCoder', () => {
 
     const result = coder.encode(params);
     expect(result).toBeUndefined();
-
-    require('@/platform').Platform = originalPlatform;
   });
 
   it('should handle empty platform objects', () => {
-    const originalPlatform = require('@/platform').Platform;
-    require('@/platform').Platform = { OS: 'ios' };
+    const coder = createCoder('ios');
 
     const params = {
       ios: {},
@@ -134,7 +119,5 @@ describe('AdaptyIdentifyParamsCoder', () => {
 
     const result = coder.encode(params);
     expect(result).toBeUndefined();
-
-    require('@/platform').Platform = originalPlatform;
   });
 });

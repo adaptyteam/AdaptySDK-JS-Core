@@ -1,17 +1,14 @@
+import type { IPlatformAdapter, PlatformOS } from '@/adapters/interfaces';
 import { AdaptyPurchaseParamsCoder } from './adapty-purchase-params';
 import * as Input from '@/types/inputs';
 
-jest.mock('@/platform', () => ({
-  Platform: {
-    OS: 'android',
-  },
-}));
-
 describe('AdaptyPurchaseParamsCoder', () => {
+  const createCoder = (OS: PlatformOS = 'android') =>
+    new AdaptyPurchaseParamsCoder({ OS } as IPlatformAdapter);
   let coder: AdaptyPurchaseParamsCoder;
 
   beforeEach(() => {
-    coder = new AdaptyPurchaseParamsCoder();
+    coder = createCoder();
   });
 
   describe('encode', () => {
@@ -67,8 +64,7 @@ describe('AdaptyPurchaseParamsCoder', () => {
     });
 
     it('should return empty object for non-Android platforms', () => {
-      const originalPlatform = require('@/platform').Platform;
-      require('@/platform').Platform = { OS: 'ios' };
+      coder = createCoder('ios');
 
       const params: Input.MakePurchaseParamsInput = {
         android: {
@@ -84,8 +80,6 @@ describe('AdaptyPurchaseParamsCoder', () => {
 
       const result = coder.encode(params);
       expect(result).toEqual({});
-
-      require('@/platform').Platform = originalPlatform;
     });
   });
 });

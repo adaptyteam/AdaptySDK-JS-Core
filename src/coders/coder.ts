@@ -1,6 +1,7 @@
 import { AdaptyError } from '@/adapty-error';
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { Converter, Properties, StrType } from './types';
-import { Platform } from '@/platform';
 
 export abstract class Coder<
   Model extends Record<string, any>,
@@ -8,7 +9,12 @@ export abstract class Coder<
   Serializable extends Record<string, any> = Record<string, any>,
 > implements Converter<CodableModel, Serializable>
 {
+  protected readonly platform: IPlatformAdapter;
   protected abstract properties: Properties<CodableModel, Serializable>;
+
+  constructor(platform: IPlatformAdapter = new DefaultPlatformAdapter()) {
+    this.platform = platform;
+  }
 
   encode(data: CodableModel): Serializable {
     return this.encodeWithProperties(data, this.properties);
@@ -150,7 +156,7 @@ export abstract class Coder<
       if (
         property.required &&
         value === undefined &&
-        (!platform || platform == Platform.OS)
+        (!platform || platform == this.platform.OS)
       ) {
         throw AdaptyError.failedToDecode(
           `Failed to decode native response, because it is missing required property "${key}"`,

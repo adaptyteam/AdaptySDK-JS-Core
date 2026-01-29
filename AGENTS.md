@@ -61,6 +61,36 @@ Key compiler options:
 **Module:** ESNext  
 **Module Resolution:** bundler
 
+## Architecture: Platform DI
+
+This repo uses platform dependency injection to keep `@adapty/core` platform-agnostic.
+
+### Platform Adapters
+
+- **Interface:** `src/adapters/interfaces.ts`
+- **Core rule:** Coders must depend on adapters, not on platform globals.
+- **OS property:** use `Platform.OS` (capitalized) on `IPlatformAdapter`.
+- **No `select`:** platform-specific selection should be done using `Platform.OS`, not `Platform.select`.
+
+### Default Adapters
+
+- **Defaults:** `src/adapters/defaults.ts`
+- **DefaultPlatformAdapter** proxies to `src/platform.ts` (test helper).
+- **DefaultLoggerAdapter** is a noop logger for core usage.
+
+### Coder Factory
+
+- **Factory:** `src/coders/factory.ts`
+- Use `CoderFactory` to create coders with injected dependencies:
+  - `IPlatformAdapter` for platform OS
+  - `ISdkMetadataAdapter` for sdkName/sdkVersion
+  - `ILoggerAdapter` for logging
+
+### Testing Guidance
+
+- Tests should create coders with mock adapters, not mutate `Platform` globals.
+- Prefer inline adapters: `{ OS: 'ios' }` / `{ OS: 'android' }`.
+
 ## Build Output
 
 Built with `tsdown` (powered by Rolldown). Outputs multiple formats:

@@ -1,13 +1,15 @@
+import type { IPlatformAdapter, PlatformOS } from '@/adapters/interfaces';
 import { AdaptyUICreatePaywallViewParamsCoder } from './adapty-ui-create-paywall-view-params';
-import { Platform } from '@/platform';
 import type { CreatePaywallViewParamsInput } from '@/ui/types';
 import type { AdaptyProductIdentifier } from '@/types';
 
 describe('AdaptyUICreatePaywallViewParamsCoder', () => {
+  const createCoder = (OS: PlatformOS = 'ios') =>
+    new AdaptyUICreatePaywallViewParamsCoder({ OS } as IPlatformAdapter);
   let coder: AdaptyUICreatePaywallViewParamsCoder;
 
   beforeEach(() => {
-    coder = new AdaptyUICreatePaywallViewParamsCoder();
+    coder = createCoder();
   });
 
   it('should encode basic params', () => {
@@ -188,112 +190,72 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
   });
 
   it('should encode product purchase parameters on Android', () => {
-    const original = Platform.OS;
-    // mock Platform.OS to android
-    Object.defineProperty(Platform, 'OS', {
-      configurable: true,
-      get() {
-        return 'android';
-      },
-    } as any);
+    coder = createCoder('android');
+    const productId: AdaptyProductIdentifier = {
+      vendorProductId: 'com.example.product',
+      adaptyProductId: 'adapty_product_id',
+    };
 
-    try {
-      const productId: AdaptyProductIdentifier = {
-        vendorProductId: 'com.example.product',
-        adaptyProductId: 'adapty_product_id',
-      };
-
-      const input: CreatePaywallViewParamsInput = {
-        productPurchaseParams: [
-          {
-            productId,
-            params: {
-              android: {
-                isOfferPersonalized: true,
-              },
+    const input: CreatePaywallViewParamsInput = {
+      productPurchaseParams: [
+        {
+          productId,
+          params: {
+            android: {
+              isOfferPersonalized: true,
             },
           },
-        ],
-      };
-
-      const result = coder.encode(input);
-
-      expect(result.product_purchase_parameters).toEqual({
-        adapty_product_id: {
-          is_offer_personalized: true,
         },
-      });
-    } finally {
-      Object.defineProperty(Platform, 'OS', {
-        configurable: true,
-        get() {
-          return original as any;
-        },
-      } as any);
-    }
+      ],
+    };
+
+    const result = coder.encode(input);
+
+    expect(result.product_purchase_parameters).toEqual({
+      adapty_product_id: {
+        is_offer_personalized: true,
+      },
+    });
   });
 
   it('should encode asset_id with android suffixes on Android', () => {
-    const originalOS = Platform.OS;
-    const originalSelect = Platform.select;
-    Object.defineProperty(Platform, 'OS', {
-      configurable: true,
-      get() {
-        return 'android';
+    coder = createCoder('android');
+    const input: CreatePaywallViewParamsInput = {
+      customAssets: {
+        imgRel: { type: 'image', relativeAssetPath: 'images/test.png' },
+        videoRel: { type: 'video', relativeAssetPath: 'videos/intro.mp4' },
+        imgFL: {
+          type: 'image',
+          fileLocation: {
+            ios: { fileName: 'ios_name.png' },
+            android: { relativeAssetPath: 'images/rel.png' },
+          },
+        },
+        videoFL: {
+          type: 'video',
+          fileLocation: {
+            ios: { fileName: 'ios_video.mp4' },
+            android: { rawResName: 'intro' },
+          },
+        },
       },
-    } as any);
-    const selectSpy = jest
-      .spyOn(Platform, 'select')
-      .mockImplementation((spec: any) => spec.android);
+    };
 
-    try {
-      const input: CreatePaywallViewParamsInput = {
-        customAssets: {
-          imgRel: { type: 'image', relativeAssetPath: 'images/test.png' },
-          videoRel: { type: 'video', relativeAssetPath: 'videos/intro.mp4' },
-          imgFL: {
-            type: 'image',
-            fileLocation: {
-              ios: { fileName: 'ios_name.png' },
-              android: { relativeAssetPath: 'images/rel.png' },
-            },
-          },
-          videoFL: {
-            type: 'video',
-            fileLocation: {
-              ios: { fileName: 'ios_video.mp4' },
-              android: { rawResName: 'intro' },
-            },
-          },
-        },
-      };
-
-      const result = coder.encode(input);
-      expect(result.custom_assets).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: 'imgRel',
-            asset_id: 'images/test.pnga',
-          }),
-          expect.objectContaining({
-            id: 'videoRel',
-            asset_id: 'videos/intro.mp4a',
-          }),
-          expect.objectContaining({ id: 'imgFL', asset_id: 'images/rel.pnga' }),
-          expect.objectContaining({ id: 'videoFL', asset_id: 'intror' }),
-        ]),
-      );
-    } finally {
-      Object.defineProperty(Platform, 'OS', {
-        configurable: true,
-        get() {
-          return originalOS as any;
-        },
-      } as any);
-      selectSpy.mockRestore();
-      // restore just in case
-      (Platform as any).select = originalSelect;
-    }
+    const result = coder.encode(input);
+    expect(result.custom_assets).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'imgRel',
+          asset_id: 'images/test.pnga',
+        }),
+        expect.objectContaining({
+          id: 'videoRel',
+          asset_id: 'videos/intro.mp4a',
+        }),
+        expect.objectContaining({ id: 'imgFL', asset_id: 'images/rel.pnga' }),
+        expect.objectContaining({ id: 'videoFL', asset_id: 'intror' }),
+      ]),
+    );
   });
 
   it('should handle empty input', () => {

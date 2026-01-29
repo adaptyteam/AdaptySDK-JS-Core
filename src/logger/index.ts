@@ -3,23 +3,19 @@
  * Actual logging implementation should be provided by the platform SDK
  */
 
-export interface ScopeArgs {
-  methodName: string;
-}
-
-interface Trace {
-  action: string;
-  fn: string;
-  payload: Record<string, any>;
-  error?: boolean;
-  done?: boolean;
-}
+import type {
+  ILoggerAdapter,
+  ILogContext,
+  ILogScope,
+  LogTrace,
+  ScopeArgs,
+} from '@/adapters/interfaces';
 
 /**
  * LogScope provides methods for logging at different stages of execution
  */
-export class LogScope {
-  start(_payload?: Record<string, any>): void {
+export class LogScope implements ILogScope {
+  start(_payload?: Record<string, unknown>): void {
     // Noop - actual implementation provided by platform SDK
   }
 
@@ -27,7 +23,7 @@ export class LogScope {
     // Noop - actual implementation provided by platform SDK
   }
 
-  success(_payload?: Record<string, any>): void {
+  success(_payload?: Record<string, unknown>): void {
     // Noop - actual implementation provided by platform SDK
   }
 }
@@ -35,26 +31,35 @@ export class LogScope {
 /**
  * LogContext accumulates logs for each step of a call
  */
-export class LogContext {
-  public stack: Trace[] = [];
+export class LogContext implements ILogContext {
+  public stack: LogTrace[] = [];
 
-  decode(_args: ScopeArgs): LogScope {
+  decode(_args: ScopeArgs): ILogScope {
     return new LogScope();
   }
 
-  encode(_args: ScopeArgs): LogScope {
+  encode(_args: ScopeArgs): ILogScope {
     return new LogScope();
   }
 
-  call(_args: ScopeArgs): LogScope {
+  call(_args: ScopeArgs): ILogScope {
     return new LogScope();
   }
 
-  bridge(_args: ScopeArgs): LogScope {
+  bridge(_args: ScopeArgs): ILogScope {
     return new LogScope();
   }
 
-  event(_args: ScopeArgs): LogScope {
+  event(_args: ScopeArgs): ILogScope {
     return new LogScope();
+  }
+}
+
+/**
+ * Noop logger adapter - doesn't log anything
+ */
+export class NoopLoggerAdapter implements ILoggerAdapter {
+  createContext(): ILogContext {
+    return new LogContext();
   }
 }

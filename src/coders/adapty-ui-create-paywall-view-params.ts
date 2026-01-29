@@ -1,4 +1,4 @@
-import { Platform } from '@/platform';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import type {
   CreatePaywallViewParamsInput,
   AdaptyCustomAsset,
@@ -23,6 +23,8 @@ type Serializable = {
 };
 
 export class AdaptyUICreatePaywallViewParamsCoder {
+  constructor(private readonly platform: IPlatformAdapter) {}
+
   encode(data: Model): Serializable {
     const result: Serializable = {};
 
@@ -74,7 +76,7 @@ export class AdaptyUICreatePaywallViewParamsCoder {
     assets: Record<string, AdaptyCustomAsset>,
   ): Def['AdaptyUI.CustomAssets'] {
     const getAssetId = (asset: any): string => {
-      return resolveAssetId(asset, spec => Platform.select(spec)) || '';
+      return resolveAssetId(asset, this.platform.OS) || '';
     };
 
     return Object.entries(assets)
@@ -167,7 +169,7 @@ export class AdaptyUICreatePaywallViewParamsCoder {
   ): Def['AdaptyUI.ProductPurchaseParameters'] {
     if (!params) return {};
 
-    const purchaseParamsCoder = new AdaptyPurchaseParamsCoder();
+    const purchaseParamsCoder = new AdaptyPurchaseParamsCoder(this.platform);
     return Object.fromEntries(
       params.map(({ productId, params }) => [
         productId.adaptyProductId,
