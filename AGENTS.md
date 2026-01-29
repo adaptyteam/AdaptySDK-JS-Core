@@ -85,6 +85,8 @@ This repo uses platform dependency injection to keep `@adapty/core` platform-agn
   - `IPlatformAdapter` for platform OS
   - `ISdkMetadataAdapter` for sdkName/sdkVersion
   - `ILoggerAdapter` for logging
+- **Instantiation rule:** do not instantiate `*Coder` via `new` outside `src/coders/**`. In SDK / bridge / feature code, use `CoderFactory` as the single entry point.
+- **When adding a new coder:** add a corresponding `create*Coder()` method to `CoderFactory` and use it instead of direct construction.
 
 ### Testing Guidance
 
