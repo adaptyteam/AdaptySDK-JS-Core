@@ -1,5 +1,5 @@
 import { AdaptyUICreatePaywallViewParamsCoder } from './adapty-ui-create-paywall-view-params';
-import { Platform } from 'react-native';
+import { Platform } from '@/platform';
 import type { CreatePaywallViewParamsInput } from '@/ui/types';
 import type { AdaptyProductIdentifier } from '@/types';
 

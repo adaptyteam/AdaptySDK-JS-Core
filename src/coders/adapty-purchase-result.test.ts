@@ -2,7 +2,7 @@ import type { AdaptyPurchaseResult } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptyPurchaseResultCoder } from '@/coders/adapty-purchase-result';
 import { AdaptyProfileCoder } from '@/coders/adapty-profile';
-import { Platform } from 'react-native';
+import { Platform } from '@/platform';
 
 type Model = AdaptyPurchaseResult;
 type TestAdaptyPurchaseResultDef =
@@ -223,7 +223,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
   }
 }
 
-jest.mock('react-native', () => ({
+jest.mock('@/platform', () => ({
   Platform: {
     OS: 'ios',
   },
@@ -237,28 +237,28 @@ describe('AdaptyPurchaseResultCoder', () => {
   });
 
   it.each(mocks)('should decode to expected result', mock => {
-    const originalPlatform = require('react-native').Platform;
+    const originalPlatform = require('@/platform').Platform;
     if (mock.apple_jws_transaction) {
-      require('react-native').Platform = { OS: 'ios' };
+      require('@/platform').Platform = { OS: 'ios' };
     }
     if (mock.google_purchase_token) {
-      require('react-native').Platform = { OS: 'android' };
+      require('@/platform').Platform = { OS: 'android' };
     }
 
     const decoded = coder.decode(mock as any);
 
     expect(decoded).toStrictEqual(toModel(mock));
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it.each(mocks)('should decode/encode', mock => {
-    const originalPlatform = require('react-native').Platform;
+    const originalPlatform = require('@/platform').Platform;
     if (mock.apple_jws_transaction) {
-      require('react-native').Platform = { OS: 'ios' };
+      require('@/platform').Platform = { OS: 'ios' };
     }
     if (mock.google_purchase_token) {
-      require('react-native').Platform = { OS: 'android' };
+      require('@/platform').Platform = { OS: 'android' };
     }
 
     const decoded = coder.decode(mock as any);
@@ -266,6 +266,6 @@ describe('AdaptyPurchaseResultCoder', () => {
 
     expect(encoded).toStrictEqual(mock);
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 });

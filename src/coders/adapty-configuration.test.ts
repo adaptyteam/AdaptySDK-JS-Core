@@ -2,7 +2,7 @@ import { AdaptyConfigurationCoder } from '@/coders/adapty-configuration';
 import { LogLevel } from '@/types/inputs';
 import version from '@/version';
 
-jest.mock('react-native', () => ({
+jest.mock('@/platform', () => ({
   Platform: {
     OS: 'ios',
   },
@@ -87,8 +87,8 @@ describe('AdaptyConfigurationCoder', () => {
   });
 
   it('should encode full configuration with all parameters on android', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'android' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'android' };
     const params = {
       customerUserId: 'user123',
       observerMode: true,
@@ -141,7 +141,7 @@ describe('AdaptyConfigurationCoder', () => {
       },
     });
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it('should handle partial parameters', () => {

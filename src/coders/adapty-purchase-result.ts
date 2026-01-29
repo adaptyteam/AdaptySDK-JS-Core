@@ -3,7 +3,7 @@ import type { Def } from '@/types/schema';
 import type { Properties } from './types';
 import { SimpleCoder } from './coder';
 import { AdaptyProfileCoder } from '@/coders/adapty-profile';
-import { Platform } from 'react-native';
+import { Platform } from '@/platform';
 
 type Model = AdaptyPurchaseResult;
 type Serializable = Def['AdaptyPurchaseResult'];

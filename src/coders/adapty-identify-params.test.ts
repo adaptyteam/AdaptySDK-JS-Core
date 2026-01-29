@@ -14,8 +14,8 @@ describe('AdaptyIdentifyParamsCoder', () => {
   });
 
   it('should encode iOS app account token on iOS platform', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'ios' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'ios' };
 
     const params = {
       ios: {
@@ -28,12 +28,12 @@ describe('AdaptyIdentifyParamsCoder', () => {
       app_account_token: 'ios-token-123',
     });
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it('should encode Android obfuscated account ID on Android platform', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'android' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'android' };
 
     const params = {
       android: {
@@ -46,12 +46,12 @@ describe('AdaptyIdentifyParamsCoder', () => {
       obfuscated_account_id: 'android-id-456',
     });
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it('should only encode iOS parameters when on iOS platform', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'ios' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'ios' };
 
     const params = {
       ios: {
@@ -67,12 +67,12 @@ describe('AdaptyIdentifyParamsCoder', () => {
       app_account_token: 'ios-token-123',
     });
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it('should only encode Android parameters when on Android platform', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'android' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'android' };
 
     const params = {
       ios: {
@@ -88,12 +88,12 @@ describe('AdaptyIdentifyParamsCoder', () => {
       obfuscated_account_id: 'android-id-456',
     });
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it('should ignore iOS parameters on Android platform', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'android' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'android' };
 
     const params = {
       ios: {
@@ -104,12 +104,12 @@ describe('AdaptyIdentifyParamsCoder', () => {
     const result = coder.encode(params);
     expect(result).toBeUndefined();
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it('should ignore Android parameters on iOS platform', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'ios' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'ios' };
 
     const params = {
       android: {
@@ -120,12 +120,12 @@ describe('AdaptyIdentifyParamsCoder', () => {
     const result = coder.encode(params);
     expect(result).toBeUndefined();
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 
   it('should handle empty platform objects', () => {
-    const originalPlatform = require('react-native').Platform;
-    require('react-native').Platform = { OS: 'ios' };
+    const originalPlatform = require('@/platform').Platform;
+    require('@/platform').Platform = { OS: 'ios' };
 
     const params = {
       ios: {},
@@ -135,6 +135,6 @@ describe('AdaptyIdentifyParamsCoder', () => {
     const result = coder.encode(params);
     expect(result).toBeUndefined();
 
-    require('react-native').Platform = originalPlatform;
+    require('@/platform').Platform = originalPlatform;
   });
 });

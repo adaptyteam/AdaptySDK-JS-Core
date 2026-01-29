@@ -1,6 +1,6 @@
 import { AdaptyError } from '@/adapty-error';
 import { Converter, Properties, StrType } from './types';
-import { Platform } from 'react-native';
+import { Platform } from '@/platform';
 
 export abstract class Coder<
   Model extends Record<string, any>,

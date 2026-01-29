@@ -1,4 +1,4 @@
-import type { EmitterSubscription } from 'react-native';
+import type { EmitterSubscription } from '@/platform';
 import type { AdaptyProfile, AdaptyInstallationDetails } from '@/types';
 import type { AdaptyError } from '@/adapty-error';
 

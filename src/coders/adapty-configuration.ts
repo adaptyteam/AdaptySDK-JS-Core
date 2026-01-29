@@ -1,6 +1,6 @@
 import * as Input from '@/types/inputs';
 import type { Def } from '@/types/schema';
-import { Platform } from 'react-native';
+import { Platform } from '@/platform';
 import { AdaptyUiMediaCacheCoder } from '@/coders/adapty-ui-media-cache';
 import version from '@/version';
 

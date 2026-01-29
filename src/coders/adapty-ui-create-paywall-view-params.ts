@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform } from '@/platform';
 import type {
   CreatePaywallViewParamsInput,
   AdaptyCustomAsset,

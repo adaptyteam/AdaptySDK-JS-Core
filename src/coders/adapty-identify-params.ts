@@ -1,5 +1,5 @@
 import * as Input from '@/types/inputs';
-import { Platform } from 'react-native';
+import { Platform } from '@/platform';
 
 type Model = Input.IdentifyParamsInput;
 type Serializable = {
