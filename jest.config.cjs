@@ -1,7 +1,13 @@
+const { pathsToModuleNameMapper } = require('ts-jest');
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
+  moduleNameMapper: pathsToModuleNameMapper(
+    { '@/*': ['*'] },
+    { prefix: '<rootDir>/src/' },
+  ),
   testMatch: ['**/__tests__/**/*.test.ts', '**/*.test.ts'],
   collectCoverageFrom: [
     'src/**/*.ts',

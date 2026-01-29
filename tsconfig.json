@@ -9,6 +9,10 @@
     /* Modules */
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "resolveJsonModule": true,
 
     /* Emit */
