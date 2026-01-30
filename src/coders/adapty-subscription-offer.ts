@@ -24,7 +24,7 @@ export class AdaptySubscriptionOfferCoder extends SimpleCoder<
       key: 'phases',
       required: true,
       type: 'array',
-      converter: new ArrayCoder(AdaptyDiscountPhaseCoder),
+      converter: new ArrayCoder(() => new AdaptyDiscountPhaseCoder()),
     },
     android: {
       offerTags: {

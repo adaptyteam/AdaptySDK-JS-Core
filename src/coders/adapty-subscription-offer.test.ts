@@ -60,10 +60,7 @@ const mocks: Def['AdaptySubscriptionOffer'][] = [
 
 function toModel(mock: (typeof mocks)[number]): Model {
   const _offerId = new AdaptySubscriptionOfferIdCoder();
-  const _discounts = new ArrayCoder<
-    AdaptyDiscountPhase,
-    AdaptyDiscountPhaseCoder
-  >(AdaptyDiscountPhaseCoder);
+  const _discounts = new ArrayCoder(() => new AdaptyDiscountPhaseCoder());
 
   return {
     identifier: _offerId.decode(mock.offer_identifier),

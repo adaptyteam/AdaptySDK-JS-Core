@@ -77,9 +77,7 @@ const mocks: Def['AdaptyPaywall'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _products = new ArrayCoder<ProductReference, ProductReferenceCoder>(
-    ProductReferenceCoder,
-  );
+  const _products = new ArrayCoder(() => new ProductReferenceCoder());
   const _remoteConfig = new AdaptyRemoteConfigCoder();
   const _paywallBuilder = new AdaptyPaywallBuilderCoder();
 

@@ -30,7 +30,7 @@ export class AdaptyPaywallCoder extends Coder<
       key: 'products',
       required: true,
       type: 'array',
-      converter: new ArrayCoder(ProductReferenceCoder),
+      converter: new ArrayCoder(() => new ProductReferenceCoder()),
     },
     remoteConfig: {
       key: 'remote_config',

@@ -34,9 +34,7 @@ export class AdaptyProfileCoder extends SimpleCoder<Model, Serializable> {
       required: false,
       type: 'object',
       converter: new HashmapCoder(
-        new ArrayCoder<AdaptyNonSubscription, AdaptyNonSubscriptionCoder>(
-          AdaptyNonSubscriptionCoder,
-        ),
+        new ArrayCoder(() => new AdaptyNonSubscriptionCoder()),
       ),
     },
     profileId: {

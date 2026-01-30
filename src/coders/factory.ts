@@ -206,11 +206,14 @@ export class CoderFactory {
     return new BridgeErrorCoder(this.deps.platform);
   }
 
-  createArrayCoder<
-    Model extends Record<string, any>,
-    ModelCoder extends SimpleCoder<Model, any>,
-  >(coder: new () => ModelCoder): ArrayCoder<Model, ModelCoder> {
-    return new ArrayCoder(coder);
+  createArrayCoder<Model, Serializable>(
+    coderFactory: () => Converter<Model, Serializable>,
+  ): ArrayCoder<Model, Serializable> {
+    return new ArrayCoder(coderFactory);
+  }
+
+  createPaywallProductArrayCoder(): ArrayCoder<any, any> {
+    return new ArrayCoder(() => this.createPaywallProductCoder());
   }
 
   createHashmapCoder<T extends Converter<any, any>>(coder: T | null): HashmapCoder<T> {

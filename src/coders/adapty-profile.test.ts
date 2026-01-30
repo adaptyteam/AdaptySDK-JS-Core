@@ -187,9 +187,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
   const _levels = new HashmapCoder(new AdaptyAccessLevelCoder());
   const _subs = new HashmapCoder(new AdaptySubscriptionCoder());
   const _nonsubs = new HashmapCoder(
-    new ArrayCoder<AdaptyNonSubscription, AdaptyNonSubscriptionCoder>(
-      AdaptyNonSubscriptionCoder,
-    ),
+    new ArrayCoder(() => new AdaptyNonSubscriptionCoder()),
   );
 
   return {

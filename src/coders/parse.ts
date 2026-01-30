@@ -167,7 +167,7 @@ function getCoder(
     case 'BridgeError':
       return new BridgeErrorCoder();
     case 'Array<AdaptyPaywallProduct>':
-      return new ArrayCoder(AdaptyPaywallProductCoder as any);
+      return new ArrayCoder(() => new AdaptyPaywallProductCoder());
     case 'String':
       return null;
   }
