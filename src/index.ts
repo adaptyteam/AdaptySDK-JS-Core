@@ -27,4 +27,10 @@ export {
 export { CoderFactory } from './coders/factory';
 export type { CoderDependencies } from './coders/factory';
 
-export type { ActivateParamsInput } from './types/inputs';
+// Mass re-export all types from types folder
+export * from './types/index';
+export * from './types/inputs';
+export * from './types/error';
+export * from './types/bridge';
+export * from './types/paywall-events';
+export * from './types/onboarding-events';
