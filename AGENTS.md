@@ -93,6 +93,41 @@ This repo uses platform dependency injection to keep `@adapty/core` platform-agn
 - Tests should create coders with mock adapters, not mutate `Platform` globals.
 - Prefer inline adapters: `{ OS: 'ios' }` / `{ OS: 'android' }`.
 
+### Usage in Downstream SDKs
+
+Downstream SDKs (React Native, Capacitor) should:
+
+1. **Implement platform adapters:**
+   - Create classes implementing `IPlatformAdapter` and `ISdkMetadataAdapter`
+   - Platform adapter wraps platform-specific API (e.g., `Platform.OS` from react-native)
+   - SDK metadata adapter provides `sdkName` and `sdkVersion`
+
+2. **Create singleton CoderFactory:**
+   - Initialize with platform-specific adapters
+   - Use factory methods instead of direct coder instantiation
+
+3. **Import shared types:**
+   - Use exported types from `@adapty/core` (e.g., `ActivateParamsInput`)
+   - Avoid duplicating types between core and SDKs
+
+**Example:**
+```typescript
+// In React Native SDK
+import { CoderFactory, type ActivateParamsInput } from '@adapty/core';
+import { ReactNativePlatformAdapter, ReactNativeSdkMetadataAdapter } from './adapters';
+
+export const coderFactory = new CoderFactory({
+  platform: new ReactNativePlatformAdapter(),
+  sdkMetadata: new ReactNativeSdkMetadataAdapter(),
+});
+
+// Use core types in method signatures
+public async activate(apiKey: string, params: ActivateParamsInput = {}): Promise<void> {
+  const coder = coderFactory.createConfigurationCoder();
+  // ...
+}
+```
+
 ## Build Output
 
 Built with `tsdown` (powered by Rolldown). Outputs multiple formats:
