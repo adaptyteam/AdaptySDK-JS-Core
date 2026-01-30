@@ -26,3 +26,5 @@ export {
 
 export { CoderFactory } from './coders/factory';
 export type { CoderDependencies } from './coders/factory';
+
+export type { ActivateParamsInput } from './types/inputs';
