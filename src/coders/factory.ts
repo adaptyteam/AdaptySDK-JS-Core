@@ -37,7 +37,6 @@ import { AdaptyUiOnboardingStateParamsCoder } from './adapty-ui-onboarding-state
 import { AdaptyUiOnboardingStateUpdatedActionCoder } from './adapty-ui-onboarding-state-updated-action';
 import { ArrayCoder } from './array';
 import { BridgeErrorCoder } from './bridge-error';
-import type { SimpleCoder } from './coder';
 import { DateCoder } from './date';
 import { HashmapCoder } from './hashmap';
 import { JSONCoder } from './json';

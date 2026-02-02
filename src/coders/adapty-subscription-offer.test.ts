@@ -1,4 +1,4 @@
-import type { AdaptyDiscountPhase, AdaptySubscriptionOffer } from '@/types';
+import type { AdaptySubscriptionOffer } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptyDiscountPhaseCoder } from './adapty-discount-phase';
 import { ArrayCoder } from './array';
