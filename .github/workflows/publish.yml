@@ -1,0 +1,168 @@
+name: Publish to npm
+
+on:
+  # Trigger on push to dev branch (dev builds)
+  push:
+    branches:
+      - dev
+    # Trigger on git tags (production releases)
+    tags:
+      - 'v*'
+
+  # Manual workflow dispatch with options
+  workflow_dispatch:
+    inputs:
+      release-type:
+        description: 'Release type'
+        type: choice
+        required: true
+        default: 'dev'
+        options:
+          - 'dev'
+          - 'production'
+      dry-run:
+        description: 'Perform a dry run (no actual publish)'
+        type: choice
+        required: true
+        default: 'true'
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  id-token: write  # Required for npm provenance (OIDC)
+  contents: read
+
+concurrency:
+  group: publish-${{ github.ref }}-${{ github.event.inputs.release-type || 'auto' }}
+  cancel-in-progress: false
+
+jobs:
+  # Reuse validation workflow
+  validation:
+    name: Run Validation
+    uses: ./.github/workflows/pr-validation.yml
+
+  # Publish job - runs after validation
+  publish:
+    name: Publish Package
+    runs-on: ubuntu-slim
+    needs: validation
+    environment: publish
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for commit SHA
+
+      - name: Enable Corepack
+        run: |
+          corepack enable || {
+            echo "Corepack not available, falling back to npm install"
+            npm install -g yarn@1.22.19
+          }
+
+      - name: Prepare Yarn
+        run: |
+          if command -v corepack > /dev/null 2>&1; then
+            corepack prepare yarn@1.22.19 --activate
+          fi
+
+      - name: Cache node_modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --prefer-offline
+
+      - name: Determine release type
+        id: release-type
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/heads/dev ]]; then
+            echo "type=dev" >> $GITHUB_OUTPUT
+            echo "📦 Detected: Dev build (push to dev branch)"
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "type=production" >> $GITHUB_OUTPUT
+            echo "🚀 Detected: Production release (git tag)"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "type=${{ github.event.inputs.release-type }}" >> $GITHUB_OUTPUT
+            echo "🔧 Detected: Manual workflow (${{ github.event.inputs.release-type }})"
+          else
+            echo "❌ Unknown release type"
+            exit 1
+          fi
+
+      - name: Update version for dev build
+        if: steps.release-type.outputs.type == 'dev'
+        run: |
+          # Get base version from package.json
+          BASE_VERSION=$(node -p "require('./package.json').version")
+          echo "Base version: $BASE_VERSION"
+
+          # Get full commit SHA (40 characters)
+          COMMIT_SHA=$(git rev-parse HEAD)
+          echo "Commit SHA: $COMMIT_SHA"
+
+          # Create dev version
+          DEV_VERSION="${BASE_VERSION}-dev.${COMMIT_SHA}"
+          echo "Dev version: $DEV_VERSION"
+
+          # Update package.json (without git tag)
+          npm version $DEV_VERSION --no-git-tag-version
+
+          # Verify version was updated
+          UPDATED_VERSION=$(node -p "require('./package.json').version")
+          echo "Updated version: $UPDATED_VERSION"
+
+      - name: Build package
+        run: yarn build
+
+      - name: Verify build outputs
+        run: |
+          echo "Checking dist directory..."
+          ls -la dist/
+          echo ""
+          echo "Checking package files that will be published..."
+          npm pack --dry-run
+
+      - name: Publish to npm (dry-run mode)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.dry-run == 'true'
+        run: |
+          echo "Running in dry-run mode - no actual publish"
+          if [[ "${{ steps.release-type.outputs.type }}" == "dev" ]]; then
+            npm publish --provenance --tag dev --dry-run --ignore-scripts
+          else
+            npm publish --provenance --dry-run --ignore-scripts
+          fi
+
+      - name: Publish to npm (dev build)
+        if: |
+          steps.release-type.outputs.type == 'dev' &&
+          github.event.inputs.dry-run != 'true'
+        run: npm publish --provenance --tag dev --ignore-scripts
+
+      - name: Publish to npm (production release)
+        if: |
+          steps.release-type.outputs.type == 'production' &&
+          github.event.inputs.dry-run != 'true'
+        run: npm publish --provenance --ignore-scripts
+
+      - name: Output published version
+        if: github.event.inputs.dry-run != 'true'
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "✅ Successfully published @adapty/core@${PACKAGE_VERSION}"
+          echo "Package URL: https://www.npmjs.com/package/@adapty/core/v/${PACKAGE_VERSION}"
+
+          if [[ "${{ steps.release-type.outputs.type }}" == "dev" ]]; then
+            echo "Install with: npm install @adapty/core@dev"
+          else
+            echo "Install with: npm install @adapty/core"
+          fi

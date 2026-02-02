@@ -5,7 +5,8 @@ import type {
 } from '@/adapters/interfaces';
 import { AdaptyConfigurationCoder } from '@/coders/adapty-configuration';
 import { LogLevel } from '@/types/inputs';
-import version from '@/version';
+
+const version = '1.0.0';
 
 describe('AdaptyConfigurationCoder', () => {
   const sdkMetadata: ISdkMetadataAdapter = {

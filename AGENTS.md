@@ -173,20 +173,39 @@ This allows real-time development: changes in core automatically rebuild into th
 
 ## Versioning
 
-- **Dev builds:** `0.0.0-dev.<full-sha>` (40-char commit SHA)
+- **Dev builds:** `<base-version>-dev.<full-sha>` (40-char commit SHA)
   - Example: `0.0.0-dev.abc123...xyz789`
-  - Placeholder in repo: `0.0.0-dev.0000000000000000000000000000000000000000`
-  - CI must replace with actual git SHA before publishing
+  - Base version is read from `package.json` (e.g., `0.0.0`)
+  - CI adds `-dev.<sha>` suffix before publishing
 - **Production releases:** Semantic versioning (e.g., `1.0.0`, `1.0.1`)
 - Downstream SDKs should pin exact dev version when testing CI
 
 ## CI Publishing Policy
 
 - **Registry:** npmjs.com (public via `publishConfig.access: "public"`)
-- **`dev` branch:** Publish after merge using dist-tag `dev`
-  - Command: `npm publish --tag dev`
-- **`master` branch:** Publish ONLY on git tag (release)
-  - Command: `npm publish` (default `latest` tag)
+- **Workflow:** `.github/workflows/publish.yml` - Unified workflow for both dev and production releases
+  - Auto-detects release type based on git event (push to `dev` branch vs push to tag)
+  - Supports manual workflow dispatch with release-type selection
+  - Includes dry-run mode for testing
+
+### Dev Builds (dev branch)
+
+- **Trigger:** Push to `dev` branch (or manual workflow dispatch with release-type: dev)
+- **Version:** Automatic `-dev.<commit-sha>` suffix (40-char full SHA)
+- **Dist-tag:** `dev`
+- **Command:** `npm publish --provenance --tag dev --ignore-scripts`
+- **Install:** `npm install @adapty/core@dev`
+
+### Production Releases (git tags)
+
+- **Trigger:** Git tags matching `v*` pattern (e.g., `v1.0.0`) or manual workflow dispatch with release-type: production
+- **Version:** Uses version from `package.json` directly
+- **Dist-tag:** `latest` (default)
+- **Command:** `npm publish --provenance --ignore-scripts`
+- **Install:** `npm install @adapty/core` (installs latest)
+- **Workflow:** Update version in `package.json`, then create and push git tag
+
+**Important:** The `--tag dev` flag ensures dev builds are NOT installed by default. Only production releases (published with `latest` tag) are installed when users run `npm install @adapty/core` without specifying a version.
 
 ## Package Manager & Tooling
 
