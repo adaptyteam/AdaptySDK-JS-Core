@@ -215,7 +215,9 @@ export class CoderFactory {
     return new ArrayCoder(() => this.createPaywallProductCoder());
   }
 
-  createHashmapCoder<T extends Converter<any, any>>(coder: T | null): HashmapCoder<T> {
+  createHashmapCoder<T extends Converter<any, any>>(
+    coder: T | null,
+  ): HashmapCoder<T> {
     return new HashmapCoder(coder);
   }
 }

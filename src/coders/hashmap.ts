@@ -1,9 +1,10 @@
 import type { Converter } from './types';
 
 // Coder for Record<string, T>
-export class HashmapCoder<T extends Converter<any, any>>
-  implements Converter<Record<string, any>, Record<string, any>>
-{
+export class HashmapCoder<T extends Converter<any, any>> implements Converter<
+  Record<string, any>,
+  Record<string, any>
+> {
   private coder: T | null;
 
   constructor(coder: T | null) {

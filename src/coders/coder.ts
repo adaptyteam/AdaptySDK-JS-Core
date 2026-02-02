@@ -7,8 +7,7 @@ export abstract class Coder<
   Model extends Record<string, any>,
   CodableModel extends Partial<Model>,
   Serializable extends Record<string, any> = Record<string, any>,
-> implements Converter<CodableModel, Serializable>
-{
+> implements Converter<CodableModel, Serializable> {
   protected readonly platform: IPlatformAdapter;
   protected abstract properties: Properties<CodableModel, Serializable>;
 

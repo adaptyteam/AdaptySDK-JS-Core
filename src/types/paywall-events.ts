@@ -102,8 +102,7 @@ export interface PaywallDidFailLoadingProductsEvent extends BasePaywallEvent {
   error: AdaptyError;
 }
 
-export interface PaywallDidFinishWebPaymentNavigationEvent
-  extends BasePaywallEvent {
+export interface PaywallDidFinishWebPaymentNavigationEvent extends BasePaywallEvent {
   id: typeof PaywallEventId.DidFinishWebPaymentNavigation;
   product?: AdaptyPaywallProduct;
   error?: AdaptyError;

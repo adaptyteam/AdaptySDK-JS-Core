@@ -203,10 +203,7 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
   { type: 'user_cancelled' },
 ];
 
-function toModel(
-  mock: (typeof mocks)[number],
-  platformOS: PlatformOS,
-): Model {
+function toModel(mock: (typeof mocks)[number], platformOS: PlatformOS): Model {
   const _profile = new AdaptyProfileCoder({
     OS: platformOS,
   } as IPlatformAdapter);
@@ -229,9 +226,7 @@ function toModel(
 }
 
 describe('AdaptyPurchaseResultCoder', () => {
-  const resolvePlatformOS = (
-    mock: (typeof mocks)[number],
-  ): PlatformOS => {
+  const resolvePlatformOS = (mock: (typeof mocks)[number]): PlatformOS => {
     if (mock.type === 'success' && mock.apple_jws_transaction) {
       return 'ios';
     }

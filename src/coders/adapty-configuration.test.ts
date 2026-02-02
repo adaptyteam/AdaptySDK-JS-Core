@@ -148,7 +148,6 @@ describe('AdaptyConfigurationCoder', () => {
         disk_storage_size_limit: 200 * 1024 * 1024,
       },
     });
-
   });
 
   it('should handle partial parameters', () => {

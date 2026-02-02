@@ -14,8 +14,8 @@ import { FileLocation, MakePurchaseParamsInput } from '@/types/inputs';
 export type ArgType<T> = T extends () => any
   ? void
   : T extends (arg: infer U) => any
-  ? U
-  : void;
+    ? U
+    : void;
 
 /**
  * EventHandler callback should not return a promise,

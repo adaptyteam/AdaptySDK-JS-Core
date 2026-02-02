@@ -1,14 +1,14 @@
 export type StrType<T> = T extends string
   ? 'string'
   : T extends Date
-  ? 'string' // endoded JSON
-  : T extends boolean
-  ? 'boolean'
-  : T extends number
-  ? 'number'
-  : T extends any[]
-  ? 'array'
-  : 'object';
+    ? 'string' // endoded JSON
+    : T extends boolean
+      ? 'boolean'
+      : T extends number
+        ? 'number'
+        : T extends any[]
+          ? 'array'
+          : 'object';
 
 export interface Converter<Model = unknown, Serialized = any> {
   type?: 'data' | 'error'; // identify error converters via type

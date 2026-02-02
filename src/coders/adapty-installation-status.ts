@@ -3,10 +3,10 @@ import type { Def } from '@/types/schema';
 import { Converter } from './types';
 import { DateCoder } from './date';
 
-export class AdaptyInstallationStatusCoder
-  implements
-    Converter<AdaptyInstallationStatus, Def['AdaptyInstallationStatus']>
-{
+export class AdaptyInstallationStatusCoder implements Converter<
+  AdaptyInstallationStatus,
+  Def['AdaptyInstallationStatus']
+> {
   encode(model: AdaptyInstallationStatus): Def['AdaptyInstallationStatus'] {
     if (model.status === 'determined') {
       const details: Def['AdaptyInstallationDetails'] = {
