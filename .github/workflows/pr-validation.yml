@@ -1,0 +1,158 @@
+name: PR Validation
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - master
+      - dev
+
+concurrency:
+  group: pr-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    name: Setup Dependencies
+    runs-on: ubuntu-slim
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache node_modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Enable Corepack
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          corepack enable || {
+            echo "Corepack not available, falling back to npm install"
+            npm install -g yarn@1.22.19
+          }
+
+      - name: Prepare Yarn
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          if command -v corepack > /dev/null 2>&1; then
+            corepack prepare yarn@1.22.19 --activate
+          fi
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --prefer-offline
+
+  validate:
+    name: Validate Code Quality
+    runs-on: ubuntu-slim
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: |
+          corepack enable || {
+            echo "Corepack not available, falling back to npm install"
+            npm install -g yarn@1.22.19
+          }
+
+      - name: Prepare Yarn
+        run: |
+          if command -v corepack > /dev/null 2>&1; then
+            corepack prepare yarn@1.22.19 --activate
+          fi
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+          fail-on-cache-miss: true
+
+      - name: TypeScript type check
+        run: yarn tsc
+
+      - name: Prettier format check
+        run: yarn format-check
+
+      - name: ESLint check
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Build verification
+        run: yarn build
+
+  auto-assign-reviewers:
+    name: Auto-assign Reviewers
+    runs-on: ubuntu-slim
+    if: github.event.action == 'opened'
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Assign reviewers from CODEOWNERS
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = '.github/CODEOWNERS';
+
+            if (!fs.existsSync(path)) {
+              console.log('CODEOWNERS file not found, skipping auto-assignment');
+              return;
+            }
+
+            const content = fs.readFileSync(path, 'utf8');
+            const lines = content.split('\n').filter(line =>
+              line.trim() && !line.trim().startsWith('#')
+            );
+
+            const reviewers = new Set();
+
+            for (const line of lines) {
+              const parts = line.trim().split(/\s+/);
+              if (parts.length > 1) {
+                for (let i = 1; i < parts.length; i++) {
+                  const owner = parts[i].replace('@', '');
+                  if (!owner.includes('/')) {
+                    reviewers.add(owner);
+                  }
+                }
+              }
+            }
+
+            const prAuthor = context.payload.pull_request.user.login;
+            const finalReviewers = Array.from(reviewers).filter(r => r !== prAuthor);
+
+            if (finalReviewers.length === 0) {
+              console.log('No reviewers found in CODEOWNERS');
+              return;
+            }
+
+            console.log(`Assigning reviewers: ${finalReviewers.join(', ')}`);
+
+            try {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                reviewers: finalReviewers
+              });
+            } catch (error) {
+              console.log(`Failed to assign reviewers: ${error.message}`);
+            }
