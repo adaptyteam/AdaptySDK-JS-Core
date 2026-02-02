@@ -1410,6 +1410,11 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
+dotenv@^17.2.3:
+  version "17.2.3"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-17.2.3.tgz#ad995d6997f639b11065f419a22fabf567cdb9a2"
+  integrity sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==
+
 dts-resolver@^1.0.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/dts-resolver/-/dts-resolver-1.2.0.tgz#1495d8319f28e41a5369c6d6d05c2cb8ba790ad1"

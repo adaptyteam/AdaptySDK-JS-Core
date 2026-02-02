@@ -147,6 +147,30 @@ Published files (via `files` in package.json):
 
 Source TypeScript files (`src/`) are NOT published - only compiled output.
 
+## Local Development Configuration
+
+### Custom Build Output Directory
+
+For local development with downstream SDKs, you can configure a custom build output directory using the `BUILD_OUT_DIR` environment variable:
+
+1. **Create `.env` file** in the repository root (already gitignored)
+2. **Set output path** to your target repository:
+   ```bash
+   # For React Native Devtools
+   BUILD_OUT_DIR=../AdaptySDK-React-Native-Devtools/pure-rn/node_modules/@adapty/core/dist
+
+   # For React Native SDK
+   BUILD_OUT_DIR=../AdaptySDK-React-Native/node_modules/@adapty/core/dist
+   ```
+3. **Run watch mode:** `yarn build:watch`
+
+**How it works:**
+- `tsdown.config.ts` reads `BUILD_OUT_DIR` from `.env` via `dotenv` package
+- If not set, defaults to `./dist`
+- See `.env.example` for configuration examples
+
+This allows real-time development: changes in core automatically rebuild into the downstream SDK without manual copying or publishing.
+
 ## Versioning
 
 - **Dev builds:** `0.0.0-dev.<full-sha>` (40-char commit SHA)
