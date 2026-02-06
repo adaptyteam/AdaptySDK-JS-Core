@@ -26,6 +26,8 @@ export {
 
 export { CoderFactory } from './coders/factory';
 export type { CoderDependencies } from './coders/factory';
+export type { Converter } from './coders/types';
+export type { ErrorConverter } from './coders/error-coder';
 
 // Mass re-export all types from types folder
 export * from './types/index';
