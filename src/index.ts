@@ -24,6 +24,8 @@ export {
   DefaultLoggerAdapter,
 } from './adapters/defaults';
 
+export { AdaptyError } from './adapty-error';
+export type { AdaptyErrorInput } from './adapty-error';
 export { CoderFactory } from './coders/factory';
 export type { CoderDependencies } from './coders/factory';
 export type { Converter } from './coders/types';
