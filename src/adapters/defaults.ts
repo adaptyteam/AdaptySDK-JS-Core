@@ -1,10 +1,12 @@
 import type {
   IPlatformAdapter,
   ISdkMetadataAdapter,
+  ILoggerAdapter,
+  ILogContext,
   PlatformOS,
 } from './interfaces';
 import { Platform } from '@/platform';
-import { NoopLoggerAdapter } from '@/logger';
+import { LogContext } from '@/logger';
 
 /**
  * Default platform adapter with unknown OS
@@ -29,4 +31,11 @@ export class DefaultSdkMetadataAdapter implements ISdkMetadataAdapter {
   ) {}
 }
 
-export { NoopLoggerAdapter as DefaultLoggerAdapter };
+/**
+ * Default logger adapter using the real LogContext implementation
+ */
+export class DefaultLoggerAdapter implements ILoggerAdapter {
+  createContext(): ILogContext {
+    return new LogContext();
+  }
+}

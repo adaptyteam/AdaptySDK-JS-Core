@@ -13,6 +13,7 @@ export type {
   ILoggerAdapter,
   ILogContext,
   ILogScope,
+  LogArgs,
   LogTrace,
   PlatformOS,
   ScopeArgs,
@@ -23,6 +24,9 @@ export {
   DefaultSdkMetadataAdapter,
   DefaultLoggerAdapter,
 } from './adapters/defaults';
+
+export { Log, LogContext, LogScope, consoleLogSink } from './logger';
+export type { LogSink, LoggerConfig, LogEvent } from './logger';
 
 export { AdaptyError } from './adapty-error';
 export type { AdaptyErrorInput } from './adapty-error';

@@ -2,7 +2,7 @@ import { LogLevel } from '../types/inputs';
 import type { LogEvent, LogSink, LoggerConfig } from './types';
 import { consoleLogSink } from './console-sink';
 
-import VERSION from '../../version';
+import VERSION from '../version';
 
 // Type for lazy evaluation functions
 type LazyMessage = () => string;

@@ -1,6 +1,7 @@
+import type { LogArgs } from '@/adapters/interfaces';
 import { ScopeArgs } from './log-context';
 
-export type LogArgs = () => Record<string, any>;
+export type { LogArgs };
 type LogCallback = (LazyParams: LogArgs) => void;
 
 interface LogScopeConstructor extends ScopeArgs {

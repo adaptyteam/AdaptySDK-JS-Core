@@ -60,7 +60,7 @@ export function parseMethodResult<T>(
   ctx?: LogContext,
 ): T {
   const log = ctx?.decode({ methodName: 'parseMethodResult' });
-  log?.start({ input });
+  log?.start(() => ({ input }));
 
   let obj: AdaptyResult<unknown>;
 
@@ -74,7 +74,7 @@ export function parseMethodResult<T>(
       }`,
     );
 
-    log?.failed(adaptyError.message);
+    log?.failed(() => ({ error: adaptyError.message }));
     throw adaptyError;
   }
 
@@ -101,7 +101,7 @@ export function parseMethodResult<T>(
     const adaptyError = AdaptyError.failedToDecode(
       `Failed to decode native response. Response does not have expected "success" or "error" property`,
     );
-    log?.failed(adaptyError.message);
+    log?.failed(() => ({ error: adaptyError.message }));
     throw adaptyError;
   }
 }

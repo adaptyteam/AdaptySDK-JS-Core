@@ -25,6 +25,11 @@ export interface ISdkMetadataAdapter {
 }
 
 /**
+ * Lazy-evaluated log arguments
+ */
+export type LogArgs = () => Record<string, any>;
+
+/**
  * Logger adapter interface for platform-specific logging
  */
 export interface ILoggerAdapter {
@@ -41,7 +46,7 @@ export interface ScopeArgs {
 export interface LogTrace {
   action: string;
   fn: string;
-  payload: Record<string, unknown>;
+  payload: LogArgs;
   error?: boolean;
   done?: boolean;
 }
@@ -63,7 +68,9 @@ export interface ILogContext {
  * Log scope interface for logging at execution stages
  */
 export interface ILogScope {
-  start(payload?: Record<string, unknown>): void;
-  failed(message?: string): void;
-  success(payload?: Record<string, unknown>): void;
+  start(args: LogArgs): void;
+  failed(args: LogArgs): void;
+  success(args: LogArgs): void;
+  wait?(args: LogArgs): void;
+  waitComplete?(args: LogArgs): void;
 }
