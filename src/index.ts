@@ -38,3 +38,5 @@ export * from './types/error';
 export * from './types/bridge';
 export * from './types/paywall-events';
 export * from './types/onboarding-events';
+
+export type { components } from './types/api';
