@@ -16,10 +16,3 @@ export class Platform {
     Platform._os = value;
   }
 }
-
-/**
- * EmitterSubscription mock for type compatibility
- */
-export interface EmitterSubscription {
-  remove(): void;
-}
