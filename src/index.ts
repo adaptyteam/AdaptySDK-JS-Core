@@ -44,3 +44,9 @@ export * from './types/paywall-events';
 export * from './types/onboarding-events';
 
 export type { components } from './types/api';
+
+export { generateId } from './utils/generate-id';
+export { filterUndefined } from './utils/compact-object';
+export { mapValues } from './utils/map-values';
+export { mergeOptions } from './utils/merge-options';
+export { withErrorContext } from './utils/with-error-context';
