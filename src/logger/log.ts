@@ -12,13 +12,18 @@ export class Log {
   public static logLevel: LogLevel | null = null;
   private static sinks: LogSink[] = [consoleLogSink];
   private static defaultMeta?: LoggerConfig['defaultMeta'];
+  private static _version: string = VERSION;
+
+  /** Override the version shown in log messages (e.g. SDK version instead of core version) */
+  public static setVersion(version: string): void {
+    this._version = version;
+  }
 
   // Formats a message for logging
   private static formatMessage(message: string, funcName: string): string {
     const now = new Date().toISOString();
-    const version = VERSION;
 
-    return `[${now}] [adapty@${version}] "${funcName}": ${message}`;
+    return `[${now}] [adapty@${this._version}] "${funcName}": ${message}`;
   }
 
   /** Configure JS logger: replace sinks and/or set default metadata */
@@ -98,7 +103,7 @@ export class Log {
       const formatted = Log.formatMessage(resolvedMessage, funcName);
       const event: LogEvent = {
         timestamp: new Date().toISOString(),
-        version: String(VERSION),
+        version: this._version,
         level: logLevel,
         funcName,
         message: resolvedMessage,
