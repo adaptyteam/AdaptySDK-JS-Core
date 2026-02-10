@@ -12,7 +12,10 @@ export class Log {
   private static defaultMeta?: LoggerConfig['defaultMeta'];
   private static _version: string = 'unknown';
 
-  /** Override the version shown in log messages (e.g. SDK version instead of core version) */
+  /**
+   * Override the version shown in log messages
+   * @internal
+   */
   public static setVersion(version: string): void {
     this._version = version;
   }
