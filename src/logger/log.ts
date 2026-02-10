@@ -2,8 +2,6 @@ import { LogLevel } from '../types/inputs';
 import type { LogEvent, LogSink, LoggerConfig } from './types';
 import { consoleLogSink } from './console-sink';
 
-import VERSION from '../version';
-
 // Type for lazy evaluation functions
 type LazyMessage = () => string;
 type LazyParams = () => Record<string, any>;
@@ -12,7 +10,7 @@ export class Log {
   public static logLevel: LogLevel | null = null;
   private static sinks: LogSink[] = [consoleLogSink];
   private static defaultMeta?: LoggerConfig['defaultMeta'];
-  private static _version: string = VERSION;
+  private static _version: string = 'unknown';
 
   /** Override the version shown in log messages (e.g. SDK version instead of core version) */
   public static setVersion(version: string): void {
