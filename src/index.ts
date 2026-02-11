@@ -48,6 +48,15 @@ export * from './ui/paywall-event-mapping';
 export * from './ui/onboarding-event-mapping';
 export * from './ui/types';
 
+// Parse functions (accept CoderFactory as first parameter)
+export {
+  parseMethodResult,
+  parseCommonEvent,
+  type AdaptyType,
+} from './coders/parse';
+export { parsePaywallEvent } from './coders/parse-paywall';
+export { parseOnboardingEvent } from './coders/parse-onboarding';
+
 export { generateId } from './utils/generate-id';
 export { filterUndefined } from './utils/compact-object';
 export { mapValues } from './utils/map-values';

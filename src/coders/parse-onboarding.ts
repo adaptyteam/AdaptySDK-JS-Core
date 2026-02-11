@@ -1,10 +1,8 @@
 import { AdaptyError } from '@/adapty-error';
 import { LogContext } from '../logger';
 import { ErrorConverter } from './error-coder';
+import type { CoderFactory } from './factory';
 import type { Converter } from './types';
-import { AdaptyNativeErrorCoder } from './adapty-native-error';
-import { AdaptyUiOnboardingMetaCoder } from '@/coders/adapty-ui-onboarding-meta';
-import { AdaptyUiOnboardingStateUpdatedActionCoder } from '@/coders/adapty-ui-onboarding-state-updated-action';
 import type { AdaptyUiOnboardingMeta } from '@/ui/types';
 import type { OnboardingStateUpdatedAction } from '@/ui/types';
 import {
@@ -30,6 +28,7 @@ export {
 
 // Parser
 export function parseOnboardingEvent(
+  factory: CoderFactory,
   input: string,
   ctx?: LogContext,
 ): ParsedOnboardingEvent | null {
@@ -54,7 +53,7 @@ export function parseOnboardingEvent(
     variationId: viewObj['variation_id'] as string | undefined,
   };
   const decodeMeta = () =>
-    getOnboardingCoder('meta', ctx)!.decode(
+    getOnboardingCoder(factory, 'meta', ctx)!.decode(
       obj['meta'],
     ) as AdaptyUiOnboardingMeta;
 
@@ -73,7 +72,7 @@ export function parseOnboardingEvent(
       return {
         id: eventId,
         view,
-        action: getOnboardingCoder('action', ctx)!.decode(
+        action: getOnboardingCoder(factory, 'action', ctx)!.decode(
           obj['action'],
         ) as OnboardingStateUpdatedAction,
         meta: decodeMeta(),
@@ -102,6 +101,7 @@ export function parseOnboardingEvent(
 
     case OnboardingEventId.Error: {
       const errorCoder = getOnboardingCoder(
+        factory,
         'error',
         ctx,
       ) as ErrorConverter<any>;
@@ -121,15 +121,16 @@ export function parseOnboardingEvent(
 type OnboardingCoderType = 'meta' | 'action' | 'error';
 
 function getOnboardingCoder(
+  factory: CoderFactory,
   type: OnboardingCoderType,
   _ctx?: LogContext,
 ): Converter<any, any> | ErrorConverter<any> {
   switch (type) {
     case 'meta':
-      return new AdaptyUiOnboardingMetaCoder();
+      return factory.createUiOnboardingMetaCoder();
     case 'action':
-      return new AdaptyUiOnboardingStateUpdatedActionCoder();
+      return factory.createUiOnboardingStateUpdatedActionCoder();
     case 'error':
-      return new AdaptyNativeErrorCoder();
+      return factory.createNativeErrorCoder();
   }
 }

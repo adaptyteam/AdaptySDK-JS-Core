@@ -1,11 +1,8 @@
 import { AdaptyError } from '@/adapty-error';
 import { LogContext } from '../logger';
 import { ErrorConverter } from './error-coder';
+import type { CoderFactory } from './factory';
 import type { Converter } from './types';
-import { AdaptyNativeErrorCoder } from './adapty-native-error';
-import { AdaptyPaywallProductCoder } from './adapty-paywall-product';
-import { AdaptyProfileCoder } from './adapty-profile';
-import { AdaptyPurchaseResultCoder } from './adapty-purchase-result';
 import type {
   AdaptyPaywallProduct,
   AdaptyProfile,
@@ -40,6 +37,7 @@ export {
 
 // Parser
 export function parsePaywallEvent(
+  factory: CoderFactory,
   input: string,
   ctx?: LogContext,
 ): ParsedPaywallEvent | null {
@@ -104,7 +102,7 @@ export function parsePaywallEvent(
       return {
         id: eventId,
         view,
-        product: getPaywallCoder('product', ctx)!.decode(
+        product: getPaywallCoder(factory, 'product', ctx)!.decode(
           obj['product'],
         ) as AdaptyPaywallProduct,
       };
@@ -113,22 +111,26 @@ export function parsePaywallEvent(
       return {
         id: eventId,
         view,
-        purchaseResult: getPaywallCoder('purchaseResult', ctx)!.decode(
+        purchaseResult: getPaywallCoder(factory, 'purchaseResult', ctx)!.decode(
           obj['purchased_result'],
         ) as AdaptyPurchaseResult,
-        product: getPaywallCoder('product', ctx)!.decode(
+        product: getPaywallCoder(factory, 'product', ctx)!.decode(
           obj['product'],
         ) as AdaptyPaywallProduct,
       };
 
     case PaywallEventId.DidFailPurchase: {
-      const errorCoder = getPaywallCoder('error', ctx) as ErrorConverter<any>;
+      const errorCoder = getPaywallCoder(
+        factory,
+        'error',
+        ctx,
+      ) as ErrorConverter<any>;
       const decodedError = errorCoder.decode(obj['error']);
       return {
         id: eventId,
         view,
         error: errorCoder.getError(decodedError),
-        product: getPaywallCoder('product', ctx)!.decode(
+        product: getPaywallCoder(factory, 'product', ctx)!.decode(
           obj['product'],
         ) as AdaptyPaywallProduct,
       };
@@ -144,13 +146,17 @@ export function parsePaywallEvent(
       return {
         id: eventId,
         view,
-        profile: getPaywallCoder('profile', ctx)!.decode(
+        profile: getPaywallCoder(factory, 'profile', ctx)!.decode(
           obj['profile'],
         ) as AdaptyProfile,
       };
 
     case PaywallEventId.DidFailRestore: {
-      const errorCoder = getPaywallCoder('error', ctx) as ErrorConverter<any>;
+      const errorCoder = getPaywallCoder(
+        factory,
+        'error',
+        ctx,
+      ) as ErrorConverter<any>;
       const decodedError = errorCoder.decode(obj['error']);
       return {
         id: eventId,
@@ -160,7 +166,11 @@ export function parsePaywallEvent(
     }
 
     case PaywallEventId.DidFailRendering: {
-      const errorCoder = getPaywallCoder('error', ctx) as ErrorConverter<any>;
+      const errorCoder = getPaywallCoder(
+        factory,
+        'error',
+        ctx,
+      ) as ErrorConverter<any>;
       const decodedError = errorCoder.decode(obj['error']);
       return {
         id: eventId,
@@ -170,7 +180,11 @@ export function parsePaywallEvent(
     }
 
     case PaywallEventId.DidFailLoadingProducts: {
-      const errorCoder = getPaywallCoder('error', ctx) as ErrorConverter<any>;
+      const errorCoder = getPaywallCoder(
+        factory,
+        'error',
+        ctx,
+      ) as ErrorConverter<any>;
       const decodedError = errorCoder.decode(obj['error']);
       return {
         id: eventId,
@@ -184,13 +198,14 @@ export function parsePaywallEvent(
         id: eventId,
         view,
         product: obj['product']
-          ? (getPaywallCoder('product', ctx)!.decode(
+          ? (getPaywallCoder(factory, 'product', ctx)!.decode(
               obj['product'],
             ) as AdaptyPaywallProduct)
           : undefined,
         error: obj['error']
           ? (() => {
               const errorCoder = getPaywallCoder(
+                factory,
                 'error',
                 ctx,
               ) as ErrorConverter<any>;
@@ -208,17 +223,18 @@ export function parsePaywallEvent(
 type PaywallCoderType = 'product' | 'profile' | 'purchaseResult' | 'error';
 
 function getPaywallCoder(
+  factory: CoderFactory,
   type: PaywallCoderType,
   _ctx?: LogContext,
 ): Converter<any, any> | ErrorConverter<any> {
   switch (type) {
     case 'product':
-      return new AdaptyPaywallProductCoder();
+      return factory.createPaywallProductCoder();
     case 'profile':
-      return new AdaptyProfileCoder();
+      return factory.createProfileCoder();
     case 'purchaseResult':
-      return new AdaptyPurchaseResultCoder();
+      return factory.createPurchaseResultCoder();
     case 'error':
-      return new AdaptyNativeErrorCoder();
+      return factory.createNativeErrorCoder();
   }
 }

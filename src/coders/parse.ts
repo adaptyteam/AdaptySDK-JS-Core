@@ -1,22 +1,8 @@
 import { AdaptyError } from '@/adapty-error';
 import { LogContext } from '../logger';
-import { AdaptyNativeErrorCoder } from './adapty-native-error';
-import { AdaptyPaywallCoder } from './adapty-paywall';
-import { AdaptyPaywallProductCoder } from './adapty-paywall-product';
-import { AdaptyProfileCoder } from './adapty-profile';
-import { ArrayCoder } from './array';
-import { BridgeErrorCoder } from './bridge-error';
 import { ErrorConverter } from './error-coder';
+import type { CoderFactory } from './factory';
 import type { Converter } from './types';
-import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
-import { AdaptyPaywallBuilderCoder } from './adapty-paywall-builder';
-import { AdaptyPurchaseResultCoder } from '@/coders/adapty-purchase-result';
-import { AdaptyOnboardingCoder } from '@/coders/adapty-onboarding';
-import { AdaptyUiOnboardingMetaCoder } from '@/coders/adapty-ui-onboarding-meta';
-import { AdaptyUiOnboardingStateParamsCoder } from '@/coders/adapty-ui-onboarding-state-params';
-import { AdaptyUiOnboardingStateUpdatedActionCoder } from '@/coders/adapty-ui-onboarding-state-updated-action';
-import { AdaptyInstallationStatusCoder } from '@/coders/adapty-installation-status';
-import { AdaptyInstallationDetailsCoder } from '@/coders/adapty-installation-details';
 
 const AdaptyTypes = [
   'AdaptyError',
@@ -55,6 +41,7 @@ interface AdaptyResultError {
 }
 
 export function parseMethodResult<T>(
+  factory: CoderFactory,
   input: string,
   resultType: AdaptyType,
   ctx?: LogContext,
@@ -91,10 +78,10 @@ export function parseMethodResult<T>(
       return obj.success as T;
     }
 
-    const coder = getCoder(resultType, ctx);
+    const coder = getCoder(factory, resultType, ctx);
     return coder?.decode(obj.success);
   } else if (obj.hasOwnProperty('error')) {
-    const coder = getCoder('AdaptyError', ctx);
+    const coder = getCoder(factory, 'AdaptyError', ctx);
     const errorData = coder?.decode(obj.error);
     throw (coder as ErrorConverter<any>).getError(errorData);
   } else {
@@ -107,6 +94,7 @@ export function parseMethodResult<T>(
 }
 
 export function parseCommonEvent(
+  factory: CoderFactory,
   event: string,
   input: string,
   ctx?: LogContext,
@@ -121,17 +109,20 @@ export function parseCommonEvent(
   }
   switch (event) {
     case 'did_load_latest_profile':
-      return getCoder('AdaptyProfile', ctx)?.decode(obj['profile']);
+      return getCoder(factory, 'AdaptyProfile', ctx)?.decode(obj['profile']);
     case 'on_installation_details_success':
-      return getCoder('AdaptyInstallationDetails', ctx)?.decode(obj['details']);
+      return getCoder(factory, 'AdaptyInstallationDetails', ctx)?.decode(
+        obj['details'],
+      );
     case 'on_installation_details_fail':
-      return getCoder('AdaptyError', ctx)?.decode(obj['error']);
+      return getCoder(factory, 'AdaptyError', ctx)?.decode(obj['error']);
     default:
       return null;
   }
 }
 
 function getCoder(
+  factory: CoderFactory,
   type: AdaptyType,
   ctx?: LogContext,
 ): Converter<any, any> | ErrorConverter<any> | null {
@@ -139,35 +130,35 @@ function getCoder(
 
   switch (type as AdaptyType) {
     case 'AdaptyError':
-      return new AdaptyNativeErrorCoder();
+      return factory.createNativeErrorCoder();
     case 'AdaptyProfile':
-      return new AdaptyProfileCoder();
+      return factory.createProfileCoder();
     case 'AdaptyPaywall':
-      return new AdaptyPaywallCoder();
+      return factory.createPaywallCoder();
     case 'AdaptyPaywallProduct':
-      return new AdaptyPaywallProductCoder();
+      return factory.createPaywallProductCoder();
     case 'AdaptyRemoteConfig':
-      return new AdaptyRemoteConfigCoder();
+      return factory.createRemoteConfigCoder();
     case 'AdaptyPaywallBuilder':
-      return new AdaptyPaywallBuilderCoder();
+      return factory.createPaywallBuilderCoder();
     case 'AdaptyOnboarding':
-      return new AdaptyOnboardingCoder();
+      return factory.createOnboardingCoder();
     case 'AdaptyPurchaseResult':
-      return new AdaptyPurchaseResultCoder();
+      return factory.createPurchaseResultCoder();
     case 'AdaptyInstallationStatus':
-      return new AdaptyInstallationStatusCoder();
+      return factory.createInstallationStatusCoder();
     case 'AdaptyInstallationDetails':
-      return new AdaptyInstallationDetailsCoder();
+      return factory.createInstallationDetailsCoder();
     case 'AdaptyUiOnboardingMeta':
-      return new AdaptyUiOnboardingMetaCoder();
+      return factory.createUiOnboardingMetaCoder();
     case 'AdaptyUiOnboardingStateParams':
-      return new AdaptyUiOnboardingStateParamsCoder();
+      return factory.createUiOnboardingStateParamsCoder();
     case 'AdaptyUiOnboardingStateUpdatedAction':
-      return new AdaptyUiOnboardingStateUpdatedActionCoder();
+      return factory.createUiOnboardingStateUpdatedActionCoder();
     case 'BridgeError':
-      return new BridgeErrorCoder();
+      return factory.createBridgeErrorCoder();
     case 'Array<AdaptyPaywallProduct>':
-      return new ArrayCoder(() => new AdaptyPaywallProductCoder());
+      return factory.createPaywallProductArrayCoder();
     case 'String':
       return null;
   }
