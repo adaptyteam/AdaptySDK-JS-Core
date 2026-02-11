@@ -14,7 +14,7 @@ export const NATIVE_EVENT_RESOLVER: Record<
   PaywallEventIdType,
   (event: ParsedPaywallEvent) => EventName | null
 > = {
-  paywall_view_did_perform_action: event => {
+  [PaywallEventId.DidPerformAction]: event => {
     if (event.id !== PaywallEventId.DidPerformAction) return null;
 
     const actionMap: Record<string, EventName> = {
@@ -26,18 +26,20 @@ export const NATIVE_EVENT_RESOLVER: Record<
 
     return actionMap[event.action.type] || null;
   },
-  paywall_view_did_appear: () => 'onPaywallShown',
-  paywall_view_did_disappear: () => 'onPaywallClosed',
-  paywall_view_did_select_product: () => 'onProductSelected',
-  paywall_view_did_start_purchase: () => 'onPurchaseStarted',
-  paywall_view_did_finish_purchase: () => 'onPurchaseCompleted',
-  paywall_view_did_fail_purchase: () => 'onPurchaseFailed',
-  paywall_view_did_start_restore: () => 'onRestoreStarted',
-  paywall_view_did_finish_restore: () => 'onRestoreCompleted',
-  paywall_view_did_fail_restore: () => 'onRestoreFailed',
-  paywall_view_did_fail_rendering: () => 'onRenderingFailed',
-  paywall_view_did_fail_loading_products: () => 'onLoadingProductsFailed',
-  paywall_view_did_finish_web_payment_navigation: () =>
+  // TODO: v4 — rename onPaywallShown to onAppeared for consistency with Capacitor SDK
+  [PaywallEventId.DidAppear]: () => 'onPaywallShown',
+  // TODO: v4 — rename onPaywallClosed to onDisappeared for consistency with Capacitor SDK
+  [PaywallEventId.DidDisappear]: () => 'onPaywallClosed',
+  [PaywallEventId.DidSelectProduct]: () => 'onProductSelected',
+  [PaywallEventId.DidStartPurchase]: () => 'onPurchaseStarted',
+  [PaywallEventId.DidFinishPurchase]: () => 'onPurchaseCompleted',
+  [PaywallEventId.DidFailPurchase]: () => 'onPurchaseFailed',
+  [PaywallEventId.DidStartRestore]: () => 'onRestoreStarted',
+  [PaywallEventId.DidFinishRestore]: () => 'onRestoreCompleted',
+  [PaywallEventId.DidFailRestore]: () => 'onRestoreFailed',
+  [PaywallEventId.DidFailRendering]: () => 'onRenderingFailed',
+  [PaywallEventId.DidFailLoadingProducts]: () => 'onLoadingProductsFailed',
+  [PaywallEventId.DidFinishWebPaymentNavigation]: () =>
     'onWebPaymentNavigationFinished',
 };
 
@@ -46,23 +48,24 @@ export const NATIVE_EVENT_RESOLVER: Record<
  * Used in addListener/addInternalListener to subscribe to correct native event
  */
 export const HANDLER_TO_NATIVE_EVENT: Record<EventName, PaywallEventIdType> = {
-  onCloseButtonPress: 'paywall_view_did_perform_action',
-  onAndroidSystemBack: 'paywall_view_did_perform_action',
-  onUrlPress: 'paywall_view_did_perform_action',
-  onCustomAction: 'paywall_view_did_perform_action',
-  onPaywallShown: 'paywall_view_did_appear',
-  onPaywallClosed: 'paywall_view_did_disappear',
-  onProductSelected: 'paywall_view_did_select_product',
-  onPurchaseStarted: 'paywall_view_did_start_purchase',
-  onPurchaseCompleted: 'paywall_view_did_finish_purchase',
-  onPurchaseFailed: 'paywall_view_did_fail_purchase',
-  onRestoreStarted: 'paywall_view_did_start_restore',
-  onRestoreCompleted: 'paywall_view_did_finish_restore',
-  onRestoreFailed: 'paywall_view_did_fail_restore',
-  onRenderingFailed: 'paywall_view_did_fail_rendering',
-  onLoadingProductsFailed: 'paywall_view_did_fail_loading_products',
-  onWebPaymentNavigationFinished:
-    'paywall_view_did_finish_web_payment_navigation',
+  onCloseButtonPress: PaywallEventId.DidPerformAction,
+  onAndroidSystemBack: PaywallEventId.DidPerformAction,
+  onUrlPress: PaywallEventId.DidPerformAction,
+  onCustomAction: PaywallEventId.DidPerformAction,
+  // TODO: v4 — rename onPaywallShown to onAppeared for consistency with Capacitor SDK
+  onPaywallShown: PaywallEventId.DidAppear,
+  // TODO: v4 — rename onPaywallClosed to onDisappeared for consistency with Capacitor SDK
+  onPaywallClosed: PaywallEventId.DidDisappear,
+  onProductSelected: PaywallEventId.DidSelectProduct,
+  onPurchaseStarted: PaywallEventId.DidStartPurchase,
+  onPurchaseCompleted: PaywallEventId.DidFinishPurchase,
+  onPurchaseFailed: PaywallEventId.DidFailPurchase,
+  onRestoreStarted: PaywallEventId.DidStartRestore,
+  onRestoreCompleted: PaywallEventId.DidFinishRestore,
+  onRestoreFailed: PaywallEventId.DidFailRestore,
+  onRenderingFailed: PaywallEventId.DidFailRendering,
+  onLoadingProductsFailed: PaywallEventId.DidFailLoadingProducts,
+  onWebPaymentNavigationFinished: PaywallEventId.DidFinishWebPaymentNavigation,
 };
 
 type ExtractedArgs<T extends keyof EventHandlers> = Parameters<
