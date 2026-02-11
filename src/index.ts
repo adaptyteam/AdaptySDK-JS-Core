@@ -45,6 +45,10 @@ export * from './types/onboarding-events';
 
 export type { components } from './types/api';
 
+// UI event mappings
+export * from './ui/paywall-event-mapping';
+export * from './ui/onboarding-event-mapping';
+
 export { generateId } from './utils/generate-id';
 export { filterUndefined } from './utils/compact-object';
 export { mapValues } from './utils/map-values';
