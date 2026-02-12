@@ -5,20 +5,13 @@ import type {
   ILogContext,
   PlatformOS,
 } from './interfaces';
-import { Platform } from '@/platform';
 import { LogContext } from '@/logger';
 
 /**
  * Default platform adapter with unknown OS
  */
 export class DefaultPlatformAdapter implements IPlatformAdapter {
-  get OS(): PlatformOS {
-    return Platform.OS;
-  }
-
-  set OS(value: PlatformOS) {
-    Platform.OS = value;
-  }
+  readonly OS: PlatformOS = 'unknown';
 }
 
 /**
