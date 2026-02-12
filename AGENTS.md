@@ -75,7 +75,7 @@ This repo uses platform dependency injection to keep `@adapty/core` platform-agn
 ### Default Adapters
 
 - **Defaults:** `src/adapters/defaults.ts`
-- **DefaultPlatformAdapter** proxies to `src/platform.ts` (test helper).
+- **DefaultPlatformAdapter** returns `'unknown'` as the default OS value.
 - **DefaultLoggerAdapter** is a noop logger for core usage.
 
 ### Coder Factory
