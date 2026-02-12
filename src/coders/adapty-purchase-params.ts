@@ -2,14 +2,17 @@ import type { IPlatformAdapter } from '@/adapters/interfaces';
 import * as Input from '@/types/inputs';
 
 type Model = Input.MakePurchaseParamsInput;
-type Serializable = Record<string, any>;
+type Serializable = Record<string, unknown>;
 
 function isDeprecatedType(
-  data: any,
+  data: unknown,
 ): data is { android?: Input.AdaptyAndroidSubscriptionUpdateParameters } {
   return (
-    data &&
-    data.android &&
+    typeof data === 'object' &&
+    data !== null &&
+    'android' in data &&
+    typeof data.android === 'object' &&
+    data.android !== null &&
     'oldSubVendorProductId' in data.android &&
     'prorationMode' in data.android
   );

@@ -6,7 +6,7 @@ export interface LogEvent {
   level: LogLevel;
   funcName: string;
   message: string;
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
   formatted: string;
 }
 

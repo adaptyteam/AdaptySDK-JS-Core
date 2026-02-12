@@ -1,7 +1,7 @@
 /**
  * Checks if a value is a plain object (not an array, null, Date, etc.)
  */
-function isPlainObject(value: any): boolean {
+function isPlainObject(value: unknown): value is Record<string, unknown> {
   return (
     value !== null &&
     typeof value === 'object' &&
@@ -15,7 +15,11 @@ function isPlainObject(value: any): boolean {
 /**
  * Deep merge implementation that replaces arrays and merges objects
  */
-function deepMerge(target: any, source: any, seen = new Set()): any {
+function deepMerge(
+  target: unknown,
+  source: unknown,
+  seen = new Set(),
+): unknown {
   // Handle null/undefined cases
   if (source === null || source === undefined) {
     return source;
@@ -45,7 +49,7 @@ function deepMerge(target: any, source: any, seen = new Set()): any {
     seen.add(source);
     seen.add(target);
 
-    const result: any = {};
+    const result: Record<string, unknown> = {};
 
     // Get all keys from both objects
     const allKeys = new Set([...Object.keys(target), ...Object.keys(source)]);
@@ -98,9 +102,9 @@ function deepMerge(target: any, source: any, seen = new Set()): any {
  * @param defaults - default values
  * @returns merged object with TResult type
  */
-export function mergeOptions<TResult = any>(
-  options: any,
-  defaults: any,
+export function mergeOptions<TResult = unknown>(
+  options: unknown,
+  defaults: unknown,
 ): TResult {
   return deepMerge(defaults, options) as TResult;
 }

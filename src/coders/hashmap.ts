@@ -2,7 +2,7 @@ import type { Converter } from './types';
 
 // Coder for Record<string, T>
 export class HashmapCoder<T extends Converter<any, any>> implements Converter<
-  Record<string, any>,
+  Record<string, ReturnType<T['decode']>>,
   Record<string, any>
 > {
   private coder: T | null;
@@ -11,8 +11,10 @@ export class HashmapCoder<T extends Converter<any, any>> implements Converter<
     this.coder = coder;
   }
 
-  decode(input: Record<string, any>): Record<string, any> {
-    const result: Record<string, T> = {};
+  decode(
+    input: Record<string, unknown>,
+  ): Record<string, ReturnType<T['decode']>> {
+    const result: Record<string, any> = {};
 
     Object.keys(input).forEach(key => {
       const property = input[key as string];

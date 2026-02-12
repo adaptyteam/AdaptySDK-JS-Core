@@ -27,7 +27,7 @@ export interface ISdkMetadataAdapter {
 /**
  * Lazy-evaluated log arguments
  */
-export type LogArgs = () => Record<string, any>;
+export type LogArgs = () => Record<string, unknown>;
 
 /**
  * Logger adapter interface for platform-specific logging

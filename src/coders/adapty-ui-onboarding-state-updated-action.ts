@@ -50,12 +50,16 @@ export class AdaptyUiOnboardingStateUpdatedActionCoder extends SimpleCoder<
       case 'input':
         return {
           ...base,
-          value: data.value as any,
+          elementType: 'input',
+          value: data.value as
+            | { type: 'text' | 'email'; value: string }
+            | { type: 'number'; value: number },
         };
       case 'date_picker':
         return {
           ...base,
-          value: data.value as any,
+          elementType: 'date_picker',
+          value: data.value as { day?: number; month?: number; year?: number },
         };
       default:
         throw new Error(`Unknown element_type: ${elementType}`);

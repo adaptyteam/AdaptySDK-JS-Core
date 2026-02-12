@@ -3,6 +3,7 @@ import type {
   CreatePaywallViewParamsInput,
   AdaptyCustomAsset,
 } from '@/ui/types';
+import type { FileLocation } from '@/types/inputs';
 import type { Def } from '@/types/schema';
 import { AdaptyPurchaseParamsCoder } from './adapty-purchase-params';
 import {
@@ -75,7 +76,9 @@ export class AdaptyUICreatePaywallViewParamsCoder {
   private encodeCustomAssets(
     assets: Record<string, AdaptyCustomAsset>,
   ): Def['AdaptyUI.CustomAssets'] {
-    const getAssetId = (asset: any): string => {
+    const getAssetId = (
+      asset: { relativeAssetPath: string } | { fileLocation: FileLocation },
+    ): string => {
       return resolveAssetId(asset, this.platform.OS) || '';
     };
 

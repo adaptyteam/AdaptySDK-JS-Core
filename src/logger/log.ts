@@ -4,7 +4,7 @@ import { consoleLogSink } from './console-sink';
 
 // Type for lazy evaluation functions
 type LazyMessage = () => string;
-type LazyParams = () => Record<string, any>;
+type LazyParams = () => Record<string, unknown>;
 
 export class Log {
   public static logLevel: LogLevel | null = null;

@@ -213,7 +213,7 @@ describe('mergeOptions', () => {
       const defaults = { symbol: sym1 };
       const options = { symbol: sym2 };
 
-      const result = mergeOptions(options, defaults);
+      const result = mergeOptions<{ symbol: symbol }>(options, defaults);
 
       expect(result.symbol).toBe(sym2);
     });
@@ -278,7 +278,10 @@ describe('mergeOptions', () => {
       const defaults = { callback: defaultFn };
       const options = { callback: customFn };
 
-      const result = mergeOptions(options, defaults);
+      const result = mergeOptions<{ callback: () => string }>(
+        options,
+        defaults,
+      );
 
       expect(result.callback).toBe(customFn);
       expect(result.callback()).toBe('custom');
@@ -291,7 +294,7 @@ describe('mergeOptions', () => {
       const defaults = { timestamp: defaultDate };
       const options = { timestamp: customDate };
 
-      const result = mergeOptions(options, defaults);
+      const result = mergeOptions<{ timestamp: Date }>(options, defaults);
 
       expect(result.timestamp).toBe(customDate);
     });
@@ -321,7 +324,10 @@ describe('mergeOptions', () => {
       const maliciousOptions = JSON.parse('{"__proto__": {"polluted": true}}');
       const defaults = { safe: true };
 
-      const result = mergeOptions(maliciousOptions, defaults);
+      const result = mergeOptions<{ safe: boolean }>(
+        maliciousOptions,
+        defaults,
+      );
 
       expect(result.safe).toBe(true);
       expect((result as any).__proto__.polluted).toBeUndefined();
@@ -347,11 +353,14 @@ describe('mergeOptions', () => {
         }
       }
 
-      const result = mergeOptions(largeOptions, largeDefaults);
+      const result = mergeOptions<Record<string, string>>(
+        largeOptions,
+        largeDefaults,
+      );
 
       expect(Object.keys(result)).toHaveLength(1000);
-      expect(result.key0).toBe('custom0');
-      expect(result.key1).toBe('default1');
+      expect(result['key0']).toBe('custom0');
+      expect(result['key1']).toBe('default1');
     });
   });
 });

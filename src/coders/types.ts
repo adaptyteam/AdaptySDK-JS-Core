@@ -6,7 +6,7 @@ export type StrType<T> = T extends string
       ? 'boolean'
       : T extends number
         ? 'number'
-        : T extends any[]
+        : T extends unknown[]
           ? 'array'
           : 'object';
 

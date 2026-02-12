@@ -11,9 +11,9 @@ import { FileLocation, MakePurchaseParamsInput } from '@/types/inputs';
 /**
  * @internal
  */
-export type ArgType<T> = T extends () => any
+export type ArgType<T> = T extends () => unknown
   ? void
-  : T extends (arg: infer U) => any
+  : T extends (arg: infer U) => unknown
     ? U
     : void;
 
