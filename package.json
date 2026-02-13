@@ -70,13 +70,11 @@
   },
   "homepage": "https://adapty.io/docs/",
   "bugs": {
-    "url": "https://github.com/adaptyteam/AdaptySDK-JS-Core/issues"
+    "url": "https://github.com/adaptyteam/AdaptySDK-React-Native/issues"
   },
   "keywords": [
     "adapty",
     "sdk",
-    "core",
-    "subscriptions",
-    "in-app-purchases"
+    "core"
   ]
 }
