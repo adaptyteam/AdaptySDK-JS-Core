@@ -1,5 +1,5 @@
 import { AdaptyUICreateOnboardingViewParamsCoder } from './adapty-ui-create-onboarding-view-params';
-import { CreateOnboardingViewParamsInput } from '@/ui/types';
+import { CreateOnboardingViewParamsInput } from '@/ui-builder/types';
 import { WebPresentation } from '@/types';
 
 describe('AdaptyUICreateOnboardingViewParamsCoder', () => {

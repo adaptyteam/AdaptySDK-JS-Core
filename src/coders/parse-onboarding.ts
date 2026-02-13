@@ -3,8 +3,8 @@ import { LogContext } from '../logger';
 import { ErrorConverter } from './error-coder';
 import type { CoderFactory } from './factory';
 import type { Converter } from './types';
-import type { AdaptyUiOnboardingMeta } from '@/ui/types';
-import type { OnboardingStateUpdatedAction } from '@/ui/types';
+import type { AdaptyUiOnboardingMeta } from '@/ui-builder/types';
+import type { OnboardingStateUpdatedAction } from '@/ui-builder/types';
 import {
   OnboardingEventId,
   type OnboardingEventView,

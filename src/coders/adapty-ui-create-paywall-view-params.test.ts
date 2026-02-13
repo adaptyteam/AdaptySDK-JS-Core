@@ -1,6 +1,6 @@
 import type { IPlatformAdapter, PlatformOS } from '@/adapters/interfaces';
 import { AdaptyUICreatePaywallViewParamsCoder } from './adapty-ui-create-paywall-view-params';
-import type { CreatePaywallViewParamsInput } from '@/ui/types';
+import type { CreatePaywallViewParamsInput } from '@/ui-builder/types';
 import type { AdaptyProductIdentifier } from '@/types';
 
 describe('AdaptyUICreatePaywallViewParamsCoder', () => {

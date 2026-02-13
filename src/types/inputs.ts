@@ -1,4 +1,4 @@
-import { AdaptyUiMediaCache } from '@/ui/types';
+import { AdaptyUiMediaCache } from '@/ui-builder/types';
 import type { AdaptyMockConfig } from '@/mock/types';
 /**
  * Log levels for the SDK

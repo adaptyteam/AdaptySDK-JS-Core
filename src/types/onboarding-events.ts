@@ -2,7 +2,7 @@ import { AdaptyError } from '@/adapty-error';
 import type {
   AdaptyUiOnboardingMeta,
   OnboardingStateUpdatedAction,
-} from '@/ui/types';
+} from '@/ui-builder/types';
 
 // Onboarding Event IDs
 export const OnboardingEventId = {

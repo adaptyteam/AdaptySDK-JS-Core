@@ -44,9 +44,9 @@ export * from './types/onboarding-events';
 export type { components } from './types/api';
 
 // UI event mappings
-export * from './ui/paywall-event-mapping';
-export * from './ui/onboarding-event-mapping';
-export * from './ui/types';
+export * from '@/ui-builder/paywall-event-mapping';
+export * from '@/ui-builder/onboarding-event-mapping';
+export * from '@/ui-builder/types';
 
 // Parse functions (accept CoderFactory as first parameter)
 export {

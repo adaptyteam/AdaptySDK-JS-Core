@@ -1,4 +1,4 @@
-import { CreateOnboardingViewParamsInput } from '@/ui/types';
+import { CreateOnboardingViewParamsInput } from '@/ui-builder/types';
 import { Req } from '@/types/schema';
 
 type Serializable = Pick<

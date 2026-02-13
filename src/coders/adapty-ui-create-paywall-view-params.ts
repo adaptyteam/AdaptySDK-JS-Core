@@ -2,7 +2,7 @@ import type { IPlatformAdapter } from '@/adapters/interfaces';
 import type {
   CreatePaywallViewParamsInput,
   AdaptyCustomAsset,
-} from '@/ui/types';
+} from '@/ui-builder/types';
 import type { FileLocation } from '@/types/inputs';
 import type { Def } from '@/types/schema';
 import { AdaptyPurchaseParamsCoder } from './adapty-purchase-params';
