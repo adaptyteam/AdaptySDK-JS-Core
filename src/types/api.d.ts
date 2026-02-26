@@ -710,7 +710,7 @@ export interface components {
       variation_id: string;
       response_created_at: number;
       remote_config?: components['defs']['AdaptyRemoteConfig'];
-      onboarding_builder?: {
+      onboarding_builder: {
         config_url: string;
       };
       payload_data?: string;
@@ -750,6 +750,7 @@ export interface components {
     'AdaptyPaywall.ViewConfiguration': {
       paywall_builder_id: string;
       lang: components['defs']['AdaptyLocale'];
+      json?: string;
     };
 
     AdaptySubscriptionPeriod: {
@@ -944,6 +945,10 @@ export interface components {
 
     'AdaptyUI.ProductPurchaseParameters': {
       [key: string]: components['defs']['AdaptyPurchaseParameters'];
+    };
+
+    'AdaptyUI.AndroidPersonalizedOffers': {
+      [key: string]: boolean;
     };
 
     'AdaptyUI.IOSPresentationStyle': 'full_screen' | 'page_sheet';
