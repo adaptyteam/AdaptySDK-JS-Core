@@ -42,6 +42,29 @@ export interface components {
       ]
     >;
 
+    'AdaptyUICreateOnboardingView.Request': {
+      method: 'adapty_ui_create_onboarding_view';
+      onboarding: components['defs']['AdaptyOnboarding'];
+      external_urls_presentation?: components['defs']['AdaptyWebPresentation'];
+    };
+
+    'AdaptyUICreateOnboardingView.Response': OneOf<
+      [
+        { error: components['defs']['AdaptyError'] },
+        { success: components['defs']['AdaptyUI.OnboardingView'] },
+      ]
+    >;
+
+    'AdaptyUIDismissOnboardingView.Request': {
+      method: 'adapty_ui_dismiss_onboarding_view';
+      id: string;
+      destroy?: boolean;
+    };
+
+    'AdaptyUIDismissOnboardingView.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'AdaptyUIDismissPaywallView.Request': {
       method: 'adapty_ui_dismiss_paywall_view';
       id: string;
@@ -49,6 +72,16 @@ export interface components {
     };
 
     'AdaptyUIDismissPaywallView.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'AdaptyUIPresentOnboardingView.Request': {
+      method: 'adapty_ui_present_onboarding_view';
+      id: string;
+      ios_presentation_style?: components['defs']['AdaptyUI.IOSPresentationStyle'];
+    };
+
+    'AdaptyUIPresentOnboardingView.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
@@ -75,37 +108,33 @@ export interface components {
       ]
     >;
 
-    'AdaptyUICreateOnboardingView.Request': {
-      method: 'adapty_ui_create_onboarding_view';
-      onboarding: components['defs']['AdaptyOnboarding'];
-      external_urls_presentation?: components['defs']['AdaptyWebPresentation'];
+    'GetOnboarding.Request': {
+      method: 'get_onboarding';
+      placement_id: string;
+      locale?: components['defs']['AdaptyLocale'];
+      fetch_policy?: components['defs']['AdaptyPlacementFetchPolicy'];
+      load_timeout?: number;
     };
 
-    'AdaptyUICreateOnboardingView.Response': OneOf<
+    'GetOnboarding.Response': OneOf<
       [
         { error: components['defs']['AdaptyError'] },
-        { success: components['defs']['AdaptyUI.OnboardingView'] },
+        { success: components['defs']['AdaptyOnboarding'] },
       ]
     >;
 
-    'AdaptyUIDismissOnboardingView.Request': {
-      method: 'adapty_ui_dismiss_onboarding_view';
-      id: string;
-      destroy?: boolean;
+    'GetOnboardingForDefaultAudience.Request': {
+      method: 'get_onboarding_for_default_audience';
+      placement_id: string;
+      locale?: components['defs']['AdaptyLocale'];
+      fetch_policy?: components['defs']['AdaptyPlacementFetchPolicy'];
     };
 
-    'AdaptyUIDismissOnboardingView.Response': OneOf<
-      [{ error: components['defs']['AdaptyError'] }, { success: true }]
-    >;
-
-    'AdaptyUIPresentOnboardingView.Request': {
-      method: 'adapty_ui_present_onboarding_view';
-      id: string;
-      ios_presentation_style?: components['defs']['AdaptyUI.IOSPresentationStyle'];
-    };
-
-    'AdaptyUIPresentOnboardingView.Response': OneOf<
-      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    'GetOnboardingForDefaultAudience.Response': OneOf<
+      [
+        { error: components['defs']['AdaptyError'] },
+        { success: components['defs']['AdaptyOnboarding'] },
+      ]
     >;
 
     'GetPaywall.Request': {
@@ -146,35 +175,6 @@ export interface components {
       [
         { error: components['defs']['AdaptyError'] },
         { success: components['defs']['AdaptyPaywallProduct.Response'][] },
-      ]
-    >;
-
-    'GetOnboarding.Request': {
-      method: 'get_onboarding';
-      placement_id: string;
-      locale?: components['defs']['AdaptyLocale'];
-      fetch_policy?: components['defs']['AdaptyPlacementFetchPolicy'];
-      load_timeout?: number;
-    };
-
-    'GetOnboarding.Response': OneOf<
-      [
-        { error: components['defs']['AdaptyError'] },
-        { success: components['defs']['AdaptyOnboarding'] },
-      ]
-    >;
-
-    'GetOnboardingForDefaultAudience.Request': {
-      method: 'get_onboarding_for_default_audience';
-      placement_id: string;
-      locale?: components['defs']['AdaptyLocale'];
-      fetch_policy?: components['defs']['AdaptyPlacementFetchPolicy'];
-    };
-
-    'GetOnboardingForDefaultAudience.Response': OneOf<
-      [
-        { error: components['defs']['AdaptyError'] },
-        { success: components['defs']['AdaptyOnboarding'] },
       ]
     >;
 
@@ -254,18 +254,13 @@ export interface components {
       ]
     >;
 
-    'OpenWebPaywall.Request': OneOf<
+    'OpenWebPaywall.Request': {
+      method: 'open_web_paywall';
+      open_in?: components['defs']['AdaptyWebPresentation'];
+    } & OneOf<
       [
-        {
-          method: 'open_web_paywall';
-          product: components['defs']['AdaptyPaywallProduct.Request'];
-          open_in?: components['defs']['AdaptyWebPresentation'];
-        },
-        {
-          method: 'open_web_paywall';
-          paywall: components['defs']['AdaptyPaywall'];
-          open_in?: components['defs']['AdaptyWebPresentation'];
-        },
+        { product: components['defs']['AdaptyPaywallProduct.Request'] },
+        { paywall: components['defs']['AdaptyPaywall'] },
       ]
     >;
 
@@ -273,21 +268,28 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'CreateWebPaywallUrl.Request': OneOf<
+    'CreateWebPaywallUrl.Request': {
+      method: 'create_web_paywall_url';
+    } & OneOf<
       [
-        {
-          method: 'create_web_paywall_url';
-          product: components['defs']['AdaptyPaywallProduct.Request'];
-        },
-        {
-          method: 'create_web_paywall_url';
-          paywall: components['defs']['AdaptyPaywall'];
-        },
+        { product: components['defs']['AdaptyPaywallProduct.Request'] },
+        { paywall: components['defs']['AdaptyPaywall'] },
       ]
     >;
 
     'CreateWebPaywallUrl.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: string }]
+    >;
+
+    'GetCurrentInstallationStatus.Request': {
+      method: 'get_current_installation_status';
+    };
+
+    'GetCurrentInstallationStatus.Response': OneOf<
+      [
+        { error: components['defs']['AdaptyError'] },
+        { success: components['defs']['AdaptyInstallationStatus'] },
+      ]
     >;
 
     'PresentCodeRedemptionSheet.Request': {
@@ -300,8 +302,8 @@ export interface components {
 
     'ReportTransaction.Request': {
       method: 'report_transaction';
-      transaction_id: string;
       variation_id?: string;
+      transaction_id: string;
     };
 
     'ReportTransaction.Response': OneOf<
@@ -327,17 +329,6 @@ export interface components {
       success: string;
     };
 
-    'GetCurrentInstallationStatus.Request': {
-      method: 'get_current_installation_status';
-    };
-
-    'GetCurrentInstallationStatus.Response': OneOf<
-      [
-        { error: components['defs']['AdaptyError'] },
-        { success: components['defs']['AdaptyInstallationStatus'] },
-      ]
-    >;
-
     'SetFallback.Request': {
       method: 'set_fallback';
     } & OneOf<[{ asset_id: string }, { path: string }]>;
@@ -348,7 +339,9 @@ export interface components {
 
     'SetIntegrationIdentifier.Request': {
       method: 'set_integration_identifiers';
-      key_values: Record<string, string>;
+      key_values: {
+        [key: string]: string;
+      };
     };
 
     'SetIntegrationIdentifier.Response': OneOf<
@@ -558,8 +551,14 @@ export interface components {
             element_id: string;
             element_type: 'input';
             value:
-              | { type: 'text' | 'email'; value: string }
-              | { type: 'number'; value: number };
+              | {
+                  type: 'text' | 'email';
+                  value: string;
+                }
+              | {
+                  type: 'number';
+                  value: number;
+                };
           }
         | {
             element_id: string;
@@ -616,20 +615,6 @@ export interface components {
       obfuscated_profile_id?: string;
     };
 
-    'AdaptyPaywallProduct.Request': {
-      vendor_product_id: string;
-      adapty_product_id: string;
-      access_level_id: string;
-      product_type: string;
-      paywall_product_index: number;
-      subscription_offer_identifier?: components['defs']['AdaptySubscriptionOffer.Identifier'];
-      paywall_variation_id: string;
-      paywall_ab_test_name: string;
-      paywall_name: string;
-      web_purchase_url?: string;
-      payload_data?: string;
-    };
-
     'AdaptyPaywallProduct.Response': {
       vendor_product_id: string;
       adapty_product_id: string;
@@ -665,6 +650,20 @@ export interface components {
       base_plan_id?: string;
     };
 
+    'AdaptyPaywallProduct.Request': {
+      vendor_product_id: string;
+      adapty_product_id: string;
+      access_level_id: string;
+      product_type: string;
+      paywall_product_index: number;
+      subscription_offer_identifier?: components['defs']['AdaptySubscriptionOffer.Identifier'];
+      paywall_variation_id: string;
+      paywall_ab_test_name: string;
+      paywall_name: string;
+      web_purchase_url?: string;
+      payload_data?: string;
+    };
+
     AdaptySubscriptionOffer: {
       offer_identifier: components['defs']['AdaptySubscriptionOffer.Identifier'];
       phases: components['defs']['AdaptySubscriptionOffer.Phase'][];
@@ -673,34 +672,11 @@ export interface components {
 
     'AdaptySubscriptionOffer.Phase': {
       price: components['defs']['AdaptyPrice'];
-      subscription_period: components['defs']['AdaptySubscriptionPeriod'];
       number_of_periods: number;
       payment_mode: components['defs']['AdaptySubscriptionOffer.PaymentMode'];
+      subscription_period: components['defs']['AdaptySubscriptionPeriod'];
       localized_subscription_period?: string;
       localized_number_of_periods?: string;
-    };
-
-    AdaptyPlacement: {
-      developer_id: string;
-      ab_test_name: string;
-      audience_name: string;
-      revision: number;
-      is_tracking_purchases?: boolean;
-      placement_audience_version_id: string;
-    };
-
-    AdaptyPaywall: {
-      placement: components['defs']['AdaptyPlacement'];
-      paywall_id: string;
-      paywall_name: string;
-      variation_id: string;
-      products: components['defs']['AdaptyPaywall.ProductReference'][];
-      response_created_at: number;
-      remote_config?: components['defs']['AdaptyRemoteConfig'];
-      paywall_builder?: components['defs']['AdaptyPaywall.ViewConfiguration'];
-      web_purchase_url?: string;
-      payload_data?: string;
-      request_locale: components['defs']['AdaptyLocale'];
     };
 
     AdaptyOnboarding: {
@@ -708,13 +684,36 @@ export interface components {
       onboarding_id: string;
       onboarding_name: string;
       variation_id: string;
-      response_created_at: number;
       remote_config?: components['defs']['AdaptyRemoteConfig'];
       onboarding_builder: {
         config_url: string;
       };
       payload_data?: string;
+      response_created_at: number;
       request_locale: components['defs']['AdaptyLocale'];
+    };
+
+    AdaptyPaywall: {
+      placement: components['defs']['AdaptyPlacement'];
+      paywall_id: string;
+      paywall_name: string;
+      variation_id: string;
+      remote_config?: components['defs']['AdaptyRemoteConfig'];
+      paywall_builder?: components['defs']['AdaptyPaywall.ViewConfiguration'];
+      products: components['defs']['AdaptyPaywall.ProductReference'][];
+      web_purchase_url?: string;
+      payload_data?: string;
+      response_created_at: number;
+      request_locale: components['defs']['AdaptyLocale'];
+    };
+
+    AdaptyPlacement: {
+      developer_id: string;
+      audience_name: string;
+      revision: number;
+      ab_test_name: string;
+      is_tracking_purchases?: boolean;
+      placement_audience_version_id: string;
     };
 
     AdaptyPlacementFetchPolicy: OneOf<
@@ -724,10 +723,7 @@ export interface components {
             | 'reload_revalidating_cache_data'
             | 'return_cache_data_else_load';
         },
-        {
-          type: 'return_cache_data_if_not_expired_else_load';
-          max_age: number;
-        },
+        { type: 'return_cache_data_if_not_expired_else_load'; max_age: number },
       ]
     >;
 
@@ -769,8 +765,6 @@ export interface components {
       profile_id: string;
       customer_user_id?: string;
       segment_hash: string;
-      is_test_user: boolean;
-      timestamp: number;
       custom_attributes?: components['defs']['AdaptyProfile.CustomAttributes'];
       paid_access_levels?: {
         [key: string]: components['defs']['AdaptyProfile.AccessLevel'];
@@ -781,6 +775,8 @@ export interface components {
       non_subscriptions?: {
         [key: string]: components['defs']['AdaptyProfile.NonSubscription'][];
       };
+      timestamp: number;
+      is_test_user: boolean;
     };
 
     'AdaptyProfile.AccessLevel': {
@@ -860,14 +856,8 @@ export interface components {
 
     'AdaptySubscriptionOffer.Identifier': OneOf<
       [
-        {
-          type: 'introductory';
-          id?: string;
-        },
-        {
-          type: 'promotional' | 'win_back';
-          id: string;
-        },
+        { id?: string; type: 'introductory' },
+        { id: string; type: 'promotional' | 'win_back' },
       ]
     >;
 
@@ -891,6 +881,23 @@ export interface components {
       ]
     >;
 
+    AdaptyInstallationStatus: OneOf<
+      [
+        { status: 'not_available' | 'not_determined' },
+        {
+          status: 'determined';
+          details: components['defs']['AdaptyInstallationDetails'];
+        },
+      ]
+    >;
+
+    AdaptyInstallationDetails: {
+      install_id?: string;
+      install_time: components['defs']['Date'];
+      app_launch_count: number;
+      payload?: string;
+    };
+
     'AdaptyUI.CustomAssets': (
       | components['assets']['Color']
       | components['assets']['ColorGradient']
@@ -910,28 +917,10 @@ export interface components {
       variation_id: string;
     };
 
-    'AdaptyUI.OnboardingMeta': {
-      onboarding_id: string;
-      screen_cid: string;
-      screen_index: number;
-      total_screens: number;
-    };
-
-    'AdaptyUI.OnboardingsStateParams': {
-      id: string;
-      value: string;
-      label: string;
-    };
-
     'AdaptyUI.UserAction': OneOf<
       [
-        {
-          type: 'close' | 'system_back';
-        },
-        {
-          type: 'open_url' | 'custom';
-          value: string;
-        },
+        { type: 'close' | 'system_back' },
+        { type: 'open_url' | 'custom'; value: string },
       ]
     >;
 
@@ -943,12 +932,12 @@ export interface components {
       [key: string]: components['defs']['Date'];
     };
 
-    'AdaptyUI.ProductPurchaseParameters': {
-      [key: string]: components['defs']['AdaptyPurchaseParameters'];
-    };
-
     'AdaptyUI.AndroidPersonalizedOffers': {
       [key: string]: boolean;
+    };
+
+    'AdaptyUI.ProductPurchaseParameters': {
+      [key: string]: components['defs']['AdaptyPurchaseParameters'];
     };
 
     'AdaptyUI.IOSPresentationStyle': 'full_screen' | 'page_sheet';
@@ -956,10 +945,10 @@ export interface components {
     AdaptyWebPresentation: 'browser_out_app' | 'browser_in_app';
 
     'AdaptyUI.DialogConfiguration': {
-      default_action_title: string;
-      secondary_action_title?: string;
       title?: string;
       content?: string;
+      default_action_title: string;
+      secondary_action_title?: string;
     };
 
     'AdaptyUI.DialogActionType': 'primary' | 'secondary';
@@ -981,37 +970,33 @@ export interface components {
 
     AdaptyRefundPreference: 'no_preference' | 'grant' | 'decline';
 
-    AdaptyInstallationStatus: OneOf<
-      [
-        {
-          status: 'not_available' | 'not_determined';
-        },
-        {
-          status: 'determined';
-          details: components['defs']['AdaptyInstallationDetails'];
-        },
-      ]
-    >;
+    'AdaptyUI.OnboardingMeta': {
+      onboarding_id: string;
+      screen_cid: string;
+      screen_index: number;
+      total_screens: number;
+    };
 
-    AdaptyInstallationDetails: {
-      install_id?: string;
-      install_time: components['defs']['Date'];
-      app_launch_count: number;
-      payload?: string;
+    'AdaptyUI.OnboardingsStateParams': {
+      id: string;
+      value: string;
+      label: string;
     };
   };
   assets: {
     Color: {
       id: string;
       type: 'color';
-      value: string; // Hex string: ^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$
+      value: components['assets']['Color.Hex'];
     };
+
+    'Color.Hex': string;
 
     ColorGradient: {
       id: string;
       type: 'linear-gradient';
       values: {
-        color: string;
+        color: components['assets']['Color.Hex'];
         p: number;
       }[];
       points: {
@@ -1022,40 +1007,15 @@ export interface components {
       };
     };
 
-    Image: OneOf<
-      [
-        {
-          id: string;
-          type: 'image';
-          value: string; // base64
-        },
-        {
-          id: string;
-          type: 'image';
-          asset_id: string;
-        },
-        {
-          id: string;
-          type: 'image';
-          path: string;
-        },
-      ]
-    >;
+    Image: {
+      id: string;
+      type: 'image';
+    } & OneOf<[{ value: string }, { asset_id: string }, { path: string }]>;
 
-    Video: OneOf<
-      [
-        {
-          id: string;
-          type: 'video';
-          asset_id: string;
-        },
-        {
-          id: string;
-          type: 'video';
-          path: string;
-        },
-      ]
-    >;
+    Video: {
+      id: string;
+      type: 'video';
+    } & OneOf<[{ asset_id: string }, { path: string }]>;
   };
 }
 
