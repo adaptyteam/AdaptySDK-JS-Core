@@ -38,6 +38,9 @@ const mocks: Def['AdaptyOnboarding'][] = [
     onboarding_id: 'onboarding_789',
     onboarding_name: 'Basic Onboarding',
     variation_id: 'variation_123',
+    onboarding_builder: {
+      config_url: 'https://example.com/basic',
+    },
     response_created_at: 1640995300000,
     request_locale: 'en',
   },

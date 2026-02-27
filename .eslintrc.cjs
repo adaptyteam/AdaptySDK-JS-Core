@@ -9,7 +9,7 @@ module.exports = {
 
   "overrides": [
     {
-      "files": ["scripts/**/*.js"],
+      "files": ["scripts/**/*.{js,ts}"],
       "rules": {
         "no-console": "off"
       }
