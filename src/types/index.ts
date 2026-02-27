@@ -158,7 +158,7 @@ export interface AdaptyOnboarding {
   version?: number;
   payloadData?: string;
   requestLocale: string;
-  onboardingBuilder?: AdaptyOnboardingBuilder;
+  onboardingBuilder: AdaptyOnboardingBuilder;
 }
 
 export interface AdaptyPlacement {

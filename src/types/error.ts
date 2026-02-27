@@ -1,7 +1,7 @@
 // import SDK type to link to methods in docs.
 // import { AdaptyError } from '../sdk2/error';
 
-export const ErrorCode = Object.freeze({
+const ErrorCodeMapping = Object.freeze({
   /**
    * System StoreKit codes
    */
@@ -124,7 +124,62 @@ export const ErrorCode = Object.freeze({
   3101: 'fetchTimeoutError',
   9000: 'operationInterrupted',
 });
-export type ErrorCode = keyof typeof ErrorCode;
+
+export const ErrorCode = ErrorCodeMapping;
+export type ErrorCode = keyof typeof ErrorCodeMapping;
+
+export const ErrorCodeName = Object.freeze({
+  unknown: 0,
+  clientInvalid: 1,
+  paymentInvalid: 3,
+  paymentNotAllowed: 4,
+  storeProductNotAvailable: 5,
+  cloudServicePermissionDenied: 6,
+  cloudServiceNetworkConnectionFailed: 7,
+  cloudServiceRevoked: 8,
+  privacyAcknowledgementRequired: 9,
+  unauthorizedRequestData: 10,
+  invalidOfferIdentifier: 11,
+  invalidSignature: 12,
+  missingOfferParams: 13,
+  invalidOfferPrice: 14,
+  adaptyNotInitialized: 20,
+  productNotFound: 22,
+  currentSubscriptionToUpdateNotFoundInHistory: 24,
+  billingServiceTimeout: 97,
+  featureNotSupported: 98,
+  billingServiceDisconnected: 99,
+  billingServiceUnavailable: 102,
+  billingUnavailable: 103,
+  developerError: 105,
+  billingError: 106,
+  itemAlreadyOwned: 107,
+  itemNotOwned: 108,
+  billingNetworkError: 112,
+  noProductIDsFound: 1000,
+  productRequestFailed: 1002,
+  cantMakePayments: 1003,
+  noPurchasesToRestore: 1004,
+  cantReadReceipt: 1005,
+  productPurchaseFailed: 1006,
+  refreshReceiptFailed: 1010,
+  receiveRestoredTransactionsFailed: 1011,
+  notActivated: 2002,
+  badRequest: 2003,
+  serverError: 2004,
+  networkFailed: 2005,
+  decodingFailed: 2006,
+  encodingFailed: 2009,
+  analyticsDisabled: 3000,
+  wrongParam: 3001,
+  activateOnceError: 3005,
+  profileWasChanged: 3006,
+  unsupportedData: 3007,
+  persistingDataError: 3100,
+  fetchTimeoutError: 3101,
+  operationInterrupted: 9000,
+} as const);
+export type ErrorCodeName = keyof typeof ErrorCodeName;
 
 export function getErrorCode(
   error: (typeof ErrorCode)[ErrorCode],
