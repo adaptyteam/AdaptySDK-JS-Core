@@ -1,0 +1,99 @@
+name: PR Validation
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - master
+      - dev
+
+concurrency:
+  group: pr-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    name: Setup Dependencies
+    runs-on: ubuntu-slim
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache node_modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Enable Corepack
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          corepack enable || {
+            echo "Corepack not available, falling back to npm install"
+            npm install -g yarn@1.22.19
+          }
+
+      - name: Prepare Yarn
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          if command -v corepack > /dev/null 2>&1; then
+            corepack prepare yarn@1.22.19 --activate
+          fi
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --prefer-offline
+
+  validate:
+    name: Validate Code Quality
+    runs-on: ubuntu-slim
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: |
+          corepack enable || {
+            echo "Corepack not available, falling back to npm install"
+            npm install -g yarn@1.22.19
+          }
+
+      - name: Prepare Yarn
+        run: |
+          if command -v corepack > /dev/null 2>&1; then
+            corepack prepare yarn@1.22.19 --activate
+          fi
+
+      - name: Restore node_modules cache
+        id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install dependencies (fallback)
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --prefer-offline
+
+      - name: TypeScript type check
+        run: yarn tsc
+
+      - name: Prettier format check
+        run: yarn format-check
+
+      - name: ESLint check
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Build verification
+        run: yarn build
