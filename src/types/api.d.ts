@@ -277,7 +277,7 @@ export interface components {
       ]
     >;
 
-    'CreateWebPaywallUrl.Response': OneOf<
+    'CreateWebPurchaseUrl.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: string }]
     >;
 
@@ -919,8 +919,18 @@ export interface components {
 
     'AdaptyUI.UserAction': OneOf<
       [
-        { type: 'close' | 'system_back' },
-        { type: 'open_url' | 'custom'; value: string },
+        {
+          type: 'close' | 'system_back';
+        },
+        {
+          type: 'open_url';
+          value: string;
+          open_in: components['defs']['AdaptyWebPresentation'];
+        },
+        {
+          type: 'custom';
+          value: string;
+        },
       ]
     >;
 
@@ -947,7 +957,7 @@ export interface components {
     'AdaptyUI.DialogConfiguration': {
       title?: string;
       content?: string;
-      default_action_title: string;
+      default_action_title?: string;
       secondary_action_title?: string;
     };
 

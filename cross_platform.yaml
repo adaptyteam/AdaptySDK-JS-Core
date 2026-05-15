@@ -1,5 +1,5 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
-$id: "https://adapty.io/crossPlatform/3.15.2/schema"
+$id: "https://adapty.io/crossPlatform/3.17.0/schema"
 title: "Cross Platform Format"
 
 $requests:
@@ -292,7 +292,7 @@ $requests:
     properties:
       method: { const: "identify" }
       customer_user_id: { type: string }
-      parameters: { $ref: "#/$defs/CustomerIdentityParameters" }
+      parameters: { $ref: "#/$defs/CustomerIdentityParameters" } 
 
   Identify.Response: #response
     type: object
@@ -436,7 +436,7 @@ $requests:
         properties:
           paywall: { $ref: "#/$defs/AdaptyPaywall" }
 
-  CreateWebPaywallUrl.Response: #response
+  CreateWebPurchaseUrl.Response: #response
     type: object
     oneOf:
       - required: [error]
@@ -925,7 +925,7 @@ $defs:
     properties:
       api_key: { type: string }
       customer_user_id: { type: string }
-      customer_identity_parameters: { $ref: "#/$defs/CustomerIdentityParameters" }
+      customer_identity_parameters: { $ref: "#/$defs/CustomerIdentityParameters" }    
       observer_mode: { type: boolean, default: false }
       apple_idfa_collection_disabled: { type: boolean, default: false }
       google_adid_collection_disabled: { type: boolean, default: false }
@@ -953,7 +953,7 @@ $defs:
     properties:
       app_account_token: { $ref: "#/$defs/UUID", description: "iOS Only" }
       obfuscated_account_id: { type: string, description: "Android Only" }
-      obfuscated_profile_id: { type: string, description: "Android Only" }
+      obfuscated_profile_id: { type: string, description: "Android Only" }     
 
   AdaptyPaywallProduct.Response: #response
     type: object
@@ -1455,9 +1455,14 @@ $defs:
       - required: [type]
         properties:
           type: { type: string, const: ["close", "system_back"] }
+      - required: [type, value, open_in]
+        properties:
+          type: { type: string, const: "open_url" }
+          value: { type: string }
+          open_in: { $ref: "#/$defs/AdaptyWebPresentation" }
       - required: [type, value]
         properties:
-          type: { type: string, enum: ["open_url", "custom"] }
+          type: { type: string, const: "custom" }
           value: { type: string }
 
   AdaptyUI.CustomTagsValues: #request
@@ -1475,9 +1480,9 @@ $defs:
   AdaptyUI.ProductPurchaseParameters:  #request
     type: object
     propertyNames: { description: "key is adapty_product_id" }
-    additionalProperties: {
-      $ref: "#/$defs/AdaptyPurchaseParameters",
-      nullable: false
+    additionalProperties: { 
+      $ref: "#/$defs/AdaptyPurchaseParameters", 
+      nullable: false 
     }
 
   AdaptyUI.IOSPresentationStyle:
@@ -1494,7 +1499,7 @@ $defs:
 
   AdaptyUI.DialogConfiguration: #request
     type: object
-    required: [default_action_title]
+    required: [default_action]
     properties:
       title: { type: string }
       content: { type: string }
@@ -1506,7 +1511,7 @@ $defs:
     enum:
       - primary
       - secondary
-
+  
   AdaptyPurchaseParameters:  #request
     type: object
     properties:
@@ -1516,7 +1521,7 @@ $defs:
           description: "Android Only",
         }
       is_offer_personalized: { type: boolean, description: "Android Only" }
-
+      
 
   AdaptySubscriptionUpdateParameters: #request # Android Only
     type: object
