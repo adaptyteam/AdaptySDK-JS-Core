@@ -7,11 +7,13 @@ import type {
   AdaptyPaywallProduct,
   AdaptyProfile,
   AdaptyPurchaseResult,
+  WebPresentation,
 } from '@/types';
 import {
   PaywallEventId,
   type PaywallEventView,
   type ParsedPaywallEvent,
+  type PaywallUserAction,
 } from '@/types/paywall-events';
 
 // Re-export types for convenience
@@ -22,6 +24,7 @@ export {
   type PaywallDidAppearEvent,
   type PaywallDidDisappearEvent,
   type PaywallDidPerformActionEvent,
+  type PaywallUserAction,
   type PaywallDidSelectProductEvent,
   type PaywallDidStartPurchaseEvent,
   type PaywallDidFinishPurchaseEvent,
@@ -80,14 +83,7 @@ export function parsePaywallEvent(
       return {
         id: eventId,
         view,
-        action: {
-          type: actionObj['type'] as
-            | 'close'
-            | 'system_back'
-            | 'open_url'
-            | 'custom',
-          value: actionObj['value'] as string | undefined,
-        },
+        action: parsePaywallUserAction(actionObj),
       };
     }
 
@@ -217,6 +213,25 @@ export function parsePaywallEvent(
 
     default:
       return null;
+  }
+}
+
+function parsePaywallUserAction(
+  actionObj: Record<string, unknown>,
+): PaywallUserAction {
+  const type = actionObj['type'] as PaywallUserAction['type'];
+  switch (type) {
+    case 'open_url':
+      return {
+        type,
+        value: actionObj['value'] as string,
+        openIn: actionObj['open_in'] as WebPresentation,
+      };
+    case 'custom':
+      return { type, value: actionObj['value'] as string };
+    case 'close':
+    case 'system_back':
+      return { type };
   }
 }
 

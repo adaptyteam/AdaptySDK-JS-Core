@@ -919,8 +919,18 @@ export interface components {
 
     'AdaptyUI.UserAction': OneOf<
       [
-        { type: 'close' | 'system_back' },
-        { type: 'open_url' | 'custom'; value: string },
+        {
+          type: 'close' | 'system_back';
+        },
+        {
+          type: 'open_url';
+          value: string;
+          open_in: components['defs']['AdaptyWebPresentation'];
+        },
+        {
+          type: 'custom';
+          value: string;
+        },
       ]
     >;
 
