@@ -149,8 +149,8 @@ export interface EventHandlers {
    *
    * @param url - URL to open
    * @param openIn - How the URL was configured to open in the dashboard:
-   *                 `'browser_in_app'` (default) — in-app browser (e.g. `WKWebView` / `Custom Tabs`)
-   *                 `'browser_out_app'` — external browser (e.g. `Linking.openURL`)
+   *                 `'browser_in_app'` — in-app browser (e.g. `WKWebView` / `Custom Tabs`)
+   *                 `'browser_out_app'` (default) — external browser (e.g. `Linking.openURL`)
    */
   onUrlPress: (url: string, openIn: WebPresentation) => EventHandlerResult;
 }
