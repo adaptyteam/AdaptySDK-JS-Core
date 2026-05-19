@@ -26,10 +26,8 @@ export const NATIVE_EVENT_RESOLVER: Record<
 
     return actionMap[event.action.type] || null;
   },
-  // TODO: v4 — rename onPaywallShown to onAppeared for consistency with Capacitor SDK
-  [PaywallEventId.DidAppear]: () => 'onPaywallShown',
-  // TODO: v4 — rename onPaywallClosed to onDisappeared for consistency with Capacitor SDK
-  [PaywallEventId.DidDisappear]: () => 'onPaywallClosed',
+  [PaywallEventId.DidAppear]: () => 'onAppeared',
+  [PaywallEventId.DidDisappear]: () => 'onDisappeared',
   [PaywallEventId.DidSelectProduct]: () => 'onProductSelected',
   [PaywallEventId.DidStartPurchase]: () => 'onPurchaseStarted',
   [PaywallEventId.DidFinishPurchase]: () => 'onPurchaseCompleted',
@@ -52,10 +50,8 @@ export const HANDLER_TO_NATIVE_EVENT: Record<EventName, PaywallEventIdType> = {
   onAndroidSystemBack: PaywallEventId.DidPerformAction,
   onUrlPress: PaywallEventId.DidPerformAction,
   onCustomAction: PaywallEventId.DidPerformAction,
-  // TODO: v4 — rename onPaywallShown to onAppeared for consistency with Capacitor SDK
-  onPaywallShown: PaywallEventId.DidAppear,
-  // TODO: v4 — rename onPaywallClosed to onDisappeared for consistency with Capacitor SDK
-  onPaywallClosed: PaywallEventId.DidDisappear,
+  onAppeared: PaywallEventId.DidAppear,
+  onDisappeared: PaywallEventId.DidDisappear,
   onProductSelected: PaywallEventId.DidSelectProduct,
   onPurchaseStarted: PaywallEventId.DidStartPurchase,
   onPurchaseCompleted: PaywallEventId.DidFinishPurchase,

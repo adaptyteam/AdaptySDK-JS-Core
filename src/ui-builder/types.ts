@@ -99,9 +99,21 @@ export interface EventHandlers {
    */
   onRestoreStarted: () => EventHandlerResult;
 
-  onPaywallClosed: () => EventHandlerResult;
+  /**
+   * Called when the paywall view appears
+   *
+   * If you return `true`, the paywall view will be closed.
+   * @default false
+   */
+  onAppeared: () => EventHandlerResult;
 
-  onPaywallShown: () => EventHandlerResult;
+  /**
+   * Called when the paywall view disappears
+   *
+   * If you return `true`, the paywall view will be closed.
+   * @default false
+   */
+  onDisappeared: () => EventHandlerResult;
 
   onWebPaymentNavigationFinished: (
     product?: AdaptyPaywallProduct,
