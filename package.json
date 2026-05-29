@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@adapty/core",
-  "version": "3.15.0",
+  "version": "3.17.0",
   "description": "Platform-agnostic core for Adapty JS SDKs",
   "license": "MIT",
   "author": "Adapty team <support@adapty.io>",
@@ -34,11 +34,13 @@
     "format": "prettier ./src -w",
     "format-check": "prettier ./src --check",
     "test": "jest",
+    "yaml-to-ts": "node scripts/generate-api-types.ts",
     "tsc": "tsc --noEmit",
     "prepare": "husky"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
+    "@types/js-yaml": "^4.0.9",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
     "dotenv": "^17.2.3",
@@ -46,11 +48,12 @@
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.1.7",
     "jest": "^29.3.1",
+    "js-yaml": "^4.1.1",
     "lint-staged": "^15.2.11",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.1",
     "tsdown": "^0.9.0",
-    "typescript": "^5.9.3"
+    "typescript": "5.9.3"
   },
   "dependencies": {
     "tslib": "^2.5.0"

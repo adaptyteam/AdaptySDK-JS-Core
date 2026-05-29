@@ -34,7 +34,7 @@ export class AdaptyOnboardingCoder extends Coder<
     version: { key: 'response_created_at', required: false, type: 'number' },
     onboardingBuilder: {
       key: 'onboarding_builder',
-      required: false,
+      required: true,
       type: 'object',
       converter: new AdaptyOnboardingBuilderCoder(),
     },

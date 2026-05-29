@@ -3,6 +3,7 @@ import type {
   AdaptyPaywallProduct,
   AdaptyProfile,
   AdaptyPurchaseResult,
+  WebPresentation,
 } from '@/types';
 
 // Paywall Event IDs
@@ -48,12 +49,15 @@ export interface PaywallDidDisappearEvent extends BasePaywallEvent {
   id: typeof PaywallEventId.DidDisappear;
 }
 
+export type PaywallUserAction =
+  | { type: 'close' }
+  | { type: 'system_back' }
+  | { type: 'open_url'; value: string; openIn: WebPresentation }
+  | { type: 'custom'; value: string };
+
 export interface PaywallDidPerformActionEvent extends BasePaywallEvent {
   id: typeof PaywallEventId.DidPerformAction;
-  action: {
-    type: 'close' | 'system_back' | 'open_url' | 'custom';
-    value?: string; // for open_url and custom
-  };
+  action: PaywallUserAction;
 }
 
 export interface PaywallDidSelectProductEvent extends BasePaywallEvent {

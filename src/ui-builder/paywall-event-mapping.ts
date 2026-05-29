@@ -99,8 +99,11 @@ export function extractPaywallCallbackArgs<T extends keyof EventHandlers>(
 
     case PaywallEventId.DidPerformAction:
       // For DidPerformAction, different handlers need different arguments
-      if (handlerName === 'onUrlPress' || handlerName === 'onCustomAction') {
-        return [event.action.value ?? ''] as ExtractedArgs<T>;
+      if (handlerName === 'onUrlPress' && event.action.type === 'open_url') {
+        return [event.action.value, event.action.openIn] as ExtractedArgs<T>;
+      }
+      if (handlerName === 'onCustomAction' && event.action.type === 'custom') {
+        return [event.action.value] as ExtractedArgs<T>;
       }
       // onCloseButtonPress, onAndroidSystemBack don't take arguments
       return [] as ExtractedArgs<T>;
