@@ -6,7 +6,7 @@ import { JSONCoder } from './json';
 
 type Model = AdaptyRemoteConfig;
 type CodableModel = Omit<Model, 'dataString'>;
-type Serializable = Required<Def['AdaptyPaywall']>['remote_config'];
+type Serializable = Def['AdaptyRemoteConfig'];
 
 export class AdaptyRemoteConfigCoder extends Coder<
   Model,

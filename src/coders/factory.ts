@@ -6,6 +6,9 @@ import type {
 import { AdaptyAccessLevelCoder } from './adapty-access-level';
 import { AdaptyConfigurationCoder } from './adapty-configuration';
 import { AdaptyDiscountPhaseCoder } from './adapty-discount-phase';
+import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
+import { AdaptyFlowUiSchemaCoder } from './adapty-flow-ui-schema';
+import { AdaptyFlowCoder } from './adapty-flow';
 import { AdaptyIdentifyParamsCoder } from './adapty-identify-params';
 import { AdaptyInstallationDetailsCoder } from './adapty-installation-details';
 import { AdaptyInstallationStatusCoder } from './adapty-installation-status';
@@ -13,9 +16,7 @@ import { AdaptyNativeErrorCoder } from './adapty-native-error';
 import { AdaptyNonSubscriptionCoder } from './adapty-non-subscription';
 import { AdaptyOnboardingBuilderCoder } from './adapty-onboarding-builder';
 import { AdaptyOnboardingCoder } from './adapty-onboarding';
-import { AdaptyPaywallBuilderCoder } from './adapty-paywall-builder';
 import { AdaptyPaywallProductCoder } from './adapty-paywall-product';
-import { AdaptyPaywallCoder } from './adapty-paywall';
 import { AdaptyPlacementCoder } from './adapty-placement';
 import { AdaptyPriceCoder } from './adapty-price';
 import { AdaptyProfileParametersCoder } from './adapty-profile-parameters';
@@ -117,12 +118,16 @@ export class CoderFactory {
     return new AdaptyOnboardingCoder(this.deps.platform);
   }
 
-  createPaywallBuilderCoder(): AdaptyPaywallBuilderCoder {
-    return new AdaptyPaywallBuilderCoder(this.deps.platform);
+  createFlowCoder(): AdaptyFlowCoder {
+    return new AdaptyFlowCoder(this.deps.platform);
   }
 
-  createPaywallCoder(): AdaptyPaywallCoder {
-    return new AdaptyPaywallCoder(this.deps.platform);
+  createFlowPaywallCoder(): AdaptyFlowPaywallCoder {
+    return new AdaptyFlowPaywallCoder(this.deps.platform);
+  }
+
+  createFlowUiSchemaCoder(): AdaptyFlowUiSchemaCoder {
+    return new AdaptyFlowUiSchemaCoder();
   }
 
   createPaywallProductCoder(): AdaptyPaywallProductCoder {

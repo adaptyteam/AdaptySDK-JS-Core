@@ -10,40 +10,40 @@ import type {
   WebPresentation,
 } from '@/types';
 import {
-  PaywallEventId,
-  type PaywallEventView,
-  type ParsedPaywallEvent,
-  type PaywallUserAction,
-} from '@/types/paywall-events';
+  FlowEventId,
+  type FlowEventView,
+  type ParsedFlowEvent,
+  type FlowUserAction,
+} from '@/types/flow-events';
 
 // Re-export types for convenience
 export {
-  PaywallEventId,
-  type PaywallEventIdType,
-  type PaywallEventView,
-  type PaywallDidAppearEvent,
-  type PaywallDidDisappearEvent,
-  type PaywallDidPerformActionEvent,
-  type PaywallUserAction,
-  type PaywallDidSelectProductEvent,
-  type PaywallDidStartPurchaseEvent,
-  type PaywallDidFinishPurchaseEvent,
-  type PaywallDidFailPurchaseEvent,
-  type PaywallDidStartRestoreEvent,
-  type PaywallDidFinishRestoreEvent,
-  type PaywallDidFailRestoreEvent,
-  type PaywallDidFailRenderingEvent,
-  type PaywallDidFailLoadingProductsEvent,
-  type PaywallDidFinishWebPaymentNavigationEvent,
-  type ParsedPaywallEvent,
-} from '@/types/paywall-events';
+  FlowEventId,
+  type FlowEventIdType,
+  type FlowEventView,
+  type FlowDidAppearEvent,
+  type FlowDidDisappearEvent,
+  type FlowDidPerformActionEvent,
+  type FlowUserAction,
+  type FlowDidSelectProductEvent,
+  type FlowDidStartPurchaseEvent,
+  type FlowDidFinishPurchaseEvent,
+  type FlowDidFailPurchaseEvent,
+  type FlowDidStartRestoreEvent,
+  type FlowDidFinishRestoreEvent,
+  type FlowDidFailRestoreEvent,
+  type FlowDidReceiveErrorEvent,
+  type FlowDidFailLoadingProductsEvent,
+  type FlowDidFinishWebPaymentNavigationEvent,
+  type ParsedFlowEvent,
+} from '@/types/flow-events';
 
 // Parser
-export function parsePaywallEvent(
+export function parseFlowEvent(
   factory: CoderFactory,
   input: string,
   ctx?: LogContext,
-): ParsedPaywallEvent | null {
+): ParsedFlowEvent | null {
   let obj: Record<string, unknown>;
   try {
     obj = JSON.parse(input);
@@ -54,69 +54,69 @@ export function parsePaywallEvent(
   }
 
   const eventId = obj['id'] as string | undefined;
-  if (!eventId?.startsWith('paywall_view_')) {
+  if (!eventId?.startsWith('flow_view_')) {
     return null;
   }
 
   const viewObj = obj['view'] as Record<string, unknown>;
-  const view: PaywallEventView = {
+  const view: FlowEventView = {
     id: viewObj['id'] as string,
     placementId: viewObj['placement_id'] as string | undefined,
     variationId: viewObj['variation_id'] as string | undefined,
   };
 
   switch (eventId) {
-    case PaywallEventId.DidAppear:
+    case FlowEventId.DidAppear:
       return {
         id: eventId,
         view,
       };
 
-    case PaywallEventId.DidDisappear:
+    case FlowEventId.DidDisappear:
       return {
         id: eventId,
         view,
       };
 
-    case PaywallEventId.DidPerformAction: {
+    case FlowEventId.DidPerformAction: {
       const actionObj = obj['action'] as Record<string, unknown>;
       return {
         id: eventId,
         view,
-        action: parsePaywallUserAction(actionObj),
+        action: parseFlowUserAction(actionObj),
       };
     }
 
-    case PaywallEventId.DidSelectProduct:
+    case FlowEventId.DidSelectProduct:
       return {
         id: eventId,
         view,
         productId: (obj['product_id'] as string) ?? '',
       };
 
-    case PaywallEventId.DidStartPurchase:
+    case FlowEventId.DidStartPurchase:
       return {
         id: eventId,
         view,
-        product: getPaywallCoder(factory, 'product', ctx)!.decode(
+        product: getFlowCoder(factory, 'product', ctx)!.decode(
           obj['product'],
         ) as AdaptyPaywallProduct,
       };
 
-    case PaywallEventId.DidFinishPurchase:
+    case FlowEventId.DidFinishPurchase:
       return {
         id: eventId,
         view,
-        purchaseResult: getPaywallCoder(factory, 'purchaseResult', ctx)!.decode(
+        purchaseResult: getFlowCoder(factory, 'purchaseResult', ctx)!.decode(
           obj['purchased_result'],
         ) as AdaptyPurchaseResult,
-        product: getPaywallCoder(factory, 'product', ctx)!.decode(
+        product: getFlowCoder(factory, 'product', ctx)!.decode(
           obj['product'],
         ) as AdaptyPaywallProduct,
       };
 
-    case PaywallEventId.DidFailPurchase: {
-      const errorCoder = getPaywallCoder(
+    case FlowEventId.DidFailPurchase: {
+      const errorCoder = getFlowCoder(
         factory,
         'error',
         ctx,
@@ -126,29 +126,29 @@ export function parsePaywallEvent(
         id: eventId,
         view,
         error: errorCoder.getError(decodedError),
-        product: getPaywallCoder(factory, 'product', ctx)!.decode(
+        product: getFlowCoder(factory, 'product', ctx)!.decode(
           obj['product'],
         ) as AdaptyPaywallProduct,
       };
     }
 
-    case PaywallEventId.DidStartRestore:
+    case FlowEventId.DidStartRestore:
       return {
         id: eventId,
         view,
       };
 
-    case PaywallEventId.DidFinishRestore:
+    case FlowEventId.DidFinishRestore:
       return {
         id: eventId,
         view,
-        profile: getPaywallCoder(factory, 'profile', ctx)!.decode(
+        profile: getFlowCoder(factory, 'profile', ctx)!.decode(
           obj['profile'],
         ) as AdaptyProfile,
       };
 
-    case PaywallEventId.DidFailRestore: {
-      const errorCoder = getPaywallCoder(
+    case FlowEventId.DidFailRestore: {
+      const errorCoder = getFlowCoder(
         factory,
         'error',
         ctx,
@@ -161,8 +161,8 @@ export function parsePaywallEvent(
       };
     }
 
-    case PaywallEventId.DidFailRendering: {
-      const errorCoder = getPaywallCoder(
+    case FlowEventId.DidReceiveError: {
+      const errorCoder = getFlowCoder(
         factory,
         'error',
         ctx,
@@ -175,8 +175,8 @@ export function parsePaywallEvent(
       };
     }
 
-    case PaywallEventId.DidFailLoadingProducts: {
-      const errorCoder = getPaywallCoder(
+    case FlowEventId.DidFailLoadingProducts: {
+      const errorCoder = getFlowCoder(
         factory,
         'error',
         ctx,
@@ -189,18 +189,18 @@ export function parsePaywallEvent(
       };
     }
 
-    case PaywallEventId.DidFinishWebPaymentNavigation:
+    case FlowEventId.DidFinishWebPaymentNavigation:
       return {
         id: eventId,
         view,
         product: obj['product']
-          ? (getPaywallCoder(factory, 'product', ctx)!.decode(
+          ? (getFlowCoder(factory, 'product', ctx)!.decode(
               obj['product'],
             ) as AdaptyPaywallProduct)
           : undefined,
         error: obj['error']
           ? (() => {
-              const errorCoder = getPaywallCoder(
+              const errorCoder = getFlowCoder(
                 factory,
                 'error',
                 ctx,
@@ -216,10 +216,10 @@ export function parsePaywallEvent(
   }
 }
 
-function parsePaywallUserAction(
+function parseFlowUserAction(
   actionObj: Record<string, unknown>,
-): PaywallUserAction {
-  const type = actionObj['type'] as PaywallUserAction['type'];
+): FlowUserAction {
+  const type = actionObj['type'] as FlowUserAction['type'];
   switch (type) {
     case 'open_url':
       return {
@@ -235,11 +235,11 @@ function parsePaywallUserAction(
   }
 }
 
-type PaywallCoderType = 'product' | 'profile' | 'purchaseResult' | 'error';
+type FlowCoderType = 'product' | 'profile' | 'purchaseResult' | 'error';
 
-function getPaywallCoder(
+function getFlowCoder(
   factory: CoderFactory,
-  type: PaywallCoderType,
+  type: FlowCoderType,
   _ctx?: LogContext,
 ): Converter<any, any> | ErrorConverter<any> {
   switch (type) {

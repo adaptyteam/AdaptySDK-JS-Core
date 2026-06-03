@@ -3,7 +3,7 @@ import type { Def } from '@/types/schema';
 import { ProductReferenceCoder } from './product-reference';
 
 type Model = ProductReference;
-const mocks: Def['AdaptyPaywall.ProductReference'][] = [
+const mocks: Def['AdaptyFlowPaywall.ProductReference'][] = [
   {
     vendor_product_id: 'product123',
     adapty_product_id: 'adaptyProduct123',
@@ -11,6 +11,7 @@ const mocks: Def['AdaptyPaywall.ProductReference'][] = [
     product_type: 'subscription',
   },
   {
+    flow_product_id: 'flowProduct1',
     vendor_product_id: 'product456',
     adapty_product_id: 'adaptyProduct456',
     access_level_id: 'premium',
@@ -27,6 +28,7 @@ const mocks: Def['AdaptyPaywall.ProductReference'][] = [
     offer_id: 'offer333',
   },
   {
+    flow_product_id: 'flowProductXYZ',
     vendor_product_id: 'productXYZ',
     adapty_product_id: 'adaptyProductXYZ',
     access_level_id: 'premium',
@@ -40,6 +42,7 @@ const mocks: Def['AdaptyPaywall.ProductReference'][] = [
 
 function toModel(mock: (typeof mocks)[number]): Model {
   return {
+    ...(mock.flow_product_id && { flowProductId: mock.flow_product_id }),
     vendorId: mock.vendor_product_id,
     adaptyId: mock.adapty_product_id,
     accessLevelId: mock.access_level_id,

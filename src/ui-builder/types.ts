@@ -99,9 +99,21 @@ export interface EventHandlers {
    */
   onRestoreStarted: () => EventHandlerResult;
 
-  onPaywallClosed: () => EventHandlerResult;
+  /**
+   * Called when the paywall view disappears
+   *
+   * If you return `true`, the paywall view will be closed.
+   * @default false
+   */
+  onDisappeared: () => EventHandlerResult;
 
-  onPaywallShown: () => EventHandlerResult;
+  /**
+   * Called when the paywall view appears
+   *
+   * If you return `true`, the paywall view will be closed.
+   * @default false
+   */
+  onAppeared: () => EventHandlerResult;
 
   onWebPaymentNavigationFinished: (
     product?: AdaptyPaywallProduct,
@@ -126,14 +138,13 @@ export interface EventHandlers {
    */
   onRestoreFailed: (error: AdaptyError) => EventHandlerResult;
   /**
-   * Called if a paywall view fails to render.
-   * This  should not ever happen, but if it does, feel free to report it to us.
+   * Called when the paywall view receives an error (e.g. it fails to render).
    *
    * If you return `true` from this callback, the paywall view will be closed.
    *
    * @param {AdaptyError} error - AdaptyError object with error code and message
    */
-  onRenderingFailed: (error: AdaptyError) => EventHandlerResult;
+  onError: (error: AdaptyError) => EventHandlerResult;
   /**
    * Called if a product list fails to load on a presented view,
    * for example, if there is no internet connection

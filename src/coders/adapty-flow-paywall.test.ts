@@ -1,13 +1,11 @@
-import type { AdaptyPaywall } from '@/types';
+import type { AdaptyFlowPaywall } from '@/types';
 import type { Def } from '@/types/schema';
-import { AdaptyPaywallCoder } from './adapty-paywall';
+import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
 import { ProductReferenceCoder } from './product-reference';
 import { ArrayCoder } from './array';
-import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
-import { AdaptyPaywallBuilderCoder } from './adapty-paywall-builder';
 
-type Model = AdaptyPaywall;
-const mocks: Def['AdaptyPaywall'][] = [
+type Model = AdaptyFlowPaywall;
+const mocks: Def['AdaptyFlowPaywall'][] = [
   {
     placement: {
       ab_test_name: 'testA',
@@ -17,20 +15,20 @@ const mocks: Def['AdaptyPaywall'][] = [
       placement_audience_version_id: 'version_123',
       is_tracking_purchases: true,
     },
-    payload_data: 'additionalData',
     paywall_name: 'Paywall1',
     paywall_id: '456789o',
-    response_created_at: 1630458390000,
+    variation_id: 'var001',
     products: [
       {
+        flow_product_id: 'flowProduct1',
         vendor_product_id: 'product1',
         adapty_product_id: 'adaptyProduct1',
         access_level_id: 'premium',
         product_type: 'subscription',
-        promotional_offer_id: 'offer1', // iOS Only
-        win_back_offer_id: 'offer2', // iOS Only
-        base_plan_id: 'base1', // Android Only
-        offer_id: 'androidOffer1', // Android Only
+        promotional_offer_id: 'offer1',
+        win_back_offer_id: 'offer2',
+        base_plan_id: 'base1',
+        offer_id: 'androidOffer1',
       },
       {
         vendor_product_id: 'product2',
@@ -39,16 +37,7 @@ const mocks: Def['AdaptyPaywall'][] = [
         product_type: 'subscription',
       },
     ],
-    remote_config: {
-      lang: 'en',
-      data: '{"key":"value"}', // A custom JSON string configured in Adapty Dashboard for this paywall
-    },
-    variation_id: 'var001',
-    paywall_builder: {
-      paywall_builder_id: 'paywallBuilder1',
-      lang: 'en',
-    },
-    request_locale: 'en',
+    web_purchase_url: 'https://example.com/purchase',
   },
   {
     placement: {
@@ -69,17 +58,11 @@ const mocks: Def['AdaptyPaywall'][] = [
         product_type: 'subscription',
       },
     ],
-    remote_config: { lang: 'fr', data: '' },
-    web_purchase_url: 'https://example.com/purchase',
-    response_created_at: 1632458390000,
-    request_locale: 'fr',
   },
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
   const _products = new ArrayCoder(() => new ProductReferenceCoder());
-  const _remoteConfig = new AdaptyRemoteConfigCoder();
-  const _paywallBuilder = new AdaptyPaywallBuilderCoder();
 
   return {
     placement: {
@@ -93,7 +76,6 @@ function toModel(mock: (typeof mocks)[number]): Model {
       }),
     },
     id: mock.paywall_id,
-    ...(mock.payload_data && { payloadData: mock.payload_data }),
     name: mock.paywall_name,
     products: _products.decode(mock.products),
     productIdentifiers: mock.products.map(product => ({
@@ -101,54 +83,36 @@ function toModel(mock: (typeof mocks)[number]): Model {
       adaptyProductId: product.adapty_product_id,
       basePlanId: product.base_plan_id,
     })),
-    ...(mock.remote_config && {
-      remoteConfig: _remoteConfig.decode(mock.remote_config),
-    }),
     variationId: mock.variation_id,
-    ...(mock.response_created_at && { version: mock.response_created_at }),
-    ...(mock.paywall_builder && {
-      paywallBuilder: _paywallBuilder.decode(mock.paywall_builder),
-    }),
     ...(mock.web_purchase_url && { webPurchaseUrl: mock.web_purchase_url }),
-    requestLocale: mock.request_locale,
-    hasViewConfiguration: mock.paywall_builder !== undefined,
   };
 }
 
-describe('AdaptyPaywallCoder', () => {
-  let coder: AdaptyPaywallCoder;
+describe('AdaptyFlowPaywallCoder', () => {
+  let coder: AdaptyFlowPaywallCoder;
 
   beforeEach(() => {
-    coder = new AdaptyPaywallCoder();
+    coder = new AdaptyFlowPaywallCoder();
   });
 
   it.each(mocks)('should decode to expected result', mock => {
-    const decoded = coder.decode(mock);
-
-    expect(decoded).toStrictEqual(toModel(mock));
+    expect(coder.decode(mock)).toStrictEqual(toModel(mock));
   });
 
-  it.each(mocks)('should decode/encode', mock => {
+  it.each(mocks)('should decode/encode round-trip', mock => {
     const decoded = coder.decode(mock);
     const encoded = coder.encode(decoded);
-
     expect(encoded).toStrictEqual(mock);
   });
 
   it('should derive productIdentifiers from products', () => {
-    const mock = mocks[0]; // Use the first mock that has both iOS and Android data
-    expect(mock).toBeDefined();
-    const decoded = coder.decode(mock!);
-
-    expect(decoded.productIdentifiers).toBeDefined();
+    const decoded = coder.decode(mocks[0]!);
     expect(decoded.productIdentifiers).toHaveLength(2);
-
     expect(decoded.productIdentifiers[0]).toEqual({
       vendorProductId: 'product1',
       adaptyProductId: 'adaptyProduct1',
       basePlanId: 'base1',
     });
-
     expect(decoded.productIdentifiers[1]).toEqual({
       vendorProductId: 'product2',
       adaptyProductId: 'adaptyProduct2',
