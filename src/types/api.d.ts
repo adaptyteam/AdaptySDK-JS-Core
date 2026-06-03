@@ -686,7 +686,7 @@ export interface components {
     AdaptyFlow: {
       placement: components['defs']['AdaptyPlacement'];
       flow_id: string;
-      flowl_name?: string;
+      flow_name: string;
       variation_id: string;
       remote_configs?: components['defs']['AdaptyRemoteConfig'][];
       flow_version_id?: string;
