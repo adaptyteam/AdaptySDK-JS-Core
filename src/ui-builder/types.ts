@@ -38,7 +38,7 @@ export type ProductPurchaseParams = Array<{
  *
  * @see {@link https://adapty.io/docs/react-native-handling-events-1 | [DOC] Handling View Events}
  */
-export interface EventHandlers {
+export interface FlowEventHandlers {
   /**
    * Called when a user taps the close button on the paywall view
    *
@@ -256,7 +256,7 @@ export type OnboardingStateUpdatedAction =
  *
  * @see {@link https://docs.adapty.io/docs/paywall-builder-fetching | [DOC] Creating Paywall View}
  */
-export interface CreatePaywallViewParamsInput {
+export interface CreateFlowViewParamsInput {
   /**
    * `true` if you want to prefetch products before presenting a paywall view.
    */

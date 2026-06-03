@@ -31,7 +31,7 @@ import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
 import { AdaptySubscriptionCoder } from './adapty-subscription';
 import { AdaptyUiDialogConfigCoder } from './adapty-ui-dialog-config';
 import { AdaptyUICreateOnboardingViewParamsCoder } from './adapty-ui-create-onboarding-view-params';
-import { AdaptyUICreatePaywallViewParamsCoder } from './adapty-ui-create-paywall-view-params';
+import { AdaptyUICreateFlowViewParamsCoder } from './adapty-ui-create-flow-view-params';
 import { AdaptyUiMediaCacheCoder } from './adapty-ui-media-cache';
 import { AdaptyUiOnboardingMetaCoder } from './adapty-ui-onboarding-meta';
 import { AdaptyUiOnboardingStateParamsCoder } from './adapty-ui-onboarding-state-params';
@@ -182,8 +182,8 @@ export class CoderFactory {
     return new AdaptyUICreateOnboardingViewParamsCoder();
   }
 
-  createUiCreatePaywallViewParamsCoder(): AdaptyUICreatePaywallViewParamsCoder {
-    return new AdaptyUICreatePaywallViewParamsCoder(this.deps.platform);
+  createUiCreateFlowViewParamsCoder(): AdaptyUICreateFlowViewParamsCoder {
+    return new AdaptyUICreateFlowViewParamsCoder(this.deps.platform);
   }
 
   createUiDialogConfigCoder(): AdaptyUiDialogConfigCoder {

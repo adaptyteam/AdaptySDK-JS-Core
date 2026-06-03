@@ -1,19 +1,19 @@
 import type { IPlatformAdapter, PlatformOS } from '@/adapters/interfaces';
-import { AdaptyUICreatePaywallViewParamsCoder } from './adapty-ui-create-paywall-view-params';
-import type { CreatePaywallViewParamsInput } from '@/ui-builder/types';
+import { AdaptyUICreateFlowViewParamsCoder } from './adapty-ui-create-flow-view-params';
+import type { CreateFlowViewParamsInput } from '@/ui-builder/types';
 import type { AdaptyProductIdentifier } from '@/types';
 
-describe('AdaptyUICreatePaywallViewParamsCoder', () => {
+describe('AdaptyUICreateFlowViewParamsCoder', () => {
   const createCoder = (OS: PlatformOS = 'ios') =>
-    new AdaptyUICreatePaywallViewParamsCoder({ OS } as IPlatformAdapter);
-  let coder: AdaptyUICreatePaywallViewParamsCoder;
+    new AdaptyUICreateFlowViewParamsCoder({ OS } as IPlatformAdapter);
+  let coder: AdaptyUICreateFlowViewParamsCoder;
 
   beforeEach(() => {
     coder = createCoder();
   });
 
   it('should encode basic params', () => {
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       prefetchProducts: true,
       loadTimeoutMs: 10000,
     };
@@ -27,7 +27,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
   });
 
   it('should encode custom tags', () => {
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       customTags: {
         USERNAME: 'John',
         CITY: 'New York',
@@ -46,7 +46,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
 
   it('should encode custom timers', () => {
     const date = new Date('2024-01-01T12:00:00.000Z');
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       customTimers: {
         TIMER1: date,
       },
@@ -62,7 +62,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
   });
 
   it('should encode color assets', () => {
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       customAssets: {
         primaryColor: {
           type: 'color',
@@ -101,7 +101,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
   });
 
   it('should encode image assets', () => {
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       customAssets: {
         base64Image: {
           type: 'image',
@@ -133,7 +133,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
   });
 
   it('should encode gradient assets', () => {
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       customAssets: {
         gradient1: {
           type: 'linear-gradient',
@@ -167,7 +167,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
       adaptyProductId: 'adapty_product_id',
     };
 
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       productPurchaseParams: [
         {
           productId,
@@ -196,7 +196,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
       adaptyProductId: 'adapty_product_id',
     };
 
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       productPurchaseParams: [
         {
           productId,
@@ -220,7 +220,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
 
   it('should encode asset_id with android suffixes on Android', () => {
     coder = createCoder('android');
-    const input: CreatePaywallViewParamsInput = {
+    const input: CreateFlowViewParamsInput = {
       customAssets: {
         imgRel: { type: 'image', relativeAssetPath: 'images/test.png' },
         videoRel: { type: 'video', relativeAssetPath: 'videos/intro.mp4' },
@@ -259,7 +259,7 @@ describe('AdaptyUICreatePaywallViewParamsCoder', () => {
   });
 
   it('should handle empty input', () => {
-    const input: CreatePaywallViewParamsInput = {};
+    const input: CreateFlowViewParamsInput = {};
 
     const result = coder.encode(input);
 

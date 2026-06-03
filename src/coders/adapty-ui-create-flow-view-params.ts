@@ -1,6 +1,6 @@
 import type { IPlatformAdapter } from '@/adapters/interfaces';
 import type {
-  CreatePaywallViewParamsInput,
+  CreateFlowViewParamsInput,
   AdaptyCustomAsset,
 } from '@/ui-builder/types';
 import type { FileLocation } from '@/types/inputs';
@@ -13,7 +13,7 @@ import {
   resolveAssetId,
 } from './utils';
 
-type Model = CreatePaywallViewParamsInput;
+type Model = CreateFlowViewParamsInput;
 type Serializable = {
   preload_products?: boolean;
   load_timeout?: number;
@@ -23,7 +23,7 @@ type Serializable = {
   product_purchase_parameters?: Def['AdaptyUI.ProductPurchaseParameters'];
 };
 
-export class AdaptyUICreatePaywallViewParamsCoder {
+export class AdaptyUICreateFlowViewParamsCoder {
   constructor(private readonly platform: IPlatformAdapter) {}
 
   encode(data: Model): Serializable {
@@ -168,7 +168,7 @@ export class AdaptyUICreatePaywallViewParamsCoder {
   }
 
   private encodeProductPurchaseParams(
-    params: CreatePaywallViewParamsInput['productPurchaseParams'],
+    params: CreateFlowViewParamsInput['productPurchaseParams'],
   ): Def['AdaptyUI.ProductPurchaseParameters'] {
     if (!params) return {};
 

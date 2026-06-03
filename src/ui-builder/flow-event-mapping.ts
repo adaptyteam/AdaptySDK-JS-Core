@@ -1,8 +1,8 @@
-import type { EventHandlers } from './types';
+import type { FlowEventHandlers } from './types';
 import { FlowEventId } from '@/types/flow-events';
 import type { ParsedFlowEvent, FlowEventIdType } from '@/types/flow-events';
 
-type EventName = keyof EventHandlers;
+type EventName = keyof FlowEventHandlers;
 
 /**
  * Resolves native event to handler name based on event data
@@ -61,11 +61,11 @@ export const HANDLER_TO_NATIVE_EVENT: Record<EventName, FlowEventIdType> = {
   onWebPaymentNavigationFinished: FlowEventId.DidFinishWebPaymentNavigation,
 };
 
-type ExtractedArgs<T extends keyof EventHandlers> = Parameters<
-  EventHandlers[T]
+type ExtractedArgs<T extends keyof FlowEventHandlers> = Parameters<
+  FlowEventHandlers[T]
 >;
 
-export function extractFlowCallbackArgs<T extends keyof EventHandlers>(
+export function extractFlowCallbackArgs<T extends keyof FlowEventHandlers>(
   handlerName: T,
   event: ParsedFlowEvent,
 ): ExtractedArgs<T> {
