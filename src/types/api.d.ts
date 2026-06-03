@@ -24,9 +24,9 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'AdaptyUICreatePaywallView.Request': {
-      method: 'adapty_ui_create_paywall_view';
-      paywall: components['defs']['AdaptyPaywall'];
+    'AdaptyUICreateFlowView.Request': {
+      method: 'adapty_ui_create_flow_view';
+      flow: components['defs']['AdaptyFlow'];
       load_timeout?: number;
       preload_products?: boolean;
       custom_tags?: components['defs']['AdaptyUI.CustomTagsValues'];
@@ -35,10 +35,10 @@ export interface components {
       product_purchase_parameters?: components['defs']['AdaptyUI.ProductPurchaseParameters'];
     };
 
-    'AdaptyUICreatePaywallView.Response': OneOf<
+    'AdaptyUICreateFlowView.Response': OneOf<
       [
         { error: components['defs']['AdaptyError'] },
-        { success: components['defs']['AdaptyUI.PaywallView'] },
+        { success: components['defs']['AdaptyUI.FlowView'] },
       ]
     >;
 
@@ -65,13 +65,13 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'AdaptyUIDismissPaywallView.Request': {
-      method: 'adapty_ui_dismiss_paywall_view';
+    'AdaptyUIDismissFlowView.Request': {
+      method: 'adapty_ui_dismiss_flow_view';
       id: string;
       destroy?: boolean;
     };
 
-    'AdaptyUIDismissPaywallView.Response': OneOf<
+    'AdaptyUIDismissFlowView.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
@@ -85,13 +85,13 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'AdaptyUIPresentPaywallView.Request': {
-      method: 'adapty_ui_present_paywall_view';
+    'AdaptyUIPresentFlowView.Request': {
+      method: 'adapty_ui_present_flow_view';
       id: string;
       ios_presentation_style?: components['defs']['AdaptyUI.IOSPresentationStyle'];
     };
 
-    'AdaptyUIPresentPaywallView.Response': OneOf<
+    'AdaptyUIPresentFlowView.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
@@ -137,38 +137,36 @@ export interface components {
       ]
     >;
 
-    'GetPaywall.Request': {
-      method: 'get_paywall';
+    'GetFlow.Request': {
+      method: 'get_flow';
       placement_id: string;
-      locale?: components['defs']['AdaptyLocale'];
       fetch_policy?: components['defs']['AdaptyPlacementFetchPolicy'];
       load_timeout?: number;
     };
 
-    'GetPaywall.Response': OneOf<
+    'GetFlow.Response': OneOf<
       [
         { error: components['defs']['AdaptyError'] },
-        { success: components['defs']['AdaptyPaywall'] },
+        { success: components['defs']['AdaptyFlow'] },
       ]
     >;
 
-    'GetPaywallForDefaultAudience.Request': {
-      method: 'get_paywall_for_default_audience';
+    'GetFlowForDefaultAudience.Request': {
+      method: 'get_flow_for_default_audience';
       placement_id: string;
-      locale?: components['defs']['AdaptyLocale'];
       fetch_policy?: components['defs']['AdaptyPlacementFetchPolicy'];
     };
 
-    'GetPaywallForDefaultAudience.Response': OneOf<
+    'GetFlowForDefaultAudience.Response': OneOf<
       [
         { error: components['defs']['AdaptyError'] },
-        { success: components['defs']['AdaptyPaywall'] },
+        { success: components['defs']['AdaptyFlow'] },
       ]
     >;
 
     'GetPaywallProducts.Request': {
       method: 'get_paywall_products';
-      paywall: components['defs']['AdaptyPaywall'];
+      flow: components['defs']['AdaptyFlow'];
     };
 
     'GetPaywallProducts.Response': OneOf<
@@ -232,12 +230,12 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'LogShowPaywall.Request': {
-      method: 'log_show_paywall';
-      paywall: components['defs']['AdaptyPaywall'];
+    'LogShowFlow.Request': {
+      method: 'log_show_flow';
+      flow: components['defs']['AdaptyFlow'];
     };
 
-    'LogShowPaywall.Response': OneOf<
+    'LogShowFlow.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
@@ -256,13 +254,9 @@ export interface components {
 
     'OpenWebPaywall.Request': {
       method: 'open_web_paywall';
+      product: components['defs']['AdaptyPaywallProduct.Request'];
       open_in?: components['defs']['AdaptyWebPresentation'];
-    } & OneOf<
-      [
-        { product: components['defs']['AdaptyPaywallProduct.Request'] },
-        { paywall: components['defs']['AdaptyPaywall'] },
-      ]
-    >;
+    };
 
     'OpenWebPaywall.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
@@ -270,12 +264,8 @@ export interface components {
 
     'CreateWebPaywallUrl.Request': {
       method: 'create_web_paywall_url';
-    } & OneOf<
-      [
-        { product: components['defs']['AdaptyPaywallProduct.Request'] },
-        { paywall: components['defs']['AdaptyPaywall'] },
-      ]
-    >;
+      product: components['defs']['AdaptyPaywallProduct.Request'];
+    };
 
     'CreateWebPaywallUrl.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: string }]
@@ -401,80 +391,80 @@ export interface components {
       error: components['defs']['AdaptyError'];
     };
 
-    'PaywallViewEvent.DidAppear': {
-      id: 'paywall_view_did_appear';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidAppear': {
+      id: 'flow_view_did_appear';
+      view: components['defs']['AdaptyUI.FlowView'];
     };
 
-    'PaywallViewEvent.DidDisappear': {
-      id: 'paywall_view_did_disappear';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidDisappear': {
+      id: 'flow_view_did_disappear';
+      view: components['defs']['AdaptyUI.FlowView'];
     };
 
-    'PaywallViewEvent.DidUserAction': {
-      id: 'paywall_view_did_perform_action';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidUserAction': {
+      id: 'flow_view_did_perform_action';
+      view: components['defs']['AdaptyUI.FlowView'];
       action: components['defs']['AdaptyUI.UserAction'];
     };
 
-    'PaywallViewEvent.DidSelectProduct': {
-      id: 'paywall_view_did_select_product';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidSelectProduct': {
+      id: 'flow_view_did_select_product';
+      view: components['defs']['AdaptyUI.FlowView'];
       product_id: string;
     };
 
-    'PaywallViewEvent.WillPurchase': {
-      id: 'paywall_view_did_start_purchase';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.WillPurchase': {
+      id: 'flow_view_did_start_purchase';
+      view: components['defs']['AdaptyUI.FlowView'];
       product: components['defs']['AdaptyPaywallProduct.Response'];
     };
 
-    'PaywallViewEvent.DidPurchase': {
-      id: 'paywall_view_did_finish_purchase';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidPurchase': {
+      id: 'flow_view_did_finish_purchase';
+      view: components['defs']['AdaptyUI.FlowView'];
       product: components['defs']['AdaptyPaywallProduct.Response'];
       purchased_result: components['defs']['AdaptyPurchaseResult'];
     };
 
-    'PaywallViewEvent.DidFailPurchase': {
-      id: 'paywall_view_did_fail_purchase';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidFailPurchase': {
+      id: 'flow_view_did_fail_purchase';
+      view: components['defs']['AdaptyUI.FlowView'];
       product: components['defs']['AdaptyPaywallProduct.Response'];
       error: components['defs']['AdaptyError'];
     };
 
-    'PaywallViewEvent.WillRestorePurchase': {
-      id: 'paywall_view_did_start_restore';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.WillRestorePurchase': {
+      id: 'flow_view_did_start_restore';
+      view: components['defs']['AdaptyUI.FlowView'];
     };
 
-    'PaywallViewEvent.DidRestorePurchase': {
-      id: 'paywall_view_did_finish_restore';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidRestorePurchase': {
+      id: 'flow_view_did_finish_restore';
+      view: components['defs']['AdaptyUI.FlowView'];
       profile: components['defs']['AdaptyProfile'];
     };
 
-    'PaywallViewEvent.DidFailRestorePurchase': {
-      id: 'paywall_view_did_fail_restore';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidFailRestorePurchase': {
+      id: 'flow_view_did_fail_restore';
+      view: components['defs']['AdaptyUI.FlowView'];
       error: components['defs']['AdaptyError'];
     };
 
-    'PaywallViewEvent.DidFailRendering': {
-      id: 'paywall_view_did_fail_rendering';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidReceiveError': {
+      id: 'flow_view_did_receive_error';
+      view: components['defs']['AdaptyUI.FlowView'];
       error: components['defs']['AdaptyError'];
     };
 
-    'PaywallViewEvent.DidFailLoadingProducts': {
-      id: 'paywall_view_did_fail_loading_products';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidFailLoadingProducts': {
+      id: 'flow_view_did_fail_loading_products';
+      view: components['defs']['AdaptyUI.FlowView'];
       error: components['defs']['AdaptyError'];
     };
 
-    'PaywallViewEvent.DidFinishWebPaymentNavigation': {
-      id: 'paywall_view_did_finish_web_payment_navigation';
-      view: components['defs']['AdaptyUI.PaywallView'];
+    'FlowViewEvent.DidFinishWebPaymentNavigation': {
+      id: 'flow_view_did_finish_web_payment_navigation';
+      view: components['defs']['AdaptyUI.FlowView'];
       product?: components['defs']['AdaptyPaywallProduct.Response'];
       error?: components['defs']['AdaptyError'];
     };
@@ -693,18 +683,38 @@ export interface components {
       request_locale: components['defs']['AdaptyLocale'];
     };
 
-    AdaptyPaywall: {
+    AdaptyFlow: {
+      placement: components['defs']['AdaptyPlacement'];
+      flow_id: string;
+      flowl_name?: string;
+      variation_id: string;
+      remote_configs?: components['defs']['AdaptyRemoteConfig'][];
+      flow_version_id?: string;
+      variations: components['defs']['AdaptyFlowPaywall'][];
+      ui_schema?: {
+        layouts: {
+          flow_layout_id: string;
+        }[];
+        grids: {
+          platforms?: OneOf<['all', ('ios' | 'android')[]]>;
+          devices?: OneOf<['all', ('phone' | 'tab')[]]>;
+          custom_id?: string;
+          h_breakpoints?: number[];
+          v_breakpoints?: number[];
+          cells: number[];
+        }[];
+      };
+      payload_data?: string;
+      response_created_at: number;
+    };
+
+    AdaptyFlowPaywall: {
       placement: components['defs']['AdaptyPlacement'];
       paywall_id: string;
       paywall_name: string;
       variation_id: string;
-      remote_config?: components['defs']['AdaptyRemoteConfig'];
-      paywall_builder?: components['defs']['AdaptyPaywall.ViewConfiguration'];
-      products: components['defs']['AdaptyPaywall.ProductReference'][];
+      products: components['defs']['AdaptyFlowPaywall.ProductReference'][];
       web_purchase_url?: string;
-      payload_data?: string;
-      response_created_at: number;
-      request_locale: components['defs']['AdaptyLocale'];
     };
 
     AdaptyPlacement: {
@@ -732,7 +742,8 @@ export interface components {
       data: string;
     };
 
-    'AdaptyPaywall.ProductReference': {
+    'AdaptyFlowPaywall.ProductReference': {
+      flow_product_id?: string;
       vendor_product_id: string;
       adapty_product_id: string;
       access_level_id: string;
@@ -741,12 +752,6 @@ export interface components {
       win_back_offer_id?: string;
       base_plan_id?: string;
       offer_id?: string;
-    };
-
-    'AdaptyPaywall.ViewConfiguration': {
-      paywall_builder_id: string;
-      lang: components['defs']['AdaptyLocale'];
-      json?: string;
     };
 
     AdaptySubscriptionPeriod: {
@@ -905,7 +910,7 @@ export interface components {
       | components['assets']['Video']
     )[];
 
-    'AdaptyUI.PaywallView': {
+    'AdaptyUI.FlowView': {
       id: string;
       placement_id: string;
       variation_id: string;
@@ -940,10 +945,6 @@ export interface components {
 
     'AdaptyUI.CustomTimersValues': {
       [key: string]: components['defs']['Date'];
-    };
-
-    'AdaptyUI.AndroidPersonalizedOffers': {
-      [key: string]: boolean;
     };
 
     'AdaptyUI.ProductPurchaseParameters': {
