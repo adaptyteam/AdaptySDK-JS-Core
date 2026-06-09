@@ -19,6 +19,11 @@ export class AdaptyProfileCoder extends SimpleCoder<Model, Serializable> {
       type: 'object',
       converter: new HashmapCoder(new AdaptyAccessLevelCoder()),
     },
+    appliedAttributionSources: {
+      key: 'applied_attribution_sources',
+      required: false,
+      type: 'array',
+    },
     customAttributes: {
       key: 'custom_attributes',
       required: false,

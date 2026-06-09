@@ -14,6 +14,7 @@ const mocks: Omit<
 >[] = [
   {
     customer_user_id: '57739865-5F09-45FF-8A95-BBB5AB0B4276',
+    applied_attribution_sources: ['apple_search_ads'],
     paid_access_levels: {
       premium: {
         id: 'premium',
@@ -199,6 +200,9 @@ function toModel(mock: (typeof mocks)[number]): Model {
     }),
     ...(mock.non_subscriptions && {
       nonSubscriptions: _nonsubs.decode(mock.non_subscriptions),
+    }),
+    ...(mock.applied_attribution_sources && {
+      appliedAttributionSources: mock.applied_attribution_sources,
     }),
     customAttributes: mock.custom_attributes,
     customerUserId: mock.customer_user_id,
