@@ -236,6 +236,16 @@ export type AdaptyPurchaseResult =
     };
 
 /**
+ * Identifier of an attribution source applied to a profile.
+ *
+ * Known value is `'apple_search_ads'`. Other identifiers may be emitted
+ * in future versions, so any string is accepted — clients must tolerate
+ * unknown values.
+ * @public
+ */
+export type AttributionSource = 'apple_search_ads' | (string & {});
+
+/**
  * Interface representing a user profile in Adapty,
  * including details about the user's subscriptions and consumable products.
  * @public
@@ -248,6 +258,14 @@ export interface AdaptyProfile {
    * @readonly
    */
   readonly accessLevels?: Record<string, AdaptyAccessLevel>;
+
+  /**
+   * Identifiers of attribution sources applied to the profile.
+   * Known value is `'apple_search_ads'`; unknown values may appear
+   * in future versions.
+   * @readonly
+   */
+  readonly appliedAttributionSources?: AttributionSource[];
 
   /**
    * Object representing custom attributes set for the user using
