@@ -770,6 +770,7 @@ export interface components {
       profile_id: string;
       customer_user_id?: string;
       segment_hash: string;
+      applied_attribution_sources?: 'apple_search_ads'[];
       custom_attributes?: components['defs']['AdaptyProfile.CustomAttributes'];
       paid_access_levels?: {
         [key: string]: components['defs']['AdaptyProfile.AccessLevel'];
