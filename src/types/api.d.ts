@@ -374,8 +374,39 @@ export interface components {
     'UpdateRefundPreference.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
+
+    'DidRequestPermissionResponse.Request': {
+      method: 'did_request_permission_response';
+      request_id: string;
+      status: 'granted' | 'denied' | 'unavailable';
+      detail?: string;
+    };
+
+    'DidRequestPermissionResponse.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
   };
   events: {
+    'Event.DidRequestPermission': {
+      id: 'did_request_permission';
+      request_id: string;
+      permission: string;
+      custom_args?: {
+        [key: string]: string;
+      };
+    };
+
+    'Event.DidRequestAppReview': {
+      id: 'did_request_app_review';
+    };
+
+    'FlowViewEvent.DidReceiveAnalyticEvent': {
+      id: 'flow_view_did_receive_analytic_event';
+      view: components['defs']['AdaptyUI.FlowView'];
+      name: string;
+      params: Record<string, unknown>;
+    };
+
     'Event.DidLoadLatestProfile': {
       id: 'did_load_latest_profile';
       profile: components['defs']['AdaptyProfile'];
@@ -607,6 +638,7 @@ export interface components {
 
     'AdaptyPaywallProduct.Response': {
       vendor_product_id: string;
+      flow_product_id?: string;
       adapty_product_id: string;
       access_level_id: string;
       product_type: string;
@@ -770,7 +802,6 @@ export interface components {
       profile_id: string;
       customer_user_id?: string;
       segment_hash: string;
-      applied_attribution_sources?: 'apple_search_ads'[];
       custom_attributes?: components['defs']['AdaptyProfile.CustomAttributes'];
       paid_access_levels?: {
         [key: string]: components['defs']['AdaptyProfile.AccessLevel'];
@@ -783,6 +814,7 @@ export interface components {
       };
       timestamp: number;
       is_test_user: boolean;
+      applied_attribution_sources?: string[];
     };
 
     'AdaptyProfile.AccessLevel': {
@@ -864,6 +896,7 @@ export interface components {
       [
         { id?: string; type: 'introductory' },
         { id: string; type: 'promotional' | 'win_back' },
+        { id?: string; type: 'code' },
       ]
     >;
 
@@ -1027,6 +1060,8 @@ export interface components {
     Video: {
       id: string;
       type: 'video';
+      h_res?: number;
+      v_res?: number;
     } & OneOf<[{ asset_id: string }, { path: string }]>;
   };
 }

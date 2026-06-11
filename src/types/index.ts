@@ -756,7 +756,8 @@ export interface AdaptySubscriptionOffer {
 
 export type AdaptySubscriptionOfferId =
   | { id?: string; type: 'introductory' }
-  | { id: string; type: 'promotional' | 'win_back' };
+  | { id: string; type: 'promotional' | 'win_back' }
+  | { id?: string; type: 'code' };
 
 /**
  * Discount model to products

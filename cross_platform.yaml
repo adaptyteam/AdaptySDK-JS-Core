@@ -290,7 +290,7 @@ $requests:
     properties:
       method: { const: "identify" }
       customer_user_id: { type: string }
-      parameters: { $ref: "#/$defs/CustomerIdentityParameters" }
+      parameters: { $ref: "#/$defs/CustomerIdentityParameters" } 
 
   Identify.Response: #response
     type: object
@@ -629,7 +629,53 @@ $requests:
         properties:
           success: { const: true }
 
+  ### didRequestPermissionResponse ###
+  DidRequestPermissionResponse.Request: #request
+    type: object
+    required: [method, request_id, status]
+    properties:
+      method: { const: "did_request_permission_response" }
+      request_id: { type: string }
+      status: { type: string, enum: ["granted", "denied", "unavailable"] }
+      detail: { type: string }
+
+  DidRequestPermissionResponse.Response: #response
+    type: object
+    oneOf:
+      - required: [error]
+        properties:
+          error: { $ref: "#/$defs/AdaptyError" }
+      - required: [success]
+        properties:
+          success: { const: true }
+
 $events:
+  Event.DidRequestPermission:
+    type: object
+    required: [id, request_id, permission]
+    properties:
+      id: { const: "did_request_permission" }
+      request_id: { type: string }
+      permission: { type: string }
+      custom_args:
+        type: object
+        additionalProperties: { type: string }
+
+  Event.DidRequestAppReview:
+    type: object
+    required: [id]
+    properties:
+      id: { const: "did_request_app_review" }
+
+  FlowViewEvent.DidReceiveAnalyticEvent:
+    type: object
+    required: [id, view, name, params]
+    properties:
+      id: { const: "flow_view_did_receive_analytic_event" }
+      view: { $ref: "#/$defs/AdaptyUI.FlowView" }
+      name: { type: string }
+      params: { type: object }
+
   Event.DidLoadLatestProfile:
     type: object
     required: [id, profile]
@@ -910,7 +956,7 @@ $defs:
     properties:
       api_key: { type: string }
       customer_user_id: { type: string }
-      customer_identity_parameters: { $ref: "#/$defs/CustomerIdentityParameters" }
+      customer_identity_parameters: { $ref: "#/$defs/CustomerIdentityParameters" }    
       observer_mode: { type: boolean, default: false }
       apple_idfa_collection_disabled: { type: boolean, default: false }
       google_adid_collection_disabled: { type: boolean, default: false }
@@ -938,7 +984,7 @@ $defs:
     properties:
       app_account_token: { $ref: "#/$defs/UUID", description: "iOS Only" }
       obfuscated_account_id: { type: string, description: "Android Only" }
-      obfuscated_profile_id: { type: string, description: "Android Only" }
+      obfuscated_profile_id: { type: string, description: "Android Only" }     
 
   AdaptyPaywallProduct.Response: #response
     type: object
@@ -957,6 +1003,7 @@ $defs:
       - price
     properties:
       vendor_product_id: { type: string }
+      flow_product_id: { type: string }
       adapty_product_id: { type: string }
       access_level_id: { type: string }
       product_type: { type: string }
@@ -1098,7 +1145,7 @@ $defs:
       flow_id: { type: string }
       flow_name: { type: string }
       variation_id: { type: string }
-      remote_configs:
+      remote_configs: 
         type: array
         items: { $ref: "#/$defs/AdaptyRemoteConfig" }
       flow_version_id: { type: string }
@@ -1255,12 +1302,6 @@ $defs:
       profile_id: { type: string }
       customer_user_id: { type: string }
       segment_hash: { type: string }
-      applied_attribution_sources:
-        type: array
-        items:
-            type: string
-            enum: [apple_search_ads]
-            description: "Identifiers of attribution sources applied to the profile. Known values: 'apple_search_ads'. Other identifiers may be emitted in future versions — clients must tolerate unknown values."
       custom_attributes: { $ref: "#/$defs/AdaptyProfile.CustomAttributes" }
       paid_access_levels:
         type: object
@@ -1275,6 +1316,9 @@ $defs:
           items: { $ref: "#/$defs/AdaptyProfile.NonSubscription" }
       timestamp: { type: integer }
       is_test_user: { type: boolean }
+      applied_attribution_sources:
+        type: array
+        items: { type: string }
 
   AdaptyProfile.AccessLevel: #response
     type: object
@@ -1413,6 +1457,10 @@ $defs:
         properties:
           id: { type: string }
           type: { type: string, enum: [promotional, win_back] }
+      - required: [type]
+        properties:
+          id: { type: string }
+          type: { type: string, const: code }
 
   AdaptySubscriptionOffer.PaymentMode: #response
     type: string
@@ -1492,7 +1540,7 @@ $defs:
     oneOf:
       - required: [type]
         properties:
-          type: { type: string, const: ["close", "system_back"] }
+          type: { type: string, enum: ["close", "system_back"] }
       - required: [type, value, open_in]
         properties:
           type: { type: string, const: "open_url" }
@@ -1514,9 +1562,9 @@ $defs:
   AdaptyUI.ProductPurchaseParameters:  #request
     type: object
     propertyNames: { description: "key is adapty_product_id" }
-    additionalProperties: {
-      $ref: "#/$defs/AdaptyPurchaseParameters",
-      nullable: false
+    additionalProperties: { 
+      $ref: "#/$defs/AdaptyPurchaseParameters", 
+      nullable: false 
     }
 
   AdaptyUI.IOSPresentationStyle:
@@ -1545,7 +1593,7 @@ $defs:
     enum:
       - primary
       - secondary
-
+  
   AdaptyPurchaseParameters:  #request
     type: object
     properties:
@@ -1555,7 +1603,7 @@ $defs:
           description: "Android Only",
         }
       is_offer_personalized: { type: boolean, description: "Android Only" }
-
+      
 
   AdaptySubscriptionUpdateParameters: #request # Android Only
     type: object
@@ -1660,6 +1708,8 @@ $assets:
     properties:
       id: { type: string }
       type: { const: video }
+      h_res: { type: number }
+      v_res: { type: number }
     oneOf:
       - required: [asset_id]
         properties:
