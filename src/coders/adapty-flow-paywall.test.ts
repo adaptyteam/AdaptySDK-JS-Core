@@ -5,16 +5,10 @@ import { ProductReferenceCoder } from './product-reference';
 import { ArrayCoder } from './array';
 
 type Model = AdaptyFlowPaywall;
+// `placement` is intentionally absent from the wire payload — it is a property
+// of the parent AdaptyFlow and is injected by AdaptyFlowCoder, not by this coder.
 const mocks: Def['AdaptyFlowPaywall'][] = [
   {
-    placement: {
-      ab_test_name: 'testA',
-      audience_name: 'audienceC',
-      developer_id: 'dev123',
-      revision: 5,
-      placement_audience_version_id: 'version_123',
-      is_tracking_purchases: true,
-    },
     paywall_name: 'Paywall1',
     paywall_id: '456789o',
     variation_id: 'var001',
@@ -40,13 +34,6 @@ const mocks: Def['AdaptyFlowPaywall'][] = [
     web_purchase_url: 'https://example.com/purchase',
   },
   {
-    placement: {
-      ab_test_name: 'testB',
-      audience_name: 'audienceD',
-      developer_id: 'dev456',
-      revision: 3,
-      placement_audience_version_id: 'version_456',
-    },
     paywall_id: 'instanceId267',
     variation_id: 'var002',
     paywall_name: 'Paywall2',
@@ -61,20 +48,11 @@ const mocks: Def['AdaptyFlowPaywall'][] = [
   },
 ];
 
-function toModel(mock: (typeof mocks)[number]): Model {
+// Standalone decode never yields `placement` — it is injected by the parent flow.
+function toModel(mock: (typeof mocks)[number]): Omit<Model, 'placement'> {
   const _products = new ArrayCoder(() => new ProductReferenceCoder());
 
   return {
-    placement: {
-      abTestName: mock.placement.ab_test_name,
-      audienceName: mock.placement.audience_name,
-      id: mock.placement.developer_id,
-      revision: mock.placement.revision,
-      audienceVersionId: mock.placement.placement_audience_version_id,
-      ...(mock.placement.is_tracking_purchases !== undefined && {
-        isTrackingPurchases: mock.placement.is_tracking_purchases,
-      }),
-    },
     id: mock.paywall_id,
     name: mock.paywall_name,
     products: _products.decode(mock.products),

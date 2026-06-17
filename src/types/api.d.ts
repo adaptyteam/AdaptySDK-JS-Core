@@ -385,10 +385,47 @@ export interface components {
     'DidRequestPermissionResponse.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
+
+    'ObserverPurchaseDidStart.Request': {
+      method: 'observer_purchase_did_start';
+      request_id: string;
+    };
+
+    'ObserverPurchaseDidStart.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'ObserverPurchaseDidFinish.Request': {
+      method: 'observer_purchase_did_finish';
+      request_id: string;
+    };
+
+    'ObserverPurchaseDidFinish.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'ObserverRestoreDidStart.Request': {
+      method: 'observer_restore_did_start';
+      request_id: string;
+    };
+
+    'ObserverRestoreDidStart.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'ObserverRestoreDidFinish.Request': {
+      method: 'observer_restore_did_finish';
+      request_id: string;
+    };
+
+    'ObserverRestoreDidFinish.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
   };
   events: {
-    'Event.DidRequestPermission': {
-      id: 'did_request_permission';
+    'FlowViewEvent.DidRequestPermission': {
+      id: 'flow_view_did_request_permission';
+      view: components['defs']['AdaptyUI.FlowView'];
       request_id: string;
       permission: string;
       custom_args?: {
@@ -396,8 +433,22 @@ export interface components {
       };
     };
 
-    'Event.DidRequestAppReview': {
-      id: 'did_request_app_review';
+    'FlowViewEvent.DidRequestAppReview': {
+      id: 'flow_view_did_request_app_review';
+      view: components['defs']['AdaptyUI.FlowView'];
+    };
+
+    'FlowViewEvent.ObserverDidInitiatePurchase': {
+      id: 'flow_view_observer_did_initiate_purchase';
+      view: components['defs']['AdaptyUI.FlowView'];
+      request_id: string;
+      product: components['defs']['AdaptyPaywallProduct.Response'];
+    };
+
+    'FlowViewEvent.ObserverDidInitiateRestore': {
+      id: 'flow_view_observer_did_initiate_restore';
+      view: components['defs']['AdaptyUI.FlowView'];
+      request_id: string;
     };
 
     'FlowViewEvent.DidReceiveAnalyticEvent': {
@@ -741,7 +792,7 @@ export interface components {
     };
 
     AdaptyFlowPaywall: {
-      placement: components['defs']['AdaptyPlacement'];
+      placement?: components['defs']['AdaptyPlacement'];
       paywall_id: string;
       paywall_name: string;
       variation_id: string;

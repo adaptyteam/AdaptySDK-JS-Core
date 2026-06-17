@@ -33,7 +33,6 @@ const mocks: Def['AdaptyFlow'][] = [
     },
     variations: [
       {
-        placement,
         paywall_id: 'pw1',
         paywall_name: 'Paywall1',
         variation_id: 'var001',
@@ -63,17 +62,19 @@ function toModel(mock: (typeof mocks)[number]): Model {
   const _variations = new ArrayCoder(() => new AdaptyFlowPaywallCoder());
   const _uiSchema = new AdaptyFlowUiSchemaCoder();
 
+  const decodedPlacement = {
+    abTestName: mock.placement.ab_test_name,
+    audienceName: mock.placement.audience_name,
+    id: mock.placement.developer_id,
+    revision: mock.placement.revision,
+    audienceVersionId: mock.placement.placement_audience_version_id,
+    ...(mock.placement.is_tracking_purchases !== undefined && {
+      isTrackingPurchases: mock.placement.is_tracking_purchases,
+    }),
+  };
+
   return {
-    placement: {
-      abTestName: mock.placement.ab_test_name,
-      audienceName: mock.placement.audience_name,
-      id: mock.placement.developer_id,
-      revision: mock.placement.revision,
-      audienceVersionId: mock.placement.placement_audience_version_id,
-      ...(mock.placement.is_tracking_purchases !== undefined && {
-        isTrackingPurchases: mock.placement.is_tracking_purchases,
-      }),
-    },
+    placement: decodedPlacement,
     id: mock.flow_id,
     name: mock.flow_name,
     variationId: mock.variation_id,
@@ -81,7 +82,11 @@ function toModel(mock: (typeof mocks)[number]): Model {
       remoteConfigs: _remoteConfigs.decode(mock.remote_configs),
     }),
     ...(mock.flow_version_id && { flowVersionId: mock.flow_version_id }),
-    variations: _variations.decode(mock.variations),
+    // The flow placement is injected into every variation on decode.
+    variations: _variations.decode(mock.variations).map(variation => ({
+      ...variation,
+      placement: decodedPlacement,
+    })),
     ...(mock.ui_schema && { uiSchema: _uiSchema.decode(mock.ui_schema) }),
     responseCreatedAt: mock.response_created_at,
     ...(mock.payload_data && { payloadData: mock.payload_data }),

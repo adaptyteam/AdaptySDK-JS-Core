@@ -7,7 +7,11 @@ import { Coder } from './coder';
 import { AdaptyPlacementCoder } from '@/coders/adapty-placement';
 
 type Model = AdaptyFlowPaywall;
-type CodableModel = Omit<Model, 'productIdentifiers'>;
+// `placement` is a property of the parent AdaptyFlow and is not emitted per
+// variation on the wire — it is injected on decode by AdaptyFlowCoder. Hence it
+// is optional in the codable shape and stripped on encode.
+type CodableModel = Omit<Model, 'productIdentifiers' | 'placement'> &
+  Partial<Pick<Model, 'placement'>>;
 type Serializable = Def['AdaptyFlowPaywall'];
 
 export class AdaptyFlowPaywallCoder extends Coder<
@@ -18,7 +22,7 @@ export class AdaptyFlowPaywallCoder extends Coder<
   protected properties: Properties<CodableModel, Serializable> = {
     placement: {
       key: 'placement',
-      required: true,
+      required: false,
       type: 'object',
       converter: new AdaptyPlacementCoder(),
     },
@@ -40,6 +44,8 @@ export class AdaptyFlowPaywallCoder extends Coder<
 
   override decode(data: Serializable): Model {
     const codablePart = super.decode(data);
+    // `placement` may be absent here — it is injected by the parent
+    // AdaptyFlowCoder on decode, so the cast to the full model is safe.
     return {
       ...codablePart,
       productIdentifiers: codablePart.products.map(product => ({
@@ -47,11 +53,12 @@ export class AdaptyFlowPaywallCoder extends Coder<
         adaptyProductId: product.adaptyId,
         basePlanId: product.android?.basePlanId,
       })),
-    };
+    } as Model;
   }
 
   override encode(data: Model): Serializable {
-    const { productIdentifiers, ...codablePart } = data;
+    // Drop the derived `productIdentifiers` and the parent-owned `placement`.
+    const { productIdentifiers, placement, ...codablePart } = data;
     return super.encode(codablePart);
   }
 }
