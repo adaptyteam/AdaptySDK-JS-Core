@@ -6,7 +6,6 @@ import { SimpleCoder } from './coder';
 import { AdaptyPlacementCoder } from '@/coders/adapty-placement';
 import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
 import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
-import { AdaptyFlowUiSchemaCoder } from './adapty-flow-ui-schema';
 
 type Model = AdaptyFlow;
 type Serializable = Def['AdaptyFlow'];
@@ -38,12 +37,6 @@ export class AdaptyFlowCoder extends SimpleCoder<Model, Serializable> {
       required: true,
       type: 'array',
       converter: new ArrayCoder(() => new AdaptyFlowPaywallCoder()),
-    },
-    uiSchema: {
-      key: 'ui_schema',
-      required: false,
-      type: 'object',
-      converter: new AdaptyFlowUiSchemaCoder(),
     },
     responseCreatedAt: {
       key: 'response_created_at',

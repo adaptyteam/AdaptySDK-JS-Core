@@ -774,19 +774,6 @@ export interface components {
       remote_configs?: components['defs']['AdaptyRemoteConfig'][];
       flow_version_id?: string;
       variations: components['defs']['AdaptyFlowPaywall'][];
-      ui_schema?: {
-        layouts: {
-          flow_layout_id: string;
-        }[];
-        grids: {
-          platforms?: OneOf<['all', ('ios' | 'android')[]]>;
-          devices?: OneOf<['all', ('phone' | 'tab')[]]>;
-          custom_id?: string;
-          h_breakpoints?: number[];
-          v_breakpoints?: number[];
-          cells: number[];
-        }[];
-      };
       payload_data?: string;
       response_created_at: number;
     };

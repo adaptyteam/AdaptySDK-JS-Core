@@ -3,7 +3,6 @@ import type { Def } from '@/types/schema';
 import { AdaptyFlowCoder } from './adapty-flow';
 import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
 import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
-import { AdaptyFlowUiSchemaCoder } from './adapty-flow-ui-schema';
 import { ArrayCoder } from './array';
 
 type Model = AdaptyFlow;
@@ -27,10 +26,6 @@ const mocks: Def['AdaptyFlow'][] = [
     remote_configs: [{ lang: 'en', data: '{"key":"value"}' }],
     flow_version_id: 'fv1',
     payload_data: 'additionalData',
-    ui_schema: {
-      layouts: [{ flow_layout_id: 'layout_1' }],
-      grids: [{ platforms: 'all', cells: [1, 2] }],
-    },
     variations: [
       {
         paywall_id: 'pw1',
@@ -60,7 +55,6 @@ const mocks: Def['AdaptyFlow'][] = [
 function toModel(mock: (typeof mocks)[number]): Model {
   const _remoteConfigs = new ArrayCoder(() => new AdaptyRemoteConfigCoder());
   const _variations = new ArrayCoder(() => new AdaptyFlowPaywallCoder());
-  const _uiSchema = new AdaptyFlowUiSchemaCoder();
 
   const decodedPlacement = {
     abTestName: mock.placement.ab_test_name,
@@ -87,7 +81,6 @@ function toModel(mock: (typeof mocks)[number]): Model {
       ...variation,
       placement: decodedPlacement,
     })),
-    ...(mock.ui_schema && { uiSchema: _uiSchema.decode(mock.ui_schema) }),
     responseCreatedAt: mock.response_created_at,
     ...(mock.payload_data && { payloadData: mock.payload_data }),
   };

@@ -111,36 +111,6 @@ export interface AdaptyFlowPaywall {
 }
 
 /**
- * A single layout entry of a flow UI schema.
- * @public
- */
-export interface AdaptyFlowUiSchemaLayout {
-  readonly flowLayoutId: string;
-}
-
-/**
- * A single grid entry of a flow UI schema.
- * @public
- */
-export interface AdaptyFlowUiSchemaGrid {
-  readonly platforms?: 'all' | ('ios' | 'android')[];
-  readonly devices?: 'all' | ('phone' | 'tab')[];
-  readonly customId?: string;
-  readonly hBreakpoints?: number[];
-  readonly vBreakpoints?: number[];
-  readonly cells: number[];
-}
-
-/**
- * Describes the UI schema (layouts and grids) of a flow.
- * @public
- */
-export interface AdaptyFlowUiSchema {
-  readonly layouts: AdaptyFlowUiSchemaLayout[];
-  readonly grids: AdaptyFlowUiSchemaGrid[];
-}
-
-/**
  * Describes an object that represents a flow,
  * fetched for a placement.
  * @public
@@ -169,11 +139,6 @@ export interface AdaptyFlow {
    * @readonly
    */
   readonly variations: AdaptyFlowPaywall[];
-  /**
-   * UI schema (layouts and grids) configured for this flow.
-   * @readonly
-   */
-  readonly uiSchema?: AdaptyFlowUiSchema;
 
   id: string;
   flowVersionId?: string;
