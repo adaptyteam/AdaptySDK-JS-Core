@@ -219,13 +219,18 @@ export function parseFlowEvent(
         view,
       };
 
-    case FlowEventId.DidReceiveAnalyticEvent:
+    case FlowEventId.DidReceiveAnalyticEvent: {
+      const params = obj['params'];
       return {
         id: eventId,
         view,
         name: typeof obj['name'] === 'string' ? obj['name'] : '',
-        params: (obj['params'] as Record<string, unknown>) ?? {},
+        params:
+          typeof params === 'object' && params !== null
+            ? (params as Record<string, unknown>)
+            : {},
       };
+    }
 
     default:
       return null;

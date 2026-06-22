@@ -68,4 +68,20 @@ describe('parseFlowEvent — notification events', () => {
       params: {},
     });
   });
+
+  it('falls back to empty params when params is not an object', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_did_receive_analytic_event',
+      view: rawView,
+      name: 'paywall_shown',
+      params: 'oops',
+    });
+
+    expect(parseFlowEvent(factory, input)).toEqual({
+      id: 'flow_view_did_receive_analytic_event',
+      view: decodedView,
+      name: 'paywall_shown',
+      params: {},
+    });
+  });
 });
