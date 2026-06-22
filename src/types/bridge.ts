@@ -38,6 +38,7 @@ export const MethodNames = [
   'update_collecting_refund_data_consent',
   'update_profile',
   'update_refund_preference',
+  'did_request_permission_response',
 ] as const;
 export type MethodName = (typeof MethodNames)[number];
 

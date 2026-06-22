@@ -37,6 +37,7 @@ export {
   type FlowDidFinishWebPaymentNavigationEvent,
   type FlowDidRequestAppReviewEvent,
   type FlowDidReceiveAnalyticEvent,
+  type FlowDidRequestPermissionEvent,
   type ParsedFlowEvent,
 } from '@/types/flow-events';
 
@@ -231,6 +232,20 @@ export function parseFlowEvent(
             : {},
       };
     }
+
+    case FlowEventId.DidRequestPermission:
+      return {
+        id: eventId,
+        view,
+        requestId:
+          typeof obj['request_id'] === 'string' ? obj['request_id'] : '',
+        permission:
+          typeof obj['permission'] === 'string' ? obj['permission'] : '',
+        customArgs:
+          typeof obj['custom_args'] === 'object' && obj['custom_args'] !== null
+            ? (obj['custom_args'] as Record<string, string>)
+            : {},
+      };
 
     default:
       return null;

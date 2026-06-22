@@ -34,6 +34,17 @@ export type ProductPurchaseParams = Array<{
 }>;
 
 /**
+ * Result of an OS permission request, returned to native by the SDK.
+ */
+export type FlowPermissionStatus = 'granted' | 'denied' | 'unavailable';
+
+export interface FlowPermissionResponse {
+  status: FlowPermissionStatus;
+  /** Optional human-readable detail (e.g. the OS status string). */
+  detail?: string;
+}
+
+/**
  * Hashmap of possible events to their callbacks
  *
  * @see {@link https://adapty.io/docs/react-native-handling-events-1 | [DOC] Handling View Events}
@@ -186,6 +197,20 @@ export interface FlowEventHandlers {
     name: string,
     params: Record<string, unknown>,
   ) => EventHandlerResult;
+  /**
+   * Called when the flow view asks the host app to request an OS-level
+   * permission (e.g. notifications, ATT). This is the only **asynchronous**
+   * handler: return a `Promise` that resolves with the resulting status.
+   *
+   * If you do not provide a handler, the SDK replies `'unavailable'`.
+   *
+   * @param permission - permission identifier the flow view requested
+   * @param customArgs - arbitrary string args configured in the dashboard
+   */
+  onRequestPermission: (
+    permission: string,
+    customArgs: Record<string, string>,
+  ) => Promise<FlowPermissionResponse>;
 }
 
 export interface OnboardingEventHandlers {

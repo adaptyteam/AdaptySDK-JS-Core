@@ -85,3 +85,40 @@ describe('parseFlowEvent — notification events', () => {
     });
   });
 });
+
+describe('parseFlowEvent — did_request_permission', () => {
+  it('parses request_id, permission and custom_args (snake_case → camelCase)', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_did_request_permission',
+      view: { id: 'view-1', placement_id: 'plc', variation_id: 'var' },
+      request_id: 'req-1',
+      permission: 'notifications',
+      custom_args: { source: 'onboarding' },
+    });
+
+    const event = parseFlowEvent(factory, input);
+
+    expect(event).toEqual({
+      id: 'flow_view_did_request_permission',
+      view: { id: 'view-1', placementId: 'plc', variationId: 'var' },
+      requestId: 'req-1',
+      permission: 'notifications',
+      customArgs: { source: 'onboarding' },
+    });
+  });
+
+  it('defaults missing request_id/permission/custom_args to safe values', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_did_request_permission',
+      view: { id: 'view-1' },
+    });
+
+    const event = parseFlowEvent(factory, input);
+
+    expect(event).toMatchObject({
+      requestId: '',
+      permission: '',
+      customArgs: {},
+    });
+  });
+});
