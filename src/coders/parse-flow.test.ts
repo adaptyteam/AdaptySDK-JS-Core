@@ -61,8 +61,9 @@ describe('parseFlowEvent — notification events', () => {
       name: 'paywall_shown',
     });
 
-    expect(parseFlowEvent(factory, input)).toMatchObject({
+    expect(parseFlowEvent(factory, input)).toEqual({
       id: 'flow_view_did_receive_analytic_event',
+      view: decodedView,
       name: 'paywall_shown',
       params: {},
     });

@@ -223,7 +223,7 @@ export function parseFlowEvent(
       return {
         id: eventId,
         view,
-        name: (obj['name'] as string) ?? '',
+        name: typeof obj['name'] === 'string' ? obj['name'] : '',
         params: (obj['params'] as Record<string, unknown>) ?? {},
       };
 
