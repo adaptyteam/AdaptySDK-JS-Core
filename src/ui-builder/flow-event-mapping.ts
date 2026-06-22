@@ -36,6 +36,8 @@ export const NATIVE_EVENT_RESOLVER: Record<
   [FlowEventId.DidFailLoadingProducts]: () => 'onLoadingProductsFailed',
   [FlowEventId.DidFinishWebPaymentNavigation]: () =>
     'onWebPaymentNavigationFinished',
+  [FlowEventId.DidRequestAppReview]: () => 'onRequestAppReview',
+  [FlowEventId.DidReceiveAnalyticEvent]: () => 'onAnalytics',
 };
 
 /**
@@ -59,6 +61,8 @@ export const HANDLER_TO_NATIVE_EVENT: Record<EventName, FlowEventIdType> = {
   onError: FlowEventId.DidReceiveError,
   onLoadingProductsFailed: FlowEventId.DidFailLoadingProducts,
   onWebPaymentNavigationFinished: FlowEventId.DidFinishWebPaymentNavigation,
+  onRequestAppReview: FlowEventId.DidRequestAppReview,
+  onAnalytics: FlowEventId.DidReceiveAnalyticEvent,
 };
 
 type ExtractedArgs<T extends keyof FlowEventHandlers> = Parameters<
@@ -104,6 +108,10 @@ export function extractFlowCallbackArgs<T extends keyof FlowEventHandlers>(
     case FlowEventId.DidFinishWebPaymentNavigation:
       return [event.product, event.error] as unknown as ExtractedArgs<T>;
 
+    case FlowEventId.DidReceiveAnalyticEvent:
+      return [event.name, event.params] as ExtractedArgs<T>;
+
+    case FlowEventId.DidRequestAppReview:
     case FlowEventId.DidAppear:
     case FlowEventId.DidDisappear:
     case FlowEventId.DidStartRestore:

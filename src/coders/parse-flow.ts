@@ -35,6 +35,8 @@ export {
   type FlowDidReceiveErrorEvent,
   type FlowDidFailLoadingProductsEvent,
   type FlowDidFinishWebPaymentNavigationEvent,
+  type FlowDidRequestAppReviewEvent,
+  type FlowDidReceiveAnalyticEvent,
   type ParsedFlowEvent,
 } from '@/types/flow-events';
 
@@ -209,6 +211,20 @@ export function parseFlowEvent(
               return errorCoder.getError(decodedError);
             })()
           : undefined,
+      };
+
+    case FlowEventId.DidRequestAppReview:
+      return {
+        id: eventId,
+        view,
+      };
+
+    case FlowEventId.DidReceiveAnalyticEvent:
+      return {
+        id: eventId,
+        view,
+        name: (obj['name'] as string) ?? '',
+        params: (obj['params'] as Record<string, unknown>) ?? {},
       };
 
     default:

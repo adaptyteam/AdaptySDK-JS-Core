@@ -21,6 +21,8 @@ export const FlowEventId = {
   DidReceiveError: 'flow_view_did_receive_error',
   DidFailLoadingProducts: 'flow_view_did_fail_loading_products',
   DidFinishWebPaymentNavigation: 'flow_view_did_finish_web_payment_navigation',
+  DidRequestAppReview: 'flow_view_did_request_app_review',
+  DidReceiveAnalyticEvent: 'flow_view_did_receive_analytic_event',
 } as const;
 
 export type FlowEventIdType = (typeof FlowEventId)[keyof typeof FlowEventId];
@@ -110,6 +112,16 @@ export interface FlowDidFinishWebPaymentNavigationEvent extends BaseFlowEvent {
   error?: AdaptyError;
 }
 
+export interface FlowDidRequestAppReviewEvent extends BaseFlowEvent {
+  id: typeof FlowEventId.DidRequestAppReview;
+}
+
+export interface FlowDidReceiveAnalyticEvent extends BaseFlowEvent {
+  id: typeof FlowEventId.DidReceiveAnalyticEvent;
+  name: string;
+  params: Record<string, unknown>;
+}
+
 export type ParsedFlowEvent =
   | FlowDidAppearEvent
   | FlowDidDisappearEvent
@@ -123,4 +135,6 @@ export type ParsedFlowEvent =
   | FlowDidFailRestoreEvent
   | FlowDidReceiveErrorEvent
   | FlowDidFailLoadingProductsEvent
-  | FlowDidFinishWebPaymentNavigationEvent;
+  | FlowDidFinishWebPaymentNavigationEvent
+  | FlowDidRequestAppReviewEvent
+  | FlowDidReceiveAnalyticEvent;

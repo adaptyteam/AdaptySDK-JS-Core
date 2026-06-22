@@ -164,6 +164,28 @@ export interface FlowEventHandlers {
    *                 `'browser_out_app'` (default) — external browser (e.g. `Linking.openURL`)
    */
   onUrlPress: (url: string, openIn: WebPresentation) => EventHandlerResult;
+  /**
+   * Called when the flow view asks the host app to show the native
+   * app review prompt (e.g. `SKStoreReviewController` on iOS,
+   * In-App Review on Android).
+   *
+   * This is a notification: returning `true` would close the view,
+   * but for an app-review prompt you almost always want to keep it open.
+   */
+  onRequestAppReview: () => EventHandlerResult;
+  /**
+   * Called when the flow view reports an analytics event.
+   *
+   * This is a notification: the return value follows the standard
+   * close-on-`true` contract, but you normally keep the view open.
+   *
+   * @param name - analytics event name
+   * @param params - arbitrary event parameters
+   */
+  onAnalytics: (
+    name: string,
+    params: Record<string, unknown>,
+  ) => EventHandlerResult;
 }
 
 export interface OnboardingEventHandlers {
