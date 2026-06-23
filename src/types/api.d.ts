@@ -108,6 +108,24 @@ export interface components {
       ]
     >;
 
+    'AdaptyUIOpenUrl.Request': {
+      method: 'adapty_ui_open_url';
+      url: string;
+      open_in?: components['defs']['AdaptyWebPresentation'];
+    };
+
+    'AdaptyUIOpenUrl.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'AdaptyUIRequestAppReview.Request': {
+      method: 'adapty_ui_request_app_review';
+    };
+
+    'AdaptyUIRequestAppReview.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'GetOnboarding.Request': {
       method: 'get_onboarding';
       placement_id: string;
@@ -427,7 +445,7 @@ export interface components {
       id: 'flow_view_did_request_permission';
       view: components['defs']['AdaptyUI.FlowView'];
       request_id: string;
-      permission: string;
+      permission: components['defs']['AdaptyUI.Permission'];
       custom_args?: {
         [key: string]: string;
       };
@@ -1010,6 +1028,30 @@ export interface components {
         },
       ]
     >;
+
+    'AdaptyUI.Permission':
+      | 'push'
+      | 'camera'
+      | 'microphone'
+      | 'location_when_use'
+      | 'location_always'
+      | 'location_full_accuracy'
+      | 'photos'
+      | 'contacts'
+      | 'tracking'
+      | 'calendar'
+      | 'bluetooth'
+      | 'motion'
+      | 'reminders'
+      | 'speech'
+      | 'media_library'
+      | 'local_network'
+      | 'focus_status'
+      | 'homekit'
+      | 'health'
+      | 'siri'
+      | 'music'
+      | string;
 
     'AdaptyUI.CustomTagsValues': {
       [key: string]: string;
