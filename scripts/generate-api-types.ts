@@ -40,6 +40,7 @@ interface SchemaNode {
   required?: string[];
   additionalProperties?: SchemaNode | boolean;
   oneOf?: SchemaNode[];
+  anyOf?: SchemaNode[];
   items?: SchemaNode;
   nullable?: boolean;
   default?: unknown;
@@ -138,6 +139,17 @@ function resolveType(node: SchemaNode, depth: number): string {
       return renderPrimitiveUnion(node.oneOf);
     }
     return renderOneOf(node.oneOf, depth);
+  }
+
+  // Pure anyOf (inclusive union, e.g. an open enum: string-enum + string).
+  // Unlike oneOf, an anyOf value may satisfy more than one branch, so it
+  // maps to a plain `|` union rather than the exclusive OneOf<> helper.
+  if (node.anyOf && !node.properties && node.type !== 'object') {
+    // Special case: anyOf of primitives/enums → simple union
+    if (isPrimitiveOneOf(node.anyOf)) {
+      return renderPrimitiveUnion(node.anyOf);
+    }
+    return renderAnyOf(node.anyOf, depth);
   }
 
   // type: object
@@ -399,6 +411,15 @@ function renderMultiLineOneOfExpanded(
   lines.push(`${indent(depth + 1)}]`);
   lines.push(`${indent(depth)}>`);
   return lines.join('\n');
+}
+
+/**
+ * Renders an inclusive union for `anyOf` as `A | B | ...`.
+ * Unlike `oneOf`, an `anyOf` value may satisfy more than one branch, so it
+ * maps to a plain union rather than the exclusive `OneOf<>` helper.
+ */
+function renderAnyOf(variants: SchemaNode[], depth: number): string {
+  return variants.map(v => renderVariant(v, depth)).join(' | ');
 }
 
 /**
