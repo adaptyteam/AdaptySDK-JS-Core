@@ -36,7 +36,7 @@ export type FlowEventIdType = (typeof FlowEventId)[keyof typeof FlowEventId];
  * values pass through unchanged. The `(string & {})` keeps the known values as
  * autocomplete hints while still accepting arbitrary strings.
  */
-export type AdaptyFlowPermission =
+export type AdaptyPermission =
   | 'push'
   | 'camera'
   | 'microphone'
@@ -160,7 +160,7 @@ export interface FlowDidRequestPermissionEvent extends BaseFlowEvent {
   /** Correlation id — sent back to native in the response. SDK-internal. */
   requestId: string;
   /** Permission identifier the flow view asks the host to request. */
-  permission: AdaptyFlowPermission;
+  permission: AdaptyPermission;
   /** Arbitrary string key/value args attached by the dashboard. */
   customArgs: Record<string, string>;
 }
