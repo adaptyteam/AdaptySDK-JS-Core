@@ -39,6 +39,8 @@ export const MethodNames = [
   'update_profile',
   'update_refund_preference',
   'did_request_permission_response',
+  'adapty_ui_open_url',
+  'adapty_ui_request_app_review',
 ] as const;
 export type MethodName = (typeof MethodNames)[number];
 

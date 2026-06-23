@@ -28,6 +28,38 @@ export const FlowEventId = {
 
 export type FlowEventIdType = (typeof FlowEventId)[keyof typeof FlowEventId];
 
+/**
+ * Permission identifier a flow view asks the host app to request.
+ *
+ * The literals below are the known cross-platform set; any string is valid —
+ * unknown or platform-specific ids (e.g. Android `'phone'`, `'sms'`) and future
+ * values pass through unchanged. The `(string & {})` keeps the known values as
+ * autocomplete hints while still accepting arbitrary strings.
+ */
+export type AdaptyFlowPermission =
+  | 'push'
+  | 'camera'
+  | 'microphone'
+  | 'location_when_use'
+  | 'location_always'
+  | 'location_full_accuracy'
+  | 'photos'
+  | 'contacts'
+  | 'tracking'
+  | 'calendar'
+  | 'bluetooth'
+  | 'motion'
+  | 'reminders'
+  | 'speech'
+  | 'media_library'
+  | 'local_network'
+  | 'focus_status'
+  | 'homekit'
+  | 'health'
+  | 'siri'
+  | 'music'
+  | (string & {});
+
 // Event View
 export interface FlowEventView {
   id: string;
@@ -128,7 +160,7 @@ export interface FlowDidRequestPermissionEvent extends BaseFlowEvent {
   /** Correlation id — sent back to native in the response. SDK-internal. */
   requestId: string;
   /** Permission identifier the flow view asks the host to request. */
-  permission: string;
+  permission: AdaptyFlowPermission;
   /** Arbitrary string key/value args attached by the dashboard. */
   customArgs: Record<string, string>;
 }

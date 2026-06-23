@@ -7,6 +7,7 @@ import {
   WebPresentation,
 } from '@/types';
 import { FileLocation, MakePurchaseParamsInput } from '@/types/inputs';
+import type { AdaptyFlowPermission } from '@/types/flow-events';
 
 /**
  * @internal
@@ -208,7 +209,7 @@ export interface FlowEventHandlers {
    * @param customArgs - arbitrary string args configured in the dashboard
    */
   onRequestPermission: (
-    permission: string,
+    permission: AdaptyFlowPermission,
     customArgs: Record<string, string>,
   ) => Promise<FlowPermissionResponse>;
 }
