@@ -272,9 +272,13 @@ export interface components {
 
     'OpenWebPaywall.Request': {
       method: 'open_web_paywall';
-      product: components['defs']['AdaptyPaywallProduct.Request'];
       open_in?: components['defs']['AdaptyWebPresentation'];
-    };
+    } & OneOf<
+      [
+        { product: components['defs']['AdaptyPaywallProduct.Request'] },
+        { flow: components['defs']['AdaptyFlow'] },
+      ]
+    >;
 
     'OpenWebPaywall.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
@@ -282,8 +286,12 @@ export interface components {
 
     'CreateWebPaywallUrl.Request': {
       method: 'create_web_paywall_url';
-      product: components['defs']['AdaptyPaywallProduct.Request'];
-    };
+    } & OneOf<
+      [
+        { product: components['defs']['AdaptyPaywallProduct.Request'] },
+        { flow: components['defs']['AdaptyFlow'] },
+      ]
+    >;
 
     'CreateWebPaywallUrl.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: string }]
