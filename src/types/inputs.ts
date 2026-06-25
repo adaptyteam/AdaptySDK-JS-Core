@@ -125,12 +125,6 @@ export interface ActivateParamsInput {
   mediaCache?: AdaptyUiMediaCache;
 
   /**
-   * Locks methods threads until the SDK is ready.
-   * @defaultValue `false`
-   * @deprecated Turned on by default
-   */
-  lockMethodsUntilReady?: boolean;
-  /**
    * Does not activate SDK until any other method is called
    * Fixes annoying iOS simulator auhtentication
    */
