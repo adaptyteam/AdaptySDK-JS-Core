@@ -45,17 +45,4 @@ export class AdaptyFlowCoder extends SimpleCoder<Model, Serializable> {
     },
     payloadData: { key: 'payload_data', required: false, type: 'string' },
   };
-
-  override decode(data: Serializable): Model {
-    const model = super.decode(data);
-    // A variation's placement is a property of the parent flow and is not
-    // emitted per variation on the wire — inject the flow placement on decode.
-    return {
-      ...model,
-      variations: model.variations.map(variation => ({
-        ...variation,
-        placement: model.placement,
-      })),
-    };
-  }
 }

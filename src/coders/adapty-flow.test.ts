@@ -28,6 +28,7 @@ const mocks: Def['AdaptyFlow'][] = [
     payload_data: 'additionalData',
     variations: [
       {
+        placement,
         paywall_id: 'pw1',
         paywall_name: 'Paywall1',
         variation_id: 'var001',
@@ -76,11 +77,8 @@ function toModel(mock: (typeof mocks)[number]): Model {
       remoteConfigs: _remoteConfigs.decode(mock.remote_configs),
     }),
     ...(mock.flow_version_id && { flowVersionId: mock.flow_version_id }),
-    // The flow placement is injected into every variation on decode.
-    variations: _variations.decode(mock.variations).map(variation => ({
-      ...variation,
-      placement: decodedPlacement,
-    })),
+    // Each variation now carries its own placement on the wire.
+    variations: _variations.decode(mock.variations),
     responseCreatedAt: mock.response_created_at,
     ...(mock.payload_data && { payloadData: mock.payload_data }),
   };
