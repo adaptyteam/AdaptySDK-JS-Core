@@ -23,7 +23,7 @@ export const FlowEventId = {
   DidFinishWebPaymentNavigation: 'flow_view_did_finish_web_payment_navigation',
   DidRequestAppReview: 'flow_view_did_request_app_review',
   DidReceiveAnalyticEvent: 'flow_view_did_receive_analytic_event',
-  DidRequestPermission: 'flow_view_did_request_permission',
+  DidAskPermission: 'flow_view_did_ask_permission',
 } as const;
 
 export type FlowEventIdType = (typeof FlowEventId)[keyof typeof FlowEventId];
@@ -155,10 +155,10 @@ export interface FlowDidReceiveAnalyticEvent extends BaseFlowEvent {
   params: Record<string, unknown>;
 }
 
-export interface FlowDidRequestPermissionEvent extends BaseFlowEvent {
-  id: typeof FlowEventId.DidRequestPermission;
+export interface FlowDidAskPermissionEvent extends BaseFlowEvent {
+  id: typeof FlowEventId.DidAskPermission;
   /** Correlation id — sent back to native in the response. SDK-internal. */
-  requestId: string;
+  eventId: string;
   /** Permission identifier the flow view asks the host to request. */
   permission: AdaptyPermission;
   /** Arbitrary string key/value args attached by the dashboard. */
@@ -181,4 +181,4 @@ export type ParsedFlowEvent =
   | FlowDidFinishWebPaymentNavigationEvent
   | FlowDidRequestAppReviewEvent
   | FlowDidReceiveAnalyticEvent
-  | FlowDidRequestPermissionEvent;
+  | FlowDidAskPermissionEvent;

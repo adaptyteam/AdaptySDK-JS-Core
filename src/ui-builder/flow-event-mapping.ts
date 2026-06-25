@@ -38,7 +38,7 @@ export const NATIVE_EVENT_RESOLVER: Record<
     'onWebPaymentNavigationFinished',
   [FlowEventId.DidRequestAppReview]: () => 'onRequestAppReview',
   [FlowEventId.DidReceiveAnalyticEvent]: () => 'onAnalytics',
-  [FlowEventId.DidRequestPermission]: () => 'onRequestPermission',
+  [FlowEventId.DidAskPermission]: () => 'onRequestPermission',
 };
 
 /**
@@ -64,7 +64,7 @@ export const HANDLER_TO_NATIVE_EVENT: Record<EventName, FlowEventIdType> = {
   onWebPaymentNavigationFinished: FlowEventId.DidFinishWebPaymentNavigation,
   onRequestAppReview: FlowEventId.DidRequestAppReview,
   onAnalytics: FlowEventId.DidReceiveAnalyticEvent,
-  onRequestPermission: FlowEventId.DidRequestPermission,
+  onRequestPermission: FlowEventId.DidAskPermission,
 };
 
 type ExtractedArgs<T extends keyof FlowEventHandlers> = Parameters<
@@ -113,7 +113,7 @@ export function extractFlowCallbackArgs<T extends keyof FlowEventHandlers>(
     case FlowEventId.DidReceiveAnalyticEvent:
       return [event.name, event.params] as ExtractedArgs<T>;
 
-    case FlowEventId.DidRequestPermission:
+    case FlowEventId.DidAskPermission:
       return [event.permission, event.customArgs] as ExtractedArgs<T>;
 
     case FlowEventId.DidRequestAppReview:

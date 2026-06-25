@@ -38,7 +38,7 @@ export const MethodNames = [
   'update_collecting_refund_data_consent',
   'update_profile',
   'update_refund_preference',
-  'did_request_permission_response',
+  'flow_view_did_answer_permission',
   'adapty_ui_open_url',
   'adapty_ui_request_app_review',
 ] as const;

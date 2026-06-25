@@ -58,28 +58,28 @@ describe('flow-event-mapping — notification events', () => {
 describe('flow-event-mapping — onRequestPermission', () => {
   it('resolves the permission native event to onRequestPermission', () => {
     const event = {
-      id: FlowEventId.DidRequestPermission,
+      id: FlowEventId.DidAskPermission,
       view: { id: 'v' },
-      requestId: 'req-1',
+      eventId: 'evt-1',
       permission: 'notifications',
       customArgs: { a: 'b' },
     } as const;
 
-    const resolver = NATIVE_EVENT_RESOLVER[FlowEventId.DidRequestPermission];
+    const resolver = NATIVE_EVENT_RESOLVER[FlowEventId.DidAskPermission];
     expect(resolver(event)).toBe('onRequestPermission');
   });
 
   it('maps the handler back to the permission native event', () => {
     expect(HANDLER_TO_NATIVE_EVENT.onRequestPermission).toBe(
-      FlowEventId.DidRequestPermission,
+      FlowEventId.DidAskPermission,
     );
   });
 
-  it('extracts [permission, customArgs] (request id stays hidden)', () => {
+  it('extracts [permission, customArgs] (event id stays hidden)', () => {
     const event = {
-      id: FlowEventId.DidRequestPermission,
+      id: FlowEventId.DidAskPermission,
       view: { id: 'v' },
-      requestId: 'req-1',
+      eventId: 'evt-1',
       permission: 'notifications',
       customArgs: { source: 'onboarding' },
     } as const;
