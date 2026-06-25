@@ -95,12 +95,6 @@ export interface AdaptyFlowPaywall {
    */
   readonly variationId: string;
   /**
-   * Array of initial products info
-   * @readonly
-   * @deprecated Use {@link AdaptyFlowPaywall.productIdentifiers} instead
-   */
-  readonly products: ProductReference[];
-  /**
    * Array of product identifiers for this paywall
    * @readonly
    */

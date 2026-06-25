@@ -61,6 +61,8 @@ const mocks: Def['AdaptyFlowPaywall'][] = [
 function toModel(mock: (typeof mocks)[number]): Model {
   const _products = new ArrayCoder(() => new ProductReferenceCoder());
 
+  // `products` is kept on the runtime object (matching the coder's decode
+  // output) but is not part of the public `Model` type — hence the cast.
   return {
     placement: {
       abTestName: mock.placement.ab_test_name,
@@ -82,7 +84,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
     })),
     variationId: mock.variation_id,
     ...(mock.web_purchase_url && { webPurchaseUrl: mock.web_purchase_url }),
-  };
+  } as Model;
 }
 
 describe('AdaptyFlowPaywallCoder', () => {
