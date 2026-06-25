@@ -225,70 +225,13 @@ export interface AdaptyAndroidPurchaseParams {
   isOfferPersonalized?: boolean;
 }
 
-export interface AdaptyAndroidSubscriptionUpdateParameters {
-  oldSubVendorProductId: string;
-  prorationMode: AdaptyAndroidSubscriptionUpdateReplacementMode;
+export type MakePurchaseParamsInput = {
   /**
-   * @deprecated Use {@link AdaptyAndroidPurchaseParams.isOfferPersonalized} instead.
-   * This field has been moved to the upper level in the new structure.
-   *
-   * @example
-   * // OLD (deprecated):
-   * android: {
-   *   oldSubVendorProductId: 'old_product_id',
-   *   prorationMode: 'charge_prorated_price',
-   *   isOfferPersonalized: true  // This field is deprecated
-   * }
-   *
-   * // NEW:
-   * android: {
-   *   subscriptionUpdateParams: {
-   *     oldSubVendorProductId: 'old_product_id',
-   *     prorationMode: 'charge_prorated_price'
-   *   },
-   *   isOfferPersonalized: true  // Moved to upper level
-   * }
+   * Android purchase parameters
+   * @platform android
    */
-  isOfferPersonalized?: boolean;
-}
-
-export type MakePurchaseParamsInput =
-  | {
-      /**
-       * Android purchase parameters
-       * @platform android
-       */
-      android?: AdaptyAndroidPurchaseParams;
-    }
-  | {
-      /**
-       * @deprecated Use the new parameter structure instead
-       *
-       * @example
-       * // OLD (deprecated):
-       * makePurchase(product, {
-       *   android: {
-       *     oldSubVendorProductId: 'old_product_id',
-       *     prorationMode: 'charge_prorated_price',
-       *     isOfferPersonalized: true
-       *   }
-       * });
-       *
-       * // NEW:
-       * makePurchase(product, {
-       *   android: {
-       *     subscriptionUpdateParams: {
-       *       oldSubVendorProductId: 'old_product_id',
-       *       prorationMode: 'charge_prorated_price'
-       *     },
-       *     isOfferPersonalized: true,  // Note: moved to upper level
-       *   }
-       * });
-       *
-       * @platform android
-       */
-      android?: AdaptyAndroidSubscriptionUpdateParameters;
-    };
+  android?: AdaptyAndroidPurchaseParams;
+};
 
 export type FileLocation = {
   ios: {
