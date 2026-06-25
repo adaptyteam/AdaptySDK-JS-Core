@@ -276,7 +276,7 @@ export interface components {
     } & OneOf<
       [
         { product: components['defs']['AdaptyPaywallProduct.Request'] },
-        { flow: components['defs']['AdaptyFlow'] },
+        { paywall: components['defs']['AdaptyFlowPaywall'] },
       ]
     >;
 
@@ -289,7 +289,7 @@ export interface components {
     } & OneOf<
       [
         { product: components['defs']['AdaptyPaywallProduct.Request'] },
-        { flow: components['defs']['AdaptyFlow'] },
+        { paywall: components['defs']['AdaptyFlowPaywall'] },
       ]
     >;
 
@@ -401,20 +401,20 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'DidRequestPermissionResponse.Request': {
-      method: 'did_request_permission_response';
-      request_id: string;
+    'FlowViewDidAnswerPermission.Request': {
+      method: 'flow_view_did_answer_permission';
+      event_id: string;
       status: 'granted' | 'denied' | 'unavailable';
       detail?: string;
     };
 
-    'DidRequestPermissionResponse.Response': OneOf<
+    'FlowViewDidAnswerPermission.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
     'ObserverPurchaseDidStart.Request': {
       method: 'observer_purchase_did_start';
-      request_id: string;
+      event_id: string;
     };
 
     'ObserverPurchaseDidStart.Response': OneOf<
@@ -423,7 +423,7 @@ export interface components {
 
     'ObserverPurchaseDidFinish.Request': {
       method: 'observer_purchase_did_finish';
-      request_id: string;
+      event_id: string;
     };
 
     'ObserverPurchaseDidFinish.Response': OneOf<
@@ -432,7 +432,7 @@ export interface components {
 
     'ObserverRestoreDidStart.Request': {
       method: 'observer_restore_did_start';
-      request_id: string;
+      event_id: string;
     };
 
     'ObserverRestoreDidStart.Response': OneOf<
@@ -441,7 +441,7 @@ export interface components {
 
     'ObserverRestoreDidFinish.Request': {
       method: 'observer_restore_did_finish';
-      request_id: string;
+      event_id: string;
     };
 
     'ObserverRestoreDidFinish.Response': OneOf<
@@ -449,10 +449,10 @@ export interface components {
     >;
   };
   events: {
-    'FlowViewEvent.DidRequestPermission': {
-      id: 'flow_view_did_request_permission';
+    'FlowViewEvent.DidAskPermission': {
+      id: 'flow_view_did_ask_permission';
       view: components['defs']['AdaptyUI.FlowView'];
-      request_id: string;
+      event_id: string;
       permission: components['defs']['AdaptyUI.Permission'];
       custom_args?: {
         [key: string]: string;
@@ -467,14 +467,14 @@ export interface components {
     'FlowViewEvent.ObserverDidInitiatePurchase': {
       id: 'flow_view_observer_did_initiate_purchase';
       view: components['defs']['AdaptyUI.FlowView'];
-      request_id: string;
+      event_id: string;
       product: components['defs']['AdaptyPaywallProduct.Response'];
     };
 
     'FlowViewEvent.ObserverDidInitiateRestore': {
       id: 'flow_view_observer_did_initiate_restore';
       view: components['defs']['AdaptyUI.FlowView'];
-      request_id: string;
+      event_id: string;
     };
 
     'FlowViewEvent.DidReceiveAnalyticEvent': {
@@ -805,7 +805,7 @@ export interface components {
     };
 
     AdaptyFlowPaywall: {
-      placement?: components['defs']['AdaptyPlacement'];
+      placement: components['defs']['AdaptyPlacement'];
       paywall_id: string;
       paywall_name: string;
       variation_id: string;
