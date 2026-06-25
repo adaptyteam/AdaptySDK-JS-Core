@@ -32,7 +32,7 @@ export class AdaptyFlowCoder extends SimpleCoder<Model, Serializable> {
       required: false,
       type: 'string',
     },
-    variations: {
+    paywalls: {
       key: 'variations',
       required: true,
       type: 'array',

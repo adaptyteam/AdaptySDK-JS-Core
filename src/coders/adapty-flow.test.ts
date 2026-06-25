@@ -55,7 +55,7 @@ const mocks: Def['AdaptyFlow'][] = [
 
 function toModel(mock: (typeof mocks)[number]): Model {
   const _remoteConfigs = new ArrayCoder(() => new AdaptyRemoteConfigCoder());
-  const _variations = new ArrayCoder(() => new AdaptyFlowPaywallCoder());
+  const _paywalls = new ArrayCoder(() => new AdaptyFlowPaywallCoder());
 
   const decodedPlacement = {
     abTestName: mock.placement.ab_test_name,
@@ -78,7 +78,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
     }),
     ...(mock.flow_version_id && { flowVersionId: mock.flow_version_id }),
     // Each variation now carries its own placement on the wire.
-    variations: _variations.decode(mock.variations),
+    paywalls: _paywalls.decode(mock.variations),
     responseCreatedAt: mock.response_created_at,
     ...(mock.payload_data && { payloadData: mock.payload_data }),
   };

@@ -138,7 +138,7 @@ export interface AdaptyFlow {
    * Paywall variations contained in this flow.
    * @readonly
    */
-  readonly variations: AdaptyFlowPaywall[];
+  readonly paywalls: AdaptyFlowPaywall[];
 
   id: string;
   flowVersionId?: string;
