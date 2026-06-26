@@ -231,6 +231,11 @@ export interface FlowEventHandlers {
    * (`activate(apiKey, { observerMode: true })`). Without it, Adapty handles
    * purchases itself and this event is never emitted.
    *
+   * Adapty does not see the purchase you make, so after it succeeds you must
+   * report the transaction to Adapty yourself (e.g. via `reportTransaction`). The
+   * `onStartPurchase`/`onFinishPurchase` callbacks only drive the paywall's
+   * loading UI;
+   *
    * @param product - product the user initiated the purchase for
    * @param onStartPurchase - notify the paywall the purchase started
    * @param onFinishPurchase - notify the paywall the purchase finished
@@ -250,6 +255,11 @@ export interface FlowEventHandlers {
    * Fires only when the SDK was activated in observer mode
    * (`activate(apiKey, { observerMode: true })`). Without it, Adapty handles
    * restores itself and this event is never emitted.
+   *
+   * Report any transactions surfaced by the restore to Adapty yourself (e.g.
+   * via `reportTransaction`) so they flow into events and analytics. The
+   * `onStartRestore`/`onFinishRestore` callbacks only drive the paywall's
+   * loading UI; they do not report anything.
    *
    * @param onStartRestore - notify the paywall the restore started
    * @param onFinishRestore - notify the paywall the restore finished
