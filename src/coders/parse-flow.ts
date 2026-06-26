@@ -38,6 +38,8 @@ export {
   type FlowDidRequestAppReviewEvent,
   type FlowDidReceiveAnalyticEvent,
   type FlowDidAskPermissionEvent,
+  type FlowObserverDidInitiatePurchaseEvent,
+  type FlowObserverDidInitiateRestoreEvent,
   type ParsedFlowEvent,
 } from '@/types/flow-events';
 
@@ -244,6 +246,23 @@ export function parseFlowEvent(
           typeof obj['custom_args'] === 'object' && obj['custom_args'] !== null
             ? (obj['custom_args'] as Record<string, string>)
             : {},
+      };
+
+    case FlowEventId.ObserverDidInitiatePurchase:
+      return {
+        id: eventId,
+        view,
+        eventId: typeof obj['event_id'] === 'string' ? obj['event_id'] : '',
+        product: getFlowCoder(factory, 'product', ctx)!.decode(
+          obj['product'],
+        ) as AdaptyPaywallProduct,
+      };
+
+    case FlowEventId.ObserverDidInitiateRestore:
+      return {
+        id: eventId,
+        view,
+        eventId: typeof obj['event_id'] === 'string' ? obj['event_id'] : '',
       };
 
     default:

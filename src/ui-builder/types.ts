@@ -212,6 +212,52 @@ export interface FlowEventHandlers {
     permission: AdaptyPermission,
     customArgs: Record<string, string>,
   ) => Promise<FlowPermissionResponse>;
+  /**
+   * Called in **observer mode** when the user taps the purchase button inside
+   * an Adapty-rendered flow (paywall) view. Adapty does NOT make the purchase —
+   * your app performs it through its own purchase API. Drive the paywall's
+   * loading state with the two provided callbacks:
+   *
+   * - call `onStartPurchase()` right before you begin the purchase (shows the
+   *   paywall's loading indicator);
+   * - call `onFinishPurchase()` once it settles, success or failure (hides it).
+   *
+   * The return value follows the standard close-on-`true` contract; you
+   * normally keep the view open (`false`) and dismiss it yourself after the
+   * purchase succeeds.
+   *
+   * @remarks
+   * Fires only when the SDK was activated in observer mode
+   * (`activate(apiKey, { observerMode: true })`). Without it, Adapty handles
+   * purchases itself and this event is never emitted.
+   *
+   * @param product - product the user initiated the purchase for
+   * @param onStartPurchase - notify the paywall the purchase started
+   * @param onFinishPurchase - notify the paywall the purchase finished
+   */
+  onObserverPurchaseInitiated: (
+    product: AdaptyPaywallProduct,
+    onStartPurchase: () => void,
+    onFinishPurchase: () => void,
+  ) => EventHandlerResult;
+  /**
+   * Called in **observer mode** when the user taps the restore button inside an
+   * Adapty-rendered flow (paywall) view. Adapty does NOT restore — your app
+   * performs it through its own API. Drive the paywall's loading state with the
+   * two provided callbacks (`onStartRestore()` / `onFinishRestore()`).
+   *
+   * @remarks
+   * Fires only when the SDK was activated in observer mode
+   * (`activate(apiKey, { observerMode: true })`). Without it, Adapty handles
+   * restores itself and this event is never emitted.
+   *
+   * @param onStartRestore - notify the paywall the restore started
+   * @param onFinishRestore - notify the paywall the restore finished
+   */
+  onObserverRestoreInitiated: (
+    onStartRestore: () => void,
+    onFinishRestore: () => void,
+  ) => EventHandlerResult;
 }
 
 export interface OnboardingEventHandlers {

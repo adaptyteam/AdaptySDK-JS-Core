@@ -24,6 +24,8 @@ export const FlowEventId = {
   DidRequestAppReview: 'flow_view_did_request_app_review',
   DidReceiveAnalyticEvent: 'flow_view_did_receive_analytic_event',
   DidAskPermission: 'flow_view_did_ask_permission',
+  ObserverDidInitiatePurchase: 'flow_view_observer_did_initiate_purchase',
+  ObserverDidInitiateRestore: 'flow_view_observer_did_initiate_restore',
 } as const;
 
 export type FlowEventIdType = (typeof FlowEventId)[keyof typeof FlowEventId];
@@ -165,6 +167,20 @@ export interface FlowDidAskPermissionEvent extends BaseFlowEvent {
   customArgs: Record<string, string>;
 }
 
+export interface FlowObserverDidInitiatePurchaseEvent extends BaseFlowEvent {
+  id: typeof FlowEventId.ObserverDidInitiatePurchase;
+  /** Correlation id — sent back to native in the reply. SDK-internal. */
+  eventId: string;
+  /** Product the user initiated the purchase for. */
+  product: AdaptyPaywallProduct;
+}
+
+export interface FlowObserverDidInitiateRestoreEvent extends BaseFlowEvent {
+  id: typeof FlowEventId.ObserverDidInitiateRestore;
+  /** Correlation id — sent back to native in the reply. SDK-internal. */
+  eventId: string;
+}
+
 export type ParsedFlowEvent =
   | FlowDidAppearEvent
   | FlowDidDisappearEvent
@@ -181,4 +197,6 @@ export type ParsedFlowEvent =
   | FlowDidFinishWebPaymentNavigationEvent
   | FlowDidRequestAppReviewEvent
   | FlowDidReceiveAnalyticEvent
-  | FlowDidAskPermissionEvent;
+  | FlowDidAskPermissionEvent
+  | FlowObserverDidInitiatePurchaseEvent
+  | FlowObserverDidInitiateRestoreEvent;

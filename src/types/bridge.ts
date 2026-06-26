@@ -41,6 +41,10 @@ export const MethodNames = [
   'flow_view_did_answer_permission',
   'adapty_ui_open_url',
   'adapty_ui_request_app_review',
+  'observer_purchase_did_start',
+  'observer_purchase_did_finish',
+  'observer_restore_did_start',
+  'observer_restore_did_finish',
 ] as const;
 export type MethodName = (typeof MethodNames)[number];
 

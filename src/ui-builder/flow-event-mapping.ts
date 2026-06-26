@@ -39,6 +39,9 @@ export const NATIVE_EVENT_RESOLVER: Record<
   [FlowEventId.DidRequestAppReview]: () => 'onRequestAppReview',
   [FlowEventId.DidReceiveAnalyticEvent]: () => 'onAnalytics',
   [FlowEventId.DidAskPermission]: () => 'onRequestPermission',
+  [FlowEventId.ObserverDidInitiatePurchase]: () =>
+    'onObserverPurchaseInitiated',
+  [FlowEventId.ObserverDidInitiateRestore]: () => 'onObserverRestoreInitiated',
 };
 
 /**
@@ -65,6 +68,8 @@ export const HANDLER_TO_NATIVE_EVENT: Record<EventName, FlowEventIdType> = {
   onRequestAppReview: FlowEventId.DidRequestAppReview,
   onAnalytics: FlowEventId.DidReceiveAnalyticEvent,
   onRequestPermission: FlowEventId.DidAskPermission,
+  onObserverPurchaseInitiated: FlowEventId.ObserverDidInitiatePurchase,
+  onObserverRestoreInitiated: FlowEventId.ObserverDidInitiateRestore,
 };
 
 type ExtractedArgs<T extends keyof FlowEventHandlers> = Parameters<
@@ -115,6 +120,12 @@ export function extractFlowCallbackArgs<T extends keyof FlowEventHandlers>(
 
     case FlowEventId.DidAskPermission:
       return [event.permission, event.customArgs] as ExtractedArgs<T>;
+
+    case FlowEventId.ObserverDidInitiatePurchase:
+    case FlowEventId.ObserverDidInitiateRestore:
+      // Args (product + SDK-provided start/finish callbacks) are injected by
+      // the view emitter's dedicated observer branch, not here.
+      return [] as ExtractedArgs<T>;
 
     case FlowEventId.DidRequestAppReview:
     case FlowEventId.DidAppear:

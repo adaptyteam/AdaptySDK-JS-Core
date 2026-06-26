@@ -90,3 +90,43 @@ describe('flow-event-mapping — onRequestPermission', () => {
     ]);
   });
 });
+
+describe('flow-event-mapping — observer mode', () => {
+  it('resolves observer purchase native event to onObserverPurchaseInitiated', () => {
+    const resolver =
+      NATIVE_EVENT_RESOLVER[FlowEventId.ObserverDidInitiatePurchase];
+    expect(
+      resolver({ id: FlowEventId.ObserverDidInitiatePurchase } as any),
+    ).toBe('onObserverPurchaseInitiated');
+  });
+
+  it('resolves observer restore native event to onObserverRestoreInitiated', () => {
+    const resolver =
+      NATIVE_EVENT_RESOLVER[FlowEventId.ObserverDidInitiateRestore];
+    expect(
+      resolver({ id: FlowEventId.ObserverDidInitiateRestore } as any),
+    ).toBe('onObserverRestoreInitiated');
+  });
+
+  it('maps observer handlers back to their native events', () => {
+    expect(HANDLER_TO_NATIVE_EVENT.onObserverPurchaseInitiated).toBe(
+      FlowEventId.ObserverDidInitiatePurchase,
+    );
+    expect(HANDLER_TO_NATIVE_EVENT.onObserverRestoreInitiated).toBe(
+      FlowEventId.ObserverDidInitiateRestore,
+    );
+  });
+
+  it('extracts [] for observer events (args are injected by the emitter)', () => {
+    expect(
+      extractFlowCallbackArgs('onObserverPurchaseInitiated', {
+        id: FlowEventId.ObserverDidInitiatePurchase,
+      } as any),
+    ).toEqual([]);
+    expect(
+      extractFlowCallbackArgs('onObserverRestoreInitiated', {
+        id: FlowEventId.ObserverDidInitiateRestore,
+      } as any),
+    ).toEqual([]);
+  });
+});

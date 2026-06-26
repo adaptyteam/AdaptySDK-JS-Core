@@ -122,3 +122,69 @@ describe('parseFlowEvent — did_ask_permission', () => {
     });
   });
 });
+
+describe('parseFlowEvent — observer mode', () => {
+  const rawProduct = {
+    is_family_shareable: false,
+    localized_description: 'Get premium features with this plan',
+    localized_title: 'Yearly Premium Plan',
+    paywall_ab_test_name: 'abTest1',
+    paywall_name: 'Premium Subscription',
+    paywall_variation_id: 'variation1',
+    region_code: 'US',
+    payload_data: 'examplePayloadData',
+    vendor_product_id: 'yearly.premium.6999',
+    adapty_product_id: 'adapty_product_id',
+    access_level_id: 'access_level_id',
+    product_type: 'product_type',
+    paywall_product_index: 0,
+    web_purchase_url: 'https://example.com/purchase',
+    price: {
+      amount: 69.99,
+      currency_code: 'USD',
+      currency_symbol: '$',
+      localized_string: '$69.99',
+    },
+  };
+
+  it('parses flow_view_observer_did_initiate_purchase with event_id and product', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_observer_did_initiate_purchase',
+      view: rawView,
+      event_id: 'evt-1',
+      product: rawProduct,
+    });
+
+    const event = parseFlowEvent(factory, input);
+
+    expect(event).toMatchObject({
+      id: 'flow_view_observer_did_initiate_purchase',
+      view: decodedView,
+      eventId: 'evt-1',
+    });
+    expect((event as any).product.vendorProductId).toBe('yearly.premium.6999');
+  });
+
+  it('parses flow_view_observer_did_initiate_restore with event_id', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_observer_did_initiate_restore',
+      view: rawView,
+      event_id: 'evt-2',
+    });
+
+    expect(parseFlowEvent(factory, input)).toEqual({
+      id: 'flow_view_observer_did_initiate_restore',
+      view: decodedView,
+      eventId: 'evt-2',
+    });
+  });
+
+  it('defaults missing event_id to empty string', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_observer_did_initiate_restore',
+      view: { id: 'view-1' },
+    });
+
+    expect(parseFlowEvent(factory, input)).toMatchObject({ eventId: '' });
+  });
+});
