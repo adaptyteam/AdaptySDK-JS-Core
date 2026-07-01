@@ -388,6 +388,15 @@ export interface CreateFlowViewParamsInput {
   customAssets?: Record<string, AdaptyCustomAsset>;
 
   productPurchaseParams?: ProductPurchaseParams;
+
+  /**
+   * Android only. When `true`, the flow view applies safe-area paddings.
+   *
+   * @remarks
+   * Ignored on iOS. When omitted, the default is decided by the presenting
+   * API you use.
+   */
+  enableSafeArea?: boolean;
 }
 
 /**

@@ -21,6 +21,7 @@ type Serializable = {
   custom_timers?: Def['AdaptyUI.CustomTimersValues'];
   custom_assets?: Def['AdaptyUI.CustomAssets'];
   product_purchase_parameters?: Def['AdaptyUI.ProductPurchaseParameters'];
+  enable_safe_area_paddings?: boolean;
 };
 
 export class AdaptyUICreateFlowViewParamsCoder {
@@ -31,6 +32,10 @@ export class AdaptyUICreateFlowViewParamsCoder {
 
     if (data.prefetchProducts !== undefined) {
       result.preload_products = data.prefetchProducts;
+    }
+
+    if (data.enableSafeArea !== undefined) {
+      result.enable_safe_area_paddings = data.enableSafeArea;
     }
 
     if (data.loadTimeoutMs !== undefined) {

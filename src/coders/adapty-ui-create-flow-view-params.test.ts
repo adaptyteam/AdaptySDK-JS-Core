@@ -258,6 +258,21 @@ describe('AdaptyUICreateFlowViewParamsCoder', () => {
     );
   });
 
+  it('should encode enableSafeArea to enable_safe_area_paddings', () => {
+    expect(coder.encode({ enableSafeArea: true })).toEqual({
+      enable_safe_area_paddings: true,
+    });
+    expect(coder.encode({ enableSafeArea: false })).toEqual({
+      enable_safe_area_paddings: false,
+    });
+  });
+
+  it('should omit enable_safe_area_paddings when enableSafeArea is undefined', () => {
+    const input: CreateFlowViewParamsInput = { prefetchProducts: true };
+    const result = coder.encode(input);
+    expect(result).not.toHaveProperty('enable_safe_area_paddings');
+  });
+
   it('should handle empty input', () => {
     const input: CreateFlowViewParamsInput = {};
 
