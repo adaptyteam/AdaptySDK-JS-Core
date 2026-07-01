@@ -33,6 +33,7 @@ export interface components {
       custom_timers?: components['defs']['AdaptyUI.CustomTimersValues'];
       custom_assets?: components['defs']['AdaptyUI.CustomAssets'];
       product_purchase_parameters?: components['defs']['AdaptyUI.ProductPurchaseParameters'];
+      enable_safe_area_paddings?: boolean;
     };
 
     'AdaptyUICreateFlowView.Response': OneOf<
