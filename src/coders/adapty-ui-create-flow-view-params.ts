@@ -1,6 +1,6 @@
 import type { IPlatformAdapter } from '@/adapters/interfaces';
 import type {
-  CreatePaywallViewParamsInput,
+  CreateFlowViewParamsInput,
   AdaptyCustomAsset,
 } from '@/ui-builder/types';
 import type { FileLocation } from '@/types/inputs';
@@ -13,7 +13,7 @@ import {
   resolveAssetId,
 } from './utils';
 
-type Model = CreatePaywallViewParamsInput;
+type Model = CreateFlowViewParamsInput;
 type Serializable = {
   preload_products?: boolean;
   load_timeout?: number;
@@ -21,9 +21,10 @@ type Serializable = {
   custom_timers?: Def['AdaptyUI.CustomTimersValues'];
   custom_assets?: Def['AdaptyUI.CustomAssets'];
   product_purchase_parameters?: Def['AdaptyUI.ProductPurchaseParameters'];
+  enable_safe_area_paddings?: boolean;
 };
 
-export class AdaptyUICreatePaywallViewParamsCoder {
+export class AdaptyUICreateFlowViewParamsCoder {
   constructor(private readonly platform: IPlatformAdapter) {}
 
   encode(data: Model): Serializable {
@@ -31,6 +32,10 @@ export class AdaptyUICreatePaywallViewParamsCoder {
 
     if (data.prefetchProducts !== undefined) {
       result.preload_products = data.prefetchProducts;
+    }
+
+    if (data.enableSafeArea !== undefined) {
+      result.enable_safe_area_paddings = data.enableSafeArea;
     }
 
     if (data.loadTimeoutMs !== undefined) {
@@ -168,7 +173,7 @@ export class AdaptyUICreatePaywallViewParamsCoder {
   }
 
   private encodeProductPurchaseParams(
-    params: CreatePaywallViewParamsInput['productPurchaseParams'],
+    params: CreateFlowViewParamsInput['productPurchaseParams'],
   ): Def['AdaptyUI.ProductPurchaseParameters'] {
     if (!params) return {};
 

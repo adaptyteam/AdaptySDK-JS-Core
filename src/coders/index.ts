@@ -1,3 +1,3 @@
 export { parseMethodResult } from './parse';
-export { AdaptyUICreatePaywallViewParamsCoder } from './adapty-ui-create-paywall-view-params';
+export { AdaptyUICreateFlowViewParamsCoder } from './adapty-ui-create-flow-view-params';
 export { AdaptyUICreateOnboardingViewParamsCoder } from './adapty-ui-create-onboarding-view-params';

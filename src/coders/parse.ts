@@ -8,11 +8,10 @@ const AdaptyTypes = [
   'AdaptyError',
   'AdaptyProfile',
   'AdaptyPurchaseResult',
-  'AdaptyPaywall',
+  'AdaptyFlow',
   'AdaptyPaywallProduct',
   'AdaptyOnboarding',
   'AdaptyRemoteConfig',
-  'AdaptyPaywallBuilder',
   'AdaptyInstallationStatus',
   'AdaptyInstallationDetails',
   'AdaptyUiView',
@@ -133,14 +132,12 @@ function getCoder(
       return factory.createNativeErrorCoder();
     case 'AdaptyProfile':
       return factory.createProfileCoder();
-    case 'AdaptyPaywall':
-      return factory.createPaywallCoder();
+    case 'AdaptyFlow':
+      return factory.createFlowCoder();
     case 'AdaptyPaywallProduct':
       return factory.createPaywallProductCoder();
     case 'AdaptyRemoteConfig':
       return factory.createRemoteConfigCoder();
-    case 'AdaptyPaywallBuilder':
-      return factory.createPaywallBuilderCoder();
     case 'AdaptyOnboarding':
       return factory.createOnboardingCoder();
     case 'AdaptyPurchaseResult':
