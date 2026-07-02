@@ -63,8 +63,8 @@ export interface FlowEventHandlers {
    * Called when a user navigates back on Android
    *
    * If you return `true`, the paywall view will be closed.
-   * We strongly recommend to return `true` in this case.
-   * @default true
+   * We strongly recommend to return `false` in this case.
+   * @default false
    */
   onAndroidSystemBack: () => EventHandlerResult;
   /**
@@ -84,7 +84,7 @@ export interface FlowEventHandlers {
    *
    * If you return `true` from this callback, the paywall view will be closed.
    * We strongly recommend returning `purchaseResult.type !== 'user_cancelled'` in this case.
-   * @default `purchaseResult.type !== 'user_cancelled'`
+   * @default false
    *
    * @param {AdaptyPurchaseResult} purchaseResult - object, which provides details about the purchase.
    * If the result is `'success'`, it also includes the updated user's profile.
