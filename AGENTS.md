@@ -292,7 +292,6 @@ BUILD_OUT_DIR=../AdaptySDK-React-Native/node_modules/@adapty/core/dist yarn buil
 - Do NOT change TypeScript version without testing
 - Do NOT rename `.cjs` config files to `.js`
 - Do NOT create builds that depend on build-on-install (tsc on user machine)
-- Do NOT modify version in package.json (CI handles this)
 
 ## Reference Files
 
