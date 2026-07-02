@@ -62,8 +62,8 @@ export interface FlowEventHandlers {
   /**
    * Called when a user navigates back on Android
    *
-   * If you return `true`, the paywall view will be closed.
-   * We strongly recommend to return `false` in this case.
+   * Return `true` to close the flow view.
+   * By default, this handler returns `false`, so the paywall view stays open.
    * @default false
    */
   onAndroidSystemBack: () => EventHandlerResult;
