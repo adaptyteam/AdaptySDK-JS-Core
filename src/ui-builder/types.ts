@@ -132,11 +132,10 @@ export interface FlowEventHandlers {
     error?: AdaptyError,
   ) => EventHandlerResult;
   /**
-   * Called when a purchase is completed
+   * Called when a restore is completed
    *
    * If you return `true` from this callback, the paywall view will be closed.
-   * We strongly recommend to return `true` in this case.
-   * @default true
+   * @default false
    *
    * @param {AdaptyProfile} profile - updated user profile
    */
