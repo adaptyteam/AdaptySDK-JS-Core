@@ -405,7 +405,7 @@ export interface components {
     'FlowViewDidAnswerPermission.Request': {
       method: 'flow_view_did_answer_permission';
       event_id: string;
-      status: 'granted' | 'denied' | 'unavailable';
+      status: 'granted' | 'denied';
       detail?: string;
     };
 

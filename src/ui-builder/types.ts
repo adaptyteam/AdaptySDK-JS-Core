@@ -37,7 +37,7 @@ export type ProductPurchaseParams = Array<{
 /**
  * Result of an OS permission request, returned to native by the SDK.
  */
-export type FlowPermissionStatus = 'granted' | 'denied' | 'unavailable';
+export type FlowPermissionStatus = 'granted' | 'denied';
 
 export interface FlowPermissionResponse {
   status: FlowPermissionStatus;
@@ -202,7 +202,7 @@ export interface FlowEventHandlers {
    * permission (e.g. notifications, ATT). This is the only **asynchronous**
    * handler: return a `Promise` that resolves with the resulting status.
    *
-   * If you do not provide a handler, the SDK replies `'unavailable'`.
+   * If you do not provide a handler, the SDK replies `'denied'`.
    *
    * @param permission - permission identifier the flow view requested
    * @param customArgs - arbitrary string args configured in the dashboard
