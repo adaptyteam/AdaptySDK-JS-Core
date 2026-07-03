@@ -91,8 +91,17 @@ export type GetPlacementForDefaultAudienceParamsInput =
  */
 export interface ActivateParamsInput {
   /**
-   * Turn it on if you handle purchases and subscription status yourself
-   * and use Adapty for sending subscription events and analytics
+   * Observer mode. Turn it on when your app handles purchases and subscription
+   * status itself (through your own purchase code or a third-party SDK) and
+   * uses Adapty only for sending subscription events and analytics.
+   *
+   * @remarks
+   * This also enables using Adapty Flow (paywall) views in observer mode: the
+   * paywall is still rendered by Adapty, but when the user taps buy/restore the
+   * SDK does NOT make the purchase — it notifies your app through the
+   * `onObserverPurchaseInitiated` / `onObserverRestoreInitiated` flow event
+   * handlers. Report completed purchases back to Adapty (e.g. via
+   * `reportTransaction`) so they still flow into events and analytics.
    *
    * @defaultValue `false`
    */
@@ -124,12 +133,6 @@ export interface ActivateParamsInput {
   activateUi?: boolean;
   mediaCache?: AdaptyUiMediaCache;
 
-  /**
-   * Locks methods threads until the SDK is ready.
-   * @defaultValue `false`
-   * @deprecated Turned on by default
-   */
-  lockMethodsUntilReady?: boolean;
   /**
    * Does not activate SDK until any other method is called
    * Fixes annoying iOS simulator auhtentication
@@ -231,70 +234,13 @@ export interface AdaptyAndroidPurchaseParams {
   isOfferPersonalized?: boolean;
 }
 
-export interface AdaptyAndroidSubscriptionUpdateParameters {
-  oldSubVendorProductId: string;
-  prorationMode: AdaptyAndroidSubscriptionUpdateReplacementMode;
+export type MakePurchaseParamsInput = {
   /**
-   * @deprecated Use {@link AdaptyAndroidPurchaseParams.isOfferPersonalized} instead.
-   * This field has been moved to the upper level in the new structure.
-   *
-   * @example
-   * // OLD (deprecated):
-   * android: {
-   *   oldSubVendorProductId: 'old_product_id',
-   *   prorationMode: 'charge_prorated_price',
-   *   isOfferPersonalized: true  // This field is deprecated
-   * }
-   *
-   * // NEW:
-   * android: {
-   *   subscriptionUpdateParams: {
-   *     oldSubVendorProductId: 'old_product_id',
-   *     prorationMode: 'charge_prorated_price'
-   *   },
-   *   isOfferPersonalized: true  // Moved to upper level
-   * }
+   * Android purchase parameters
+   * @platform android
    */
-  isOfferPersonalized?: boolean;
-}
-
-export type MakePurchaseParamsInput =
-  | {
-      /**
-       * Android purchase parameters
-       * @platform android
-       */
-      android?: AdaptyAndroidPurchaseParams;
-    }
-  | {
-      /**
-       * @deprecated Use the new parameter structure instead
-       *
-       * @example
-       * // OLD (deprecated):
-       * makePurchase(product, {
-       *   android: {
-       *     oldSubVendorProductId: 'old_product_id',
-       *     prorationMode: 'charge_prorated_price',
-       *     isOfferPersonalized: true
-       *   }
-       * });
-       *
-       * // NEW:
-       * makePurchase(product, {
-       *   android: {
-       *     subscriptionUpdateParams: {
-       *       oldSubVendorProductId: 'old_product_id',
-       *       prorationMode: 'charge_prorated_price'
-       *     },
-       *     isOfferPersonalized: true,  // Note: moved to upper level
-       *   }
-       * });
-       *
-       * @platform android
-       */
-      android?: AdaptyAndroidSubscriptionUpdateParameters;
-    };
+  android?: AdaptyAndroidPurchaseParams;
+};
 
 export type FileLocation = {
   ios: {

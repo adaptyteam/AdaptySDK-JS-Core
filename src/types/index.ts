@@ -77,19 +77,11 @@ export interface AdaptyPrice {
 }
 
 /**
- * Describes an object that represents a paywall.
- * Used in {@link Adapty.getPaywall} method.
+ * Describes a single paywall variation inside a flow.
  * @public
  */
-export interface AdaptyPaywall {
+export interface AdaptyFlowPaywall {
   readonly placement: AdaptyPlacement;
-
-  /**
-   * If `true`, it is possible to fetch the view object
-   * and use it with AdaptyUI library.
-   * @readonly
-   */
-  readonly hasViewConfiguration: boolean;
 
   /**
    * A paywall name.
@@ -97,23 +89,11 @@ export interface AdaptyPaywall {
    */
   readonly name: string;
   /**
-   * A remote config configured in Adapty Dashboard for this paywall.
-   * @readonly
-   */
-  readonly remoteConfig?: AdaptyRemoteConfig;
-  /**
    * An identifier of a variation,
    * used to attribute purchases to this paywall.
    * @readonly
    */
   readonly variationId: string;
-  /**
-   * Array of initial products info
-   * @readonly
-   * @deprecated Use {@link AdaptyPaywall.productIdentifiers} instead
-   */
-  readonly products: ProductReference[];
-
   /**
    * Array of product identifiers for this paywall
    * @readonly
@@ -121,11 +101,44 @@ export interface AdaptyPaywall {
   readonly productIdentifiers: AdaptyProductIdentifier[];
 
   id: string;
-  version?: number;
   webPurchaseUrl?: string;
+}
+
+/**
+ * Describes an object that represents a flow,
+ * fetched for a placement.
+ * @public
+ */
+export interface AdaptyFlow {
+  readonly placement: AdaptyPlacement;
+
+  /**
+   * A flow name.
+   * @readonly
+   */
+  readonly name: string;
+  /**
+   * An identifier of a variation,
+   * used to attribute purchases to this flow.
+   * @readonly
+   */
+  readonly variationId: string;
+  /**
+   * Remote configs configured in Adapty Dashboard for this flow.
+   * @readonly
+   */
+  readonly remoteConfigs?: AdaptyRemoteConfig[];
+  /**
+   * Paywall variations contained in this flow.
+   * @readonly
+   */
+  readonly paywalls: AdaptyFlowPaywall[];
+
+  id: string;
+  flowVersionId?: string;
+  /** Server response creation timestamp in milliseconds. */
+  responseCreatedAt: number;
   payloadData?: string;
-  requestLocale: string;
-  paywallBuilder?: AdaptyPaywallBuilder;
 }
 
 export interface AdaptyOnboarding {
@@ -209,11 +222,6 @@ export interface AdaptyRemoteConfig {
    * @readonly
    */
   readonly dataString: string;
-}
-
-export interface AdaptyPaywallBuilder {
-  readonly id: string;
-  readonly lang: string;
 }
 
 export interface AdaptyOnboardingBuilder {
@@ -621,11 +629,11 @@ export interface AdaptyPaywallProduct {
    */
   readonly localizedTitle: string;
   /**
-   * Same as `abTestName` property of the parent {@link AdaptyPaywall}.
+   * Same as `abTestName` property of the parent {@link AdaptyFlowPaywall}.
    */
   readonly paywallABTestName: string;
   /**
-   * Same as `name` property of the parent {@link AdaptyPaywall}.
+   * Same as `name` property of the parent {@link AdaptyFlowPaywall}.
    */
   readonly paywallName: string;
   readonly accessLevelId: string;
@@ -636,7 +644,7 @@ export interface AdaptyPaywallProduct {
   readonly price?: AdaptyPrice;
   readonly adaptyId: string;
   /**
-   * Same as `variationId` property of the parent {@link AdaptyPaywall}.
+   * Same as `variationId` property of the parent {@link AdaptyFlowPaywall}.
    */
   readonly variationId: string;
   /**
@@ -707,7 +715,8 @@ export interface AdaptySubscriptionOffer {
 
 export type AdaptySubscriptionOfferId =
   | { id?: string; type: 'introductory' }
-  | { id: string; type: 'promotional' | 'win_back' };
+  | { id: string; type: 'promotional' | 'win_back' }
+  | { id?: string; type: 'code' };
 
 /**
  * Discount model to products
@@ -777,6 +786,7 @@ export interface AdaptyProfileParameters {
 }
 
 export interface ProductReference {
+  flowProductId?: string;
   vendorId: string;
   adaptyId: string;
   accessLevelId: string;

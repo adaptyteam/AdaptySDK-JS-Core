@@ -7,6 +7,7 @@ import {
   WebPresentation,
 } from '@/types';
 import { FileLocation, MakePurchaseParamsInput } from '@/types/inputs';
+import type { AdaptyPermission } from '@/types/flow-events';
 
 /**
  * @internal
@@ -34,11 +35,22 @@ export type ProductPurchaseParams = Array<{
 }>;
 
 /**
+ * Result of an OS permission request, returned to native by the SDK.
+ */
+export type FlowPermissionStatus = 'granted' | 'denied';
+
+export interface FlowPermissionResponse {
+  status: FlowPermissionStatus;
+  /** Optional human-readable detail (e.g. the OS status string). */
+  detail?: string;
+}
+
+/**
  * Hashmap of possible events to their callbacks
  *
  * @see {@link https://adapty.io/docs/react-native-handling-events-1 | [DOC] Handling View Events}
  */
-export interface EventHandlers {
+export interface FlowEventHandlers {
   /**
    * Called when a user taps the close button on the paywall view
    *
@@ -50,9 +62,9 @@ export interface EventHandlers {
   /**
    * Called when a user navigates back on Android
    *
-   * If you return `true`, the paywall view will be closed.
-   * We strongly recommend to return `true` in this case.
-   * @default true
+   * Return `true` to close the flow view.
+   * By default, this handler returns `false`, so the paywall view stays open.
+   * @default false
    */
   onAndroidSystemBack: () => EventHandlerResult;
   /**
@@ -72,7 +84,7 @@ export interface EventHandlers {
    *
    * If you return `true` from this callback, the paywall view will be closed.
    * We strongly recommend returning `purchaseResult.type !== 'user_cancelled'` in this case.
-   * @default `purchaseResult.type !== 'user_cancelled'`
+   * @default false
    *
    * @param {AdaptyPurchaseResult} purchaseResult - object, which provides details about the purchase.
    * If the result is `'success'`, it also includes the updated user's profile.
@@ -99,20 +111,31 @@ export interface EventHandlers {
    */
   onRestoreStarted: () => EventHandlerResult;
 
-  onPaywallClosed: () => EventHandlerResult;
+  /**
+   * Called when the paywall view disappears
+   *
+   * If you return `true`, the paywall view will be closed.
+   * @default false
+   */
+  onDisappeared: () => EventHandlerResult;
 
-  onPaywallShown: () => EventHandlerResult;
+  /**
+   * Called when the paywall view appears
+   *
+   * If you return `true`, the paywall view will be closed.
+   * @default false
+   */
+  onAppeared: () => EventHandlerResult;
 
   onWebPaymentNavigationFinished: (
     product?: AdaptyPaywallProduct,
     error?: AdaptyError,
   ) => EventHandlerResult;
   /**
-   * Called when a purchase is completed
+   * Called when a restore is completed
    *
    * If you return `true` from this callback, the paywall view will be closed.
-   * We strongly recommend to return `true` in this case.
-   * @default true
+   * @default false
    *
    * @param {AdaptyProfile} profile - updated user profile
    */
@@ -126,14 +149,13 @@ export interface EventHandlers {
    */
   onRestoreFailed: (error: AdaptyError) => EventHandlerResult;
   /**
-   * Called if a paywall view fails to render.
-   * This  should not ever happen, but if it does, feel free to report it to us.
+   * Called when the paywall view receives an error (e.g. it fails to render).
    *
    * If you return `true` from this callback, the paywall view will be closed.
    *
    * @param {AdaptyError} error - AdaptyError object with error code and message
    */
-  onRenderingFailed: (error: AdaptyError) => EventHandlerResult;
+  onError: (error: AdaptyError) => EventHandlerResult;
   /**
    * Called if a product list fails to load on a presented view,
    * for example, if there is no internet connection
@@ -153,6 +175,98 @@ export interface EventHandlers {
    *                 `'browser_out_app'` (default) — external browser (e.g. `Linking.openURL`)
    */
   onUrlPress: (url: string, openIn: WebPresentation) => EventHandlerResult;
+  /**
+   * Called when the flow view asks the host app to show the native
+   * app review prompt (e.g. `SKStoreReviewController` on iOS,
+   * In-App Review on Android).
+   *
+   * This is a notification: returning `true` would close the view,
+   * but for an app-review prompt you almost always want to keep it open.
+   */
+  onRequestAppReview: () => EventHandlerResult;
+  /**
+   * Called when the flow view reports an analytics event.
+   *
+   * This is a notification: the return value follows the standard
+   * close-on-`true` contract, but you normally keep the view open.
+   *
+   * @param name - analytics event name
+   * @param params - arbitrary event parameters
+   */
+  onAnalytics: (
+    name: string,
+    params: Record<string, unknown>,
+  ) => EventHandlerResult;
+  /**
+   * Called when the flow view asks the host app to request an OS-level
+   * permission (e.g. notifications, ATT). This is the only **asynchronous**
+   * handler: return a `Promise` that resolves with the resulting status.
+   *
+   * If you do not provide a handler, the SDK replies `'denied'`.
+   *
+   * @param permission - permission identifier the flow view requested
+   * @param customArgs - arbitrary string args configured in the dashboard
+   */
+  onRequestPermission: (
+    permission: AdaptyPermission,
+    customArgs: Record<string, string>,
+  ) => Promise<FlowPermissionResponse>;
+  /**
+   * Called in **observer mode** when the user taps the purchase button inside
+   * an Adapty-rendered flow (paywall) view. Adapty does NOT make the purchase —
+   * your app performs it through its own purchase API. Drive the paywall's
+   * loading state with the two provided callbacks:
+   *
+   * - call `onStartPurchase()` right before you begin the purchase (shows the
+   *   paywall's loading indicator);
+   * - call `onFinishPurchase()` once it settles, success or failure (hides it).
+   *
+   * The return value follows the standard close-on-`true` contract; you
+   * normally keep the view open (`false`) and dismiss it yourself after the
+   * purchase succeeds.
+   *
+   * @remarks
+   * Fires only when the SDK was activated in observer mode
+   * (`activate(apiKey, { observerMode: true })`). Without it, Adapty handles
+   * purchases itself and this event is never emitted.
+   *
+   * Adapty does not see the purchase you make, so after it succeeds you must
+   * report the transaction to Adapty yourself (e.g. via `reportTransaction`). The
+   * `onStartPurchase`/`onFinishPurchase` callbacks only drive the paywall's
+   * loading UI;
+   *
+   * @param product - product the user initiated the purchase for
+   * @param onStartPurchase - notify the paywall the purchase started
+   * @param onFinishPurchase - notify the paywall the purchase finished
+   */
+  onObserverPurchaseInitiated: (
+    product: AdaptyPaywallProduct,
+    onStartPurchase: () => void,
+    onFinishPurchase: () => void,
+  ) => EventHandlerResult;
+  /**
+   * Called in **observer mode** when the user taps the restore button inside an
+   * Adapty-rendered flow (paywall) view. Adapty does NOT restore — your app
+   * performs it through its own API. Drive the paywall's loading state with the
+   * two provided callbacks (`onStartRestore()` / `onFinishRestore()`).
+   *
+   * @remarks
+   * Fires only when the SDK was activated in observer mode
+   * (`activate(apiKey, { observerMode: true })`). Without it, Adapty handles
+   * restores itself and this event is never emitted.
+   *
+   * Report any transactions surfaced by the restore to Adapty yourself (e.g.
+   * via `reportTransaction`) so they flow into events and analytics. The
+   * `onStartRestore`/`onFinishRestore` callbacks only drive the paywall's
+   * loading UI; they do not report anything.
+   *
+   * @param onStartRestore - notify the paywall the restore started
+   * @param onFinishRestore - notify the paywall the restore finished
+   */
+  onObserverRestoreInitiated: (
+    onStartRestore: () => void,
+    onFinishRestore: () => void,
+  ) => EventHandlerResult;
 }
 
 export interface OnboardingEventHandlers {
@@ -245,7 +359,7 @@ export type OnboardingStateUpdatedAction =
  *
  * @see {@link https://docs.adapty.io/docs/paywall-builder-fetching | [DOC] Creating Paywall View}
  */
-export interface CreatePaywallViewParamsInput {
+export interface CreateFlowViewParamsInput {
   /**
    * `true` if you want to prefetch products before presenting a paywall view.
    */
@@ -273,6 +387,15 @@ export interface CreatePaywallViewParamsInput {
   customAssets?: Record<string, AdaptyCustomAsset>;
 
   productPurchaseParams?: ProductPurchaseParams;
+
+  /**
+   * Android only. When `true`, the flow view applies safe-area paddings.
+   *
+   * @remarks
+   * Ignored on iOS. When omitted, the default is decided by the presenting
+   * API you use.
+   */
+  enableSafeArea?: boolean;
 }
 
 /**

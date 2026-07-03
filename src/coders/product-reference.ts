@@ -4,10 +4,15 @@ import type { Def } from '@/types/schema';
 import { SimpleCoder } from './coder';
 
 type Model = ProductReference;
-type Serializable = Def['AdaptyPaywall.ProductReference'];
+type Serializable = Def['AdaptyFlowPaywall.ProductReference'];
 
 export class ProductReferenceCoder extends SimpleCoder<Model, Serializable> {
   protected properties: Properties<Model, Serializable> = {
+    flowProductId: {
+      key: 'flow_product_id',
+      required: false,
+      type: 'string',
+    },
     vendorId: {
       key: 'vendor_product_id',
       required: true,

@@ -151,25 +151,35 @@ Source TypeScript files (`src/`) are NOT published - only compiled output.
 
 ### Custom Build Output Directory
 
-For local development with downstream SDKs, you can configure a custom build output directory using the `BUILD_OUT_DIR` environment variable:
+When you change core and need to apply it in a downstream SDK (React Native, Capacitor), build directly into that SDK's `node_modules/@adapty/core/dist`. The output directory is controlled by the `BUILD_OUT_DIR` environment variable, read from a local `.env` file.
 
-1. **Create `.env` file** in the repository root (already gitignored)
-2. **Set output path** to your target repository:
+**Recommended flow (one-shot build):**
+
+1. **Set the output path in `.env`** (already gitignored). The paths are pre-filled — just uncomment the target you need:
    ```bash
-   # For React Native Devtools
-   BUILD_OUT_DIR=../AdaptySDK-React-Native-Devtools/pure-rn/node_modules/@adapty/core/dist
-
-   # For React Native SDK
+   # React Native SDK
    BUILD_OUT_DIR=../AdaptySDK-React-Native/node_modules/@adapty/core/dist
+
+   # Capacitor SDK
+   # BUILD_OUT_DIR=../AdaptySDK-Capacitor/node_modules/@adapty/core/dist
    ```
-3. **Run watch mode:** `yarn build:watch`
+2. **Run a one-shot build:** `yarn build`
+
+This builds core once and copies the output straight into the downstream SDK. Re-run `yarn build` after each change.
+
+> **Agents:** prefer the one-shot `yarn build` over `yarn build:watch`. Watch mode is long-running and meant to be started by the user manually, not by an agent.
 
 **How it works:**
 - `tsdown.config.ts` reads `BUILD_OUT_DIR` from `.env` via `dotenv` package
 - If not set, defaults to `./dist`
+- When `BUILD_OUT_DIR` is set, a `build:done` hook also copies `package.json` one level up (into `node_modules/@adapty/core/`) so the downstream SDK sees the current `exports`/`version`. For normal `./dist` builds this copy is skipped.
 - See `.env.example` for configuration examples
 
-This allows real-time development: changes in core automatically rebuild into the downstream SDK without manual copying or publishing.
+You can also override the path inline for a single build without editing `.env`:
+
+```bash
+BUILD_OUT_DIR=../AdaptySDK-React-Native/node_modules/@adapty/core/dist yarn build
+```
 
 ## Versioning
 
@@ -282,7 +292,6 @@ This allows real-time development: changes in core automatically rebuild into th
 - Do NOT change TypeScript version without testing
 - Do NOT rename `.cjs` config files to `.js`
 - Do NOT create builds that depend on build-on-install (tsc on user machine)
-- Do NOT modify version in package.json (CI handles this)
 
 ## Reference Files
 

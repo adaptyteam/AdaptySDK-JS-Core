@@ -40,6 +40,7 @@ interface SchemaNode {
   required?: string[];
   additionalProperties?: SchemaNode | boolean;
   oneOf?: SchemaNode[];
+  anyOf?: SchemaNode[];
   items?: SchemaNode;
   nullable?: boolean;
   default?: unknown;
@@ -140,6 +141,17 @@ function resolveType(node: SchemaNode, depth: number): string {
     return renderOneOf(node.oneOf, depth);
   }
 
+  // Pure anyOf (inclusive union, e.g. an open enum: string-enum + string).
+  // Unlike oneOf, an anyOf value may satisfy more than one branch, so it
+  // maps to a plain `|` union rather than the exclusive OneOf<> helper.
+  if (node.anyOf && !node.properties && node.type !== 'object') {
+    // Special case: anyOf of primitives/enums → simple union
+    if (isPrimitiveOneOf(node.anyOf)) {
+      return renderPrimitiveUnion(node.anyOf);
+    }
+    return renderAnyOf(node.anyOf, depth);
+  }
+
   // type: object
   if (node.type === 'object') {
     return resolveObject(node, depth);
@@ -228,6 +240,38 @@ function renderPrimitiveUnion(variants: SchemaNode[]): string {
 
 // ── Object Resolution ──────────────────────────────────────────────
 
+/**
+ * Renders `type: object` with both `properties` and `oneOf` as an intersection
+ * of a base body and a OneOf<>. oneOf branches that carry only a `required`
+ * array (whose keys are defined in the sibling `properties`) get those keys
+ * projected into the branch and removed from the base body, so the OneOf<>
+ * keeps real discrimination instead of collapsing to OneOf<[unknown, unknown]>.
+ */
+function renderObjectWithOneOf(node: SchemaNode, depth: number): string {
+  const projectedKeys = new Set<string>();
+  const oneOf = node.oneOf!.map(branch => {
+    if (branch.properties || !branch.required) return branch;
+    const branchProps: Record<string, SchemaNode> = {};
+    for (const key of branch.required) {
+      const propNode = node.properties![key];
+      if (propNode) {
+        branchProps[key] = propNode;
+        projectedKeys.add(key);
+      }
+    }
+    return Object.keys(branchProps).length > 0
+      ? { ...branch, properties: branchProps }
+      : branch;
+  });
+
+  const baseProps = Object.fromEntries(
+    Object.entries(node.properties!).filter(([key]) => !projectedKeys.has(key)),
+  );
+  const propsStr = renderObjectBody(baseProps, node.required || [], depth);
+  const oneOfStr = renderOneOf(oneOf, depth);
+  return `${propsStr} & ${oneOfStr}`;
+}
+
 function resolveObject(node: SchemaNode, depth: number): string {
   const hasProps = node.properties && Object.keys(node.properties).length > 0;
   const hasOneOf = node.oneOf && node.oneOf.length > 0;
@@ -242,13 +286,7 @@ function resolveObject(node: SchemaNode, depth: number): string {
 
   // Properties + oneOf = intersection
   if (hasProps && hasOneOf) {
-    const propsStr = renderObjectBody(
-      node.properties!,
-      node.required || [],
-      depth,
-    );
-    const oneOfStr = renderOneOf(node.oneOf!, depth);
-    return `${propsStr} & ${oneOfStr}`;
+    return renderObjectWithOneOf(node, depth);
   }
 
   // Only oneOf, with a parent required array → discriminated union
@@ -402,6 +440,15 @@ function renderMultiLineOneOfExpanded(
 }
 
 /**
+ * Renders an inclusive union for `anyOf` as `A | B | ...`.
+ * Unlike `oneOf`, an `anyOf` value may satisfy more than one branch, so it
+ * maps to a plain union rather than the exclusive `OneOf<>` helper.
+ */
+function renderAnyOf(variants: SchemaNode[], depth: number): string {
+  return variants.map(v => renderVariant(v, depth)).join(' | ');
+}
+
+/**
  * Renders a discriminated union as bare `|` union.
  * Used when an object has `required` + `oneOf` but no `properties`.
  * Each variant gets its own required set merged with the parent required.
@@ -485,13 +532,7 @@ function resolveTopLevelType(node: SchemaNode, depth: number): string {
 
   // type: object with properties + oneOf → intersection
   if (node.type === 'object' && node.oneOf && node.properties) {
-    const propsStr = renderObjectBody(
-      node.properties,
-      node.required || [],
-      depth,
-    );
-    const oneOfStr = renderOneOf(node.oneOf, depth);
-    return `${propsStr} & ${oneOfStr}`;
+    return renderObjectWithOneOf(node, depth);
   }
 
   // Simple string aliases

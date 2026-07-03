@@ -38,13 +38,13 @@ export * from './types/index';
 export * from './types/inputs';
 export * from './types/error';
 export * from './types/bridge';
-export * from './types/paywall-events';
+export * from './types/flow-events';
 export * from './types/onboarding-events';
 
 export type { components } from './types/api';
 
 // UI event mappings
-export * from '@/ui-builder/paywall-event-mapping';
+export * from '@/ui-builder/flow-event-mapping';
 export * from '@/ui-builder/onboarding-event-mapping';
 export * from '@/ui-builder/types';
 
@@ -54,7 +54,7 @@ export {
   parseCommonEvent,
   type AdaptyType,
 } from './coders/parse';
-export { parsePaywallEvent } from './coders/parse-paywall';
+export { parseFlowEvent } from './coders/parse-flow';
 export { parseOnboardingEvent } from './coders/parse-onboarding';
 
 export { generateId } from './utils/generate-id';

@@ -19,10 +19,19 @@ const mocks: Def['AdaptySubscriptionOffer.Identifier'][] = [
     type: 'win_back',
     id: 'test_win_back_offer',
   },
+  {
+    type: 'code',
+    id: 'test_code_offer',
+  },
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
   if (mock.type === 'introductory') {
+    return {
+      type: mock.type,
+      ...(mock.id && { id: mock.id }),
+    };
+  } else if (mock.type === 'code') {
     return {
       type: mock.type,
       ...(mock.id && { id: mock.id }),
