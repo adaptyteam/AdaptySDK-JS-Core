@@ -19,6 +19,7 @@ on:
         default: 'dev'
         options:
           - 'dev'
+          - 'beta'
           - 'production'
       dry-run:
         description: 'Perform a dry run (no actual publish)'
@@ -136,17 +137,29 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.dry-run == 'true'
         run: |
           echo "Running in dry-run mode - no actual publish"
-          if [[ "${{ steps.release-type.outputs.type }}" == "dev" ]]; then
-            npm publish --provenance --tag dev --dry-run --ignore-scripts
-          else
-            npm publish --provenance --dry-run --ignore-scripts
-          fi
+          case "${{ steps.release-type.outputs.type }}" in
+            dev)
+              npm publish --provenance --tag dev --dry-run --ignore-scripts
+              ;;
+            beta)
+              npm publish --provenance --tag beta --dry-run --ignore-scripts
+              ;;
+            *)
+              npm publish --provenance --dry-run --ignore-scripts
+              ;;
+          esac
 
       - name: Publish to npm (dev build)
         if: |
           steps.release-type.outputs.type == 'dev' &&
           github.event.inputs.dry-run != 'true'
         run: npm publish --provenance --tag dev --ignore-scripts
+
+      - name: Publish to npm (beta release)
+        if: |
+          steps.release-type.outputs.type == 'beta' &&
+          github.event.inputs.dry-run != 'true'
+        run: npm publish --provenance --tag beta --ignore-scripts
 
       - name: Publish to npm (production release)
         if: |
@@ -161,8 +174,14 @@ jobs:
           echo "✅ Successfully published @adapty/core@${PACKAGE_VERSION}"
           echo "Package URL: https://www.npmjs.com/package/@adapty/core/v/${PACKAGE_VERSION}"
 
-          if [[ "${{ steps.release-type.outputs.type }}" == "dev" ]]; then
-            echo "Install with: npm install @adapty/core@dev"
-          else
-            echo "Install with: npm install @adapty/core"
-          fi
+          case "${{ steps.release-type.outputs.type }}" in
+            dev)
+              echo "Install with: npm install @adapty/core@dev"
+              ;;
+            beta)
+              echo "Install with: npm install @adapty/core@beta"
+              ;;
+            *)
+              echo "Install with: npm install @adapty/core"
+              ;;
+          esac
