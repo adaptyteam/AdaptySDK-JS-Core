@@ -20,7 +20,7 @@ export type ArgType<T> = T extends () => unknown
 
 /**
  * EventHandler callback should not return a promise,
- * because using `await` may postpone closing a paywall view.
+ * because using `await` may postpone closing a flow view.
  *
  * We don't want to block the UI thread.
  */
@@ -52,9 +52,9 @@ export interface FlowPermissionResponse {
  */
 export interface FlowEventHandlers {
   /**
-   * Called when a user taps the close button on the paywall view
+   * Called when a user taps the close button on the flow view
    *
-   * If you return `true`, the paywall view will be closed.
+   * If you return `true`, the flow view will be closed.
    * We strongly recommend to return `true` in this case.
    * @default true
    */
@@ -63,26 +63,26 @@ export interface FlowEventHandlers {
    * Called when a user navigates back on Android
    *
    * Return `true` to close the flow view.
-   * By default, this handler returns `false`, so the paywall view stays open.
+   * By default, this handler returns `false`, so the flow view stays open.
    * @default false
    */
   onAndroidSystemBack: () => EventHandlerResult;
   /**
-   * Called when a user taps the product in the paywall view
+   * Called when a user taps the product in the flow view
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    */
   onProductSelected: (productId: string) => EventHandlerResult;
   /**
-   * Called when a user taps the purchase button in the paywall view
+   * Called when a user taps the purchase button in the flow view
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    */
   onPurchaseStarted: (product: AdaptyPaywallProduct) => EventHandlerResult;
   /**
    * Called when the purchase succeeds, the user cancels their purchase, or the purchase appears to be pending
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    * We strongly recommend returning `purchaseResult.type !== 'user_cancelled'` in this case.
    * @default false
    *
@@ -96,7 +96,7 @@ export interface FlowEventHandlers {
   /**
    * Called if a purchase fails after a user taps the purchase button
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    *
    * @param {AdaptyError} error - AdaptyError object with error code and message
    */
@@ -105,24 +105,24 @@ export interface FlowEventHandlers {
     product: AdaptyPaywallProduct,
   ) => EventHandlerResult;
   /**
-   * Called when a user taps the restore button in the paywall view
+   * Called when a user taps the restore button in the flow view
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    */
   onRestoreStarted: () => EventHandlerResult;
 
   /**
-   * Called when the paywall view disappears
+   * Called when the flow view disappears
    *
-   * If you return `true`, the paywall view will be closed.
+   * If you return `true`, the flow view will be closed.
    * @default false
    */
   onDisappeared: () => EventHandlerResult;
 
   /**
-   * Called when the paywall view appears
+   * Called when the flow view appears
    *
-   * If you return `true`, the paywall view will be closed.
+   * If you return `true`, the flow view will be closed.
    * @default false
    */
   onAppeared: () => EventHandlerResult;
@@ -134,7 +134,7 @@ export interface FlowEventHandlers {
   /**
    * Called when a restore is completed
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    * @default false
    *
    * @param {AdaptyProfile} profile - updated user profile
@@ -143,15 +143,15 @@ export interface FlowEventHandlers {
   /**
    * Called if a restore fails after a user taps the restore button
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    *
    * @param {AdaptyError} error - AdaptyError object with error code and message
    */
   onRestoreFailed: (error: AdaptyError) => EventHandlerResult;
   /**
-   * Called when the paywall view receives an error (e.g. it fails to render).
+   * Called when the flow view receives an error (e.g. it fails to render).
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    *
    * @param {AdaptyError} error - AdaptyError object with error code and message
    */
@@ -160,7 +160,7 @@ export interface FlowEventHandlers {
    * Called if a product list fails to load on a presented view,
    * for example, if there is no internet connection
    *
-   * If you return `true` from this callback, the paywall view will be closed.
+   * If you return `true` from this callback, the flow view will be closed.
    *
    * @param {AdaptyError} error - AdaptyError object with error code and message
    */
@@ -213,12 +213,12 @@ export interface FlowEventHandlers {
   ) => Promise<FlowPermissionResponse>;
   /**
    * Called in **observer mode** when the user taps the purchase button inside
-   * an Adapty-rendered flow (paywall) view. Adapty does NOT make the purchase —
-   * your app performs it through its own purchase API. Drive the paywall's
+   * an Adapty-rendered flow view. Adapty does NOT make the purchase —
+   * your app performs it through its own purchase API. Drive the flow view's
    * loading state with the two provided callbacks:
    *
    * - call `onStartPurchase()` right before you begin the purchase (shows the
-   *   paywall's loading indicator);
+   *   flow view's loading indicator);
    * - call `onFinishPurchase()` once it settles, success or failure (hides it).
    *
    * The return value follows the standard close-on-`true` contract; you
@@ -232,12 +232,12 @@ export interface FlowEventHandlers {
    *
    * Adapty does not see the purchase you make, so after it succeeds you must
    * report the transaction to Adapty yourself (e.g. via `reportTransaction`). The
-   * `onStartPurchase`/`onFinishPurchase` callbacks only drive the paywall's
+   * `onStartPurchase`/`onFinishPurchase` callbacks only drive the flow view's
    * loading UI;
    *
    * @param product - product the user initiated the purchase for
-   * @param onStartPurchase - notify the paywall the purchase started
-   * @param onFinishPurchase - notify the paywall the purchase finished
+   * @param onStartPurchase - notify the flow view the purchase started
+   * @param onFinishPurchase - notify the flow view the purchase finished
    */
   onObserverPurchaseInitiated: (
     product: AdaptyPaywallProduct,
@@ -246,8 +246,8 @@ export interface FlowEventHandlers {
   ) => EventHandlerResult;
   /**
    * Called in **observer mode** when the user taps the restore button inside an
-   * Adapty-rendered flow (paywall) view. Adapty does NOT restore — your app
-   * performs it through its own API. Drive the paywall's loading state with the
+   * Adapty-rendered flow view. Adapty does NOT restore — your app
+   * performs it through its own API. Drive the flow view's loading state with the
    * two provided callbacks (`onStartRestore()` / `onFinishRestore()`).
    *
    * @remarks
@@ -257,11 +257,11 @@ export interface FlowEventHandlers {
    *
    * Report any transactions surfaced by the restore to Adapty yourself (e.g.
    * via `reportTransaction`) so they flow into events and analytics. The
-   * `onStartRestore`/`onFinishRestore` callbacks only drive the paywall's
+   * `onStartRestore`/`onFinishRestore` callbacks only drive the flow view's
    * loading UI; they do not report anything.
    *
-   * @param onStartRestore - notify the paywall the restore started
-   * @param onFinishRestore - notify the paywall the restore finished
+   * @param onStartRestore - notify the flow view the restore started
+   * @param onFinishRestore - notify the flow view the restore finished
    */
   onObserverRestoreInitiated: (
     onStartRestore: () => void,
@@ -355,13 +355,13 @@ export type OnboardingStateUpdatedAction =
     };
 
 /**
- * Additional options for creating a paywall view
+ * Additional options for creating a flow view
  *
- * @see {@link https://docs.adapty.io/docs/paywall-builder-fetching | [DOC] Creating Paywall View}
+ * @see {@link https://docs.adapty.io/docs/paywall-builder-fetching | [DOC] Creating Flow View}
  */
 export interface CreateFlowViewParamsInput {
   /**
-   * `true` if you want to prefetch products before presenting a paywall view.
+   * `true` if you want to prefetch products before presenting a flow view.
    */
   prefetchProducts?: boolean;
   /**
@@ -480,6 +480,6 @@ export type AdaptyCustomGradientAsset = {
 };
 
 /**
- * iOS presentation style for paywall and onboarding views
+ * iOS presentation style for flow and onboarding views
  */
 export type AdaptyIOSPresentationStyle = 'full_screen' | 'page_sheet';
