@@ -388,14 +388,16 @@ export interface CreateFlowViewParamsInput {
 
   productPurchaseParams?: ProductPurchaseParams;
 
-  /**
-   * Android only. When `true`, the flow view applies safe-area paddings.
-   *
-   * @remarks
-   * Ignored on iOS. When omitted, the default is decided by the presenting
-   * API you use.
-   */
-  enableSafeArea?: boolean;
+  android?: {
+    /**
+     * When `true`, the flow view applies safe-area paddings.
+     *
+     * @platform android
+     * @remarks
+     * When omitted, the default is decided by the presenting API you use.
+     */
+    enableSafeArea?: boolean;
+  };
 }
 
 /**
