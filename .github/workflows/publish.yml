@@ -5,9 +5,6 @@ on:
   push:
     branches:
       - dev
-    # Trigger on git tags (production releases)
-    tags:
-      - 'v*'
 
   # Manual workflow dispatch with options
   workflow_dispatch:
@@ -20,7 +17,7 @@ on:
         options:
           - 'dev'
           - 'beta'
-          - 'production'
+          - 'prod (latest)'
       dry-run:
         description: 'Perform a dry run (no actual publish)'
         type: choice
@@ -89,9 +86,6 @@ jobs:
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/heads/dev ]]; then
             echo "type=dev" >> $GITHUB_OUTPUT
             echo "📦 Detected: Dev build (push to dev branch)"
-          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "type=production" >> $GITHUB_OUTPUT
-            echo "🚀 Detected: Production release (git tag)"
           elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "type=${{ github.event.inputs.release-type }}" >> $GITHUB_OUTPUT
             echo "🔧 Detected: Manual workflow (${{ github.event.inputs.release-type }})"
@@ -99,6 +93,18 @@ jobs:
             echo "❌ Unknown release type"
             exit 1
           fi
+
+      - name: Guard production version (no prerelease under 'latest')
+        if: steps.release-type.outputs.type == 'prod (latest)'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == *"-"* ]]; then
+            echo "❌ Refusing to publish prerelease version '$VERSION' to the 'latest' dist-tag."
+            echo "   Bump package.json to a stable version before a 'prod (latest)' release,"
+            echo "   or use the 'beta' release-type for prerelease builds."
+            exit 1
+          fi
+          echo "✅ Version '$VERSION' is stable — OK to publish to 'latest'."
 
       - name: Update version for dev build
         if: steps.release-type.outputs.type == 'dev'
@@ -163,7 +169,7 @@ jobs:
 
       - name: Publish to npm (production release)
         if: |
-          steps.release-type.outputs.type == 'production' &&
+          steps.release-type.outputs.type == 'prod (latest)' &&
           github.event.inputs.dry-run != 'true'
         run: npm publish --provenance --ignore-scripts
 

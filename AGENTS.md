@@ -194,7 +194,7 @@ BUILD_OUT_DIR=../AdaptySDK-React-Native/node_modules/@adapty/core/dist yarn buil
 
 - **Registry:** npmjs.com (public via `publishConfig.access: "public"`)
 - **Workflow:** `.github/workflows/publish.yml` - Unified workflow for both dev and production releases
-  - Auto-detects release type based on git event (push to `dev` branch vs push to tag)
+  - Auto-detects `dev` builds on push to the `dev` branch; production/beta are manual only (workflow dispatch)
   - Supports manual workflow dispatch with release-type selection
   - Includes dry-run mode for testing
 
@@ -206,14 +206,23 @@ BUILD_OUT_DIR=../AdaptySDK-React-Native/node_modules/@adapty/core/dist yarn buil
 - **Command:** `npm publish --provenance --tag dev --ignore-scripts`
 - **Install:** `npm install @adapty/core@dev`
 
-### Production Releases (git tags)
+### Beta Releases (manual)
 
-- **Trigger:** Git tags matching `v*` pattern (e.g., `v1.0.0`) or manual workflow dispatch with release-type: production
-- **Version:** Uses version from `package.json` directly
+- **Trigger:** Manual workflow dispatch only (release-type: `beta`)
+- **Version:** Uses version from `package.json` directly (typically a prerelease, e.g. `4.0.0-beta.1`)
+- **Dist-tag:** `beta`
+- **Command:** `npm publish --provenance --tag beta --ignore-scripts`
+- **Install:** `npm install @adapty/core@beta`
+
+### Production Releases (manual)
+
+- **Trigger:** Manual workflow dispatch only (release-type: `prod (latest)`). Pushing a git tag does NOT publish.
+- **Version:** Uses version from `package.json` directly (from the branch/tag ref selected when running the workflow)
 - **Dist-tag:** `latest` (default)
+- **Guard:** the workflow refuses to publish a prerelease version (anything containing `-`, e.g. `4.0.0-beta.1`) under `latest` — bump `package.json` to a stable version first, or use the `beta` release-type
 - **Command:** `npm publish --provenance --ignore-scripts`
 - **Install:** `npm install @adapty/core` (installs latest)
-- **Workflow:** Update version in `package.json`, then create and push git tag
+- **Workflow:** Bump the version in `package.json` and commit it, then run the workflow manually (Actions → "Publish to npm" → Run workflow) from the target ref with release-type `prod (latest)` and `dry-run` = `false`
 
 **Important:** The `--tag dev` flag ensures dev builds are NOT installed by default. Only production releases (published with `latest` tag) are installed when users run `npm install @adapty/core` without specifying a version.
 

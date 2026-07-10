@@ -34,8 +34,8 @@ export class AdaptyUICreateFlowViewParamsCoder {
       result.preload_products = data.prefetchProducts;
     }
 
-    if (data.enableSafeArea !== undefined) {
-      result.enable_safe_area_paddings = data.enableSafeArea;
+    if (data.android?.enableSafeArea !== undefined) {
+      result.enable_safe_area_paddings = data.android.enableSafeArea;
     }
 
     if (data.loadTimeoutMs !== undefined) {
