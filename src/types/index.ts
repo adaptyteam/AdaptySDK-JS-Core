@@ -642,6 +642,10 @@ export interface AdaptyPaywallProduct {
    * The cost of the product in the local currency
    */
   readonly price?: AdaptyPrice;
+  /**
+   * Internal Adapty product identifier.
+   * @internal
+   */
   readonly adaptyId: string;
   /**
    * Same as `variationId` property of the parent {@link AdaptyFlowPaywall}.
@@ -654,6 +658,10 @@ export interface AdaptyPaywallProduct {
   readonly vendorProductId: string;
   paywallProductIndex: number;
   webPurchaseUrl?: string;
+  /**
+   * Internal payload data attached to the product.
+   * @internal
+   */
   payloadData?: string;
   subscription?: AdaptySubscriptionDetails;
   ios?: {
@@ -822,6 +830,7 @@ export interface AdaptyProductIdentifier {
 
   /**
    * Internal Adapty product identifier.
+   * @internal
    * @readonly
    */
   readonly adaptyProductId: string;
