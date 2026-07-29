@@ -423,6 +423,7 @@ export interface CreateOnboardingViewParamsInput {
 
 export interface AdaptyUiView {
   id: string;
+  locale?: string;
 }
 
 export interface AdaptyUiMediaCache {
