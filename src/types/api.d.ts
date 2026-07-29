@@ -27,6 +27,7 @@ export interface components {
     'AdaptyUICreateFlowView.Request': {
       method: 'adapty_ui_create_flow_view';
       flow: components['defs']['AdaptyFlow'];
+      locale?: components['defs']['AdaptyLocale'];
       load_timeout?: number;
       preload_products?: boolean;
       custom_tags?: components['defs']['AdaptyUI.CustomTagsValues'];
@@ -1013,6 +1014,7 @@ export interface components {
       id: string;
       placement_id: string;
       variation_id: string;
+      locale?: components['defs']['AdaptyLocale'];
     };
 
     'AdaptyUI.OnboardingView': {
