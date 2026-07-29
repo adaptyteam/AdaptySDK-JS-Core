@@ -26,6 +26,18 @@ describe('AdaptyUICreateFlowViewParamsCoder', () => {
     });
   });
 
+  it('should encode locale', () => {
+    const input: CreateFlowViewParamsInput = {
+      locale: 'es',
+    };
+
+    const result = coder.encode(input);
+
+    expect(result).toEqual({
+      locale: 'es',
+    });
+  });
+
   it('should encode custom tags', () => {
     const input: CreateFlowViewParamsInput = {
       customTags: {
