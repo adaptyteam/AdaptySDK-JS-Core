@@ -361,6 +361,13 @@ export type OnboardingStateUpdatedAction =
  */
 export interface CreateFlowViewParamsInput {
   /**
+   * The identifier of the localization to render the flow with, e.g. `en`, `es`, `fr`.
+   *
+   * @remarks
+   * When omitted, the flow's default localization is used.
+   */
+  locale?: string;
+  /**
    * `true` if you want to prefetch products before presenting a flow view.
    */
   prefetchProducts?: boolean;
@@ -416,6 +423,7 @@ export interface CreateOnboardingViewParamsInput {
 
 export interface AdaptyUiView {
   id: string;
+  locale?: string;
 }
 
 export interface AdaptyUiMediaCache {
