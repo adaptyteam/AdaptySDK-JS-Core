@@ -364,7 +364,8 @@ export interface CreateFlowViewParamsInput {
    * The identifier of the localization to render the flow with, e.g. `en`, `es`, `fr`.
    *
    * @remarks
-   * When omitted, the flow's default localization is used.
+   * When undefined, `en` is requested rather than the flow's default localization.
+   * If the requested localization does not exist, the flow's default localization is used.
    */
   locale?: string;
   /**
