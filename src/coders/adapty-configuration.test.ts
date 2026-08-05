@@ -32,6 +32,7 @@ describe('AdaptyConfigurationCoder', () => {
       cross_platform_sdk_version: version,
       observer_mode: false,
       ip_address_collection_disabled: false,
+      adapty_attribution_enabled: false,
       server_cluster: 'default',
       activate_ui: true,
       media_cache: {
@@ -47,6 +48,7 @@ describe('AdaptyConfigurationCoder', () => {
       customerUserId: 'user123',
       observerMode: true,
       ipAddressCollectionDisabled: true,
+      adaptyAttributionEnabled: true,
       logLevel: LogLevel.VERBOSE,
       serverCluster: 'eu' as const,
       backendProxyHost: 'proxy.example.com',
@@ -82,6 +84,7 @@ describe('AdaptyConfigurationCoder', () => {
       },
       observer_mode: true,
       ip_address_collection_disabled: true,
+      adapty_attribution_enabled: true,
       clear_data_on_backup: true,
       log_level: 'verbose',
       server_cluster: 'eu',
@@ -205,6 +208,14 @@ describe('AdaptyConfigurationCoder', () => {
     const paramsWithTrue = { ios: { clearDataOnBackup: true } };
     const resultWithTrue = coder.encode(apiKey, paramsWithTrue);
     expect(resultWithTrue.clear_data_on_backup).toBe(true);
+  });
+
+  it('should default adaptyAttributionEnabled to false', () => {
+    expect(coder.encode(apiKey, {}).adapty_attribution_enabled).toBe(false);
+    expect(
+      coder.encode(apiKey, { adaptyAttributionEnabled: true })
+        .adapty_attribution_enabled,
+    ).toBe(true);
   });
 
   it('should prefer params media cache over default', () => {
