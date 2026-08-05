@@ -7,6 +7,7 @@ import { AdaptyAccessLevelCoder } from './adapty-access-level';
 import { AdaptyConfigurationCoder } from './adapty-configuration';
 import { AdaptyDiscountPhaseCoder } from './adapty-discount-phase';
 import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
+import { AdaptyFlowUiSchemaCoder } from './adapty-flow-ui-schema';
 import { AdaptyFlowCoder } from './adapty-flow';
 import { AdaptyIdentifyParamsCoder } from './adapty-identify-params';
 import { AdaptyInstallationDetailsCoder } from './adapty-installation-details';
@@ -124,6 +125,10 @@ export class CoderFactory {
 
   createFlowPaywallCoder(): AdaptyFlowPaywallCoder {
     return new AdaptyFlowPaywallCoder(this.deps.platform);
+  }
+
+  createFlowUiSchemaCoder(): AdaptyFlowUiSchemaCoder {
+    return new AdaptyFlowUiSchemaCoder();
   }
 
   createPaywallProductCoder(): AdaptyPaywallProductCoder {

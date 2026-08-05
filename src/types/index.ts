@@ -105,6 +105,48 @@ export interface AdaptyFlowPaywall {
 }
 
 /**
+ * Describes a single layout of a flow UI schema.
+ * @public
+ */
+export interface AdaptyFlowUiSchemaLayout {
+  readonly flowLayoutId: string;
+}
+
+/**
+ * Describes a single grid of a flow UI schema.
+ *
+ * @remarks
+ * A grid maps its {@link AdaptyFlowUiSchemaGrid.cells} onto the flow layouts
+ * for a given set of platforms, devices and breakpoints.
+ * @public
+ */
+export interface AdaptyFlowUiSchemaGrid {
+  /**
+   * Platforms this grid applies to, or `'all'` for every platform.
+   * @readonly
+   */
+  readonly platforms?: 'all' | ('ios' | 'android')[];
+  /**
+   * Device classes this grid applies to, or `'all'` for every device class.
+   * @readonly
+   */
+  readonly devices?: 'all' | ('phone' | 'tab')[];
+  readonly customId?: string;
+  readonly hBreakpoints?: number[];
+  readonly vBreakpoints?: number[];
+  readonly cells: number[];
+}
+
+/**
+ * Layout schema used by the Adapty UI builder to render a flow.
+ * @public
+ */
+export interface AdaptyFlowUiSchema {
+  readonly layouts: AdaptyFlowUiSchemaLayout[];
+  readonly grids: AdaptyFlowUiSchemaGrid[];
+}
+
+/**
  * Describes an object that represents a flow,
  * fetched for a placement.
  * @public
@@ -133,6 +175,11 @@ export interface AdaptyFlow {
    * @readonly
    */
   readonly paywalls: AdaptyFlowPaywall[];
+  /**
+   * Layout schema used by the Adapty UI builder to render this flow.
+   * @readonly
+   */
+  readonly uiSchema?: AdaptyFlowUiSchema;
 
   id: string;
   flowVersionId?: string;
