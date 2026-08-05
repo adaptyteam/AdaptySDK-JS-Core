@@ -18,6 +18,7 @@ import { AdaptyOnboardingCoder } from './adapty-onboarding';
 import { AdaptyPaywallProductCoder } from './adapty-paywall-product';
 import { AdaptyPlacementCoder } from './adapty-placement';
 import { AdaptyPriceCoder } from './adapty-price';
+import { AdaptyPromotedProductCoder } from './adapty-promoted-product';
 import { AdaptyProfileParametersCoder } from './adapty-profile-parameters';
 import { AdaptyProfileCoder } from './adapty-profile';
 import { AdaptyPurchaseParamsCoder } from './adapty-purchase-params';
@@ -147,6 +148,10 @@ export class CoderFactory {
 
   createProfileParametersCoder(): AdaptyProfileParametersCoder {
     return new AdaptyProfileParametersCoder(this.deps.platform);
+  }
+
+  createPromotedProductCoder(): AdaptyPromotedProductCoder {
+    return new AdaptyPromotedProductCoder(this.deps.platform);
   }
 
   createRemoteConfigCoder(): AdaptyRemoteConfigCoder {

@@ -123,6 +123,7 @@ describe('parseMethodResult', () => {
       { type: 'AdaptyProfile', method: 'createProfileCoder' },
       { type: 'AdaptyFlow', method: 'createFlowCoder' },
       { type: 'AdaptyPaywallProduct', method: 'createPaywallProductCoder' },
+      { type: 'AdaptyPromotedProduct', method: 'createPromotedProductCoder' },
       { type: 'AdaptyRemoteConfig', method: 'createRemoteConfigCoder' },
       { type: 'AdaptyOnboarding', method: 'createOnboardingCoder' },
       { type: 'AdaptyPurchaseResult', method: 'createPurchaseResultCoder' },
@@ -275,6 +276,25 @@ describe('parseCommonEvent', () => {
     );
 
     expect(decode).toHaveBeenCalledWith(profile);
+    expect(result).toBe(sentinel);
+  });
+
+  it('decodes the product for did_receive_promoted_purchase', () => {
+    const product = { vendor_product_id: 'yearly.premium.6999' };
+    const sentinel = { id: 'promoted-product' };
+    const { decode } = stubCoder(
+      factory,
+      'createPromotedProductCoder',
+      sentinel,
+    );
+
+    const result = parseCommonEvent(
+      factory,
+      'did_receive_promoted_purchase',
+      JSON.stringify({ product }),
+    );
+
+    expect(decode).toHaveBeenCalledWith(product);
     expect(result).toBe(sentinel);
   });
 

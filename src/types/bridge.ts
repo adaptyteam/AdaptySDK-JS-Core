@@ -26,6 +26,7 @@ export const MethodNames = [
   'identify',
   'log_show_flow',
   'logout',
+  'make_promoted_purchase',
   'make_purchase',
   'open_web_paywall',
   'present_code_redemption_sheet',
@@ -82,6 +83,7 @@ export interface AdaptyBridgeError {
 
 interface EventMap {
   onLatestProfileLoad: string;
+  onPromotedPurchaseReceived: string;
   onInstallationDetailsSuccess: string;
   onInstallationDetailsFail: string;
 }

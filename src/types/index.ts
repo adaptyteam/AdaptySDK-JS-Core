@@ -676,6 +676,56 @@ export interface AdaptyPaywallProduct {
   };
 }
 
+/**
+ * Describes a product promoted in the App Store,
+ * received through the `'onPromotedPurchaseReceived'` event.
+ *
+ * @remarks
+ * Unlike {@link AdaptyPaywallProduct}, a promoted product does not belong to a
+ * paywall, so it carries no placement, variation or A/B test information.
+ * @public
+ */
+export interface AdaptyPromotedProduct {
+  /**
+   * A description of the product.
+   */
+  readonly localizedDescription: string;
+  /**
+   * The name of the product.
+   */
+  readonly localizedTitle: string;
+  /**
+   * The region code of the locale used to format the price of the product.
+   * ISO 3166 ALPHA-2 (US, DE)
+   */
+  readonly regionCode?: string;
+  /**
+   * The cost of the product in the local currency
+   */
+  readonly price?: AdaptyPrice;
+  /**
+   * Unique identifier of a product
+   * from App Store Connect or Google Play Console
+   */
+  readonly vendorProductId: string;
+  /**
+   * Internal payload data attached to the product.
+   * @internal
+   */
+  payloadData?: string;
+  subscription?: AdaptySubscriptionDetails;
+  ios?: {
+    /**
+     * Boolean value that indicates
+     * whether the product is available for family sharing
+     * in App Store Connect.
+     * Will be `false` for iOS version below 14.0 and macOS version below 11.0.
+     * @see {@link https://developer.apple.com/documentation/storekit/skproduct/3564805-isfamilyshareable}
+     */
+    readonly isFamilyShareable: boolean;
+  };
+}
+
 export interface AdaptySubscriptionDetails {
   /**
    * The period details for products that are subscriptions.
