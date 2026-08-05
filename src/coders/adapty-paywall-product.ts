@@ -85,7 +85,13 @@ export class AdaptyPaywallProductCoder extends SimpleCoder<
       payload_data: data.payload_data,
       paywall_name: data.paywall_name,
       paywall_variation_id: data.paywall_variation_id,
-      subscription_offer_identifier: data.subscription?.offer?.offer_identifier,
+      subscription: data.subscription?.offer
+        ? {
+            offer: {
+              offer_identifier: data.subscription.offer.offer_identifier,
+            },
+          }
+        : undefined,
       vendor_product_id: data.vendor_product_id,
     };
   }

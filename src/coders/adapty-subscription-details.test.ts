@@ -5,7 +5,7 @@ import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
 import { AdaptySubscriptionOfferCoder } from '@/coders/adapty-subscription-offer';
 
 type Model = AdaptySubscriptionDetails;
-const mocks: Def['AdaptyPaywallProduct.Subscription'][] = [
+const mocks: Def['AdaptyProduct.Subscription'][] = [
   {
     base_plan_id: 'androidPlan1',
     renewal_type: 'prepaid',
