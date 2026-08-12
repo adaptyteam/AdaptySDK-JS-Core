@@ -1,4 +1,6 @@
 import { AdaptyError } from '@/adapty-error';
+// Imported for JSDoc {@link} references only.
+import type { CreateFlowViewParamsInput } from '@/ui-builder/types';
 import type {
   AdaptyPaywallProduct,
   AdaptyProfile,
@@ -64,9 +66,31 @@ export type AdaptyPermission =
 
 // Event View
 export interface FlowEventView {
+  /**
+   * The internal identifier of the presented view instance.
+   *
+   * @remarks
+   * It does not correspond to anything in your dashboard.
+   */
   id: string;
-  placementId?: string;
-  variationId?: string;
+  /**
+   * The placement this flow was fetched for.
+   */
+  placementId: string;
+  /**
+   * The variation the flow resolved to, for A/B test attribution.
+   */
+  variationId: string;
+  /**
+   * The localization the view was actually built with.
+   *
+   * @remarks
+   * May differ from the requested localization if it is not available in the flow.
+   *
+   * @see {@link CreateFlowViewParamsInput.locale} — the localization requested
+   * when the view was created.
+   */
+  locale?: string;
 }
 
 // Base Event

@@ -127,8 +127,10 @@ export function extractFlowCallbackArgs<T extends keyof FlowEventHandlers>(
       // the view emitter's dedicated observer branch, not here.
       return [] as ExtractedArgs<T>;
 
-    case FlowEventId.DidRequestAppReview:
     case FlowEventId.DidAppear:
+      return [event.view] as ExtractedArgs<T>;
+
+    case FlowEventId.DidRequestAppReview:
     case FlowEventId.DidDisappear:
     case FlowEventId.DidStartRestore:
       return [] as ExtractedArgs<T>;
