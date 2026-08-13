@@ -188,3 +188,26 @@ describe('parseFlowEvent — observer mode', () => {
     expect(parseFlowEvent(factory, input)).toMatchObject({ eventId: '' });
   });
 });
+
+describe('parseFlowEvent — view locale', () => {
+  it('parses the locale reported inside the view object', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_did_appear',
+      view: { ...rawView, locale: 'es' },
+    });
+
+    expect(parseFlowEvent(factory, input)).toEqual({
+      id: 'flow_view_did_appear',
+      view: { ...decodedView, locale: 'es' },
+    });
+  });
+
+  it('leaves the locale undefined when the native payload omits it', () => {
+    const input = JSON.stringify({
+      id: 'flow_view_did_appear',
+      view: rawView,
+    });
+
+    expect(parseFlowEvent(factory, input)?.view.locale).toBeUndefined();
+  });
+});
