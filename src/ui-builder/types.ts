@@ -7,7 +7,7 @@ import {
   WebPresentation,
 } from '@/types';
 import { FileLocation, MakePurchaseParamsInput } from '@/types/inputs';
-import type { AdaptyPermission } from '@/types/flow-events';
+import type { AdaptyPermission, FlowEventView } from '@/types/flow-events';
 
 /**
  * @internal
@@ -124,8 +124,11 @@ export interface FlowEventHandlers {
    *
    * If you return `true`, the flow view will be closed.
    * @default false
+   *
+   * @param view - the flow view that appeared; see {@link FlowEventView} for
+   * the fields it carries, of which only `locale` is optional
    */
-  onAppeared: () => EventHandlerResult;
+  onAppeared: (view: FlowEventView) => EventHandlerResult;
 
   onWebPaymentNavigationFinished: (
     product?: AdaptyPaywallProduct,
@@ -364,7 +367,11 @@ export interface CreateFlowViewParamsInput {
    * The identifier of the localization to render the flow with, e.g. `en`, `es`, `fr`.
    *
    * @remarks
-   * When omitted, the flow's default localization is used.
+   * When undefined, `en` is requested rather than the flow's default localization.
+   * If the requested localization does not exist, the flow's default localization is used.
+   *
+   * @see {@link FlowEventView.locale} — the localization the view was actually
+   * built with.
    */
   locale?: string;
   /**

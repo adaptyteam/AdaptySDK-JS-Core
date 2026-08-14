@@ -66,8 +66,9 @@ export function parseFlowEvent(
   const viewObj = obj['view'] as Record<string, unknown>;
   const view: FlowEventView = {
     id: viewObj['id'] as string,
-    placementId: viewObj['placement_id'] as string | undefined,
-    variationId: viewObj['variation_id'] as string | undefined,
+    placementId: viewObj['placement_id'] as string,
+    variationId: viewObj['variation_id'] as string,
+    locale: viewObj['locale'] as string | undefined,
   };
 
   switch (eventId) {

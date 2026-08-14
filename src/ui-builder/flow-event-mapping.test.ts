@@ -5,7 +5,11 @@ import {
 } from '@/ui-builder/flow-event-mapping';
 import { FlowEventId } from '@/types/flow-events';
 
-const view = { id: 'view-1' };
+const view = {
+  id: 'view-1',
+  placementId: 'placement-1',
+  variationId: 'variation-1',
+};
 
 describe('flow-event-mapping — notification events', () => {
   it('resolves the app review event to onRequestAppReview', () => {
@@ -59,7 +63,7 @@ describe('flow-event-mapping — onRequestPermission', () => {
   it('resolves the permission native event to onRequestPermission', () => {
     const event = {
       id: FlowEventId.DidAskPermission,
-      view: { id: 'v' },
+      view: { id: 'v', placementId: 'p', variationId: 'var' },
       eventId: 'evt-1',
       permission: 'notifications',
       customArgs: { a: 'b' },
@@ -78,7 +82,7 @@ describe('flow-event-mapping — onRequestPermission', () => {
   it('extracts [permission, customArgs] (event id stays hidden)', () => {
     const event = {
       id: FlowEventId.DidAskPermission,
-      view: { id: 'v' },
+      view: { id: 'v', placementId: 'p', variationId: 'var' },
       eventId: 'evt-1',
       permission: 'notifications',
       customArgs: { source: 'onboarding' },
@@ -128,5 +132,32 @@ describe('flow-event-mapping — observer mode', () => {
         id: FlowEventId.ObserverDidInitiateRestore,
       } as any),
     ).toEqual([]);
+  });
+});
+
+describe('flow-event-mapping — did appear', () => {
+  it('extracts the view as the single onAppeared argument', () => {
+    const appearedView = {
+      id: 'view-1',
+      placementId: 'placement-1',
+      variationId: 'variation-1',
+      locale: 'es',
+    };
+
+    const args = extractFlowCallbackArgs('onAppeared', {
+      id: FlowEventId.DidAppear,
+      view: appearedView,
+    });
+
+    expect(args).toEqual([appearedView]);
+  });
+
+  it('extracts no arguments for onDisappeared', () => {
+    const args = extractFlowCallbackArgs('onDisappeared', {
+      id: FlowEventId.DidDisappear,
+      view,
+    });
+
+    expect(args).toEqual([]);
   });
 });
