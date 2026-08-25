@@ -28,6 +28,7 @@ export interface components {
       method: 'adapty_ui_create_flow_view';
       flow: components['defs']['AdaptyFlow'];
       locale?: components['defs']['AdaptyLocale'];
+      custom_layout_id?: string;
       load_timeout?: number;
       preload_products?: boolean;
       custom_tags?: components['defs']['AdaptyUI.CustomTagsValues'];
