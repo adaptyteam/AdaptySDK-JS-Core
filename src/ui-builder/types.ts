@@ -375,6 +375,11 @@ export interface CreateFlowViewParamsInput {
    */
   locale?: string;
   /**
+   * The id of a custom layout to render instead of the one resolved
+   * automatically for the current device.
+   */
+  customLayoutId?: string;
+  /**
    * `true` if you want to prefetch products before presenting a flow view.
    */
   prefetchProducts?: boolean;

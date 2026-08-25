@@ -16,6 +16,7 @@ import {
 type Model = CreateFlowViewParamsInput;
 type Serializable = {
   locale?: Def['AdaptyLocale'];
+  custom_layout_id?: string;
   preload_products?: boolean;
   load_timeout?: number;
   custom_tags?: Def['AdaptyUI.CustomTagsValues'];
@@ -33,6 +34,10 @@ export class AdaptyUICreateFlowViewParamsCoder {
 
     if (data.locale !== undefined) {
       result.locale = data.locale;
+    }
+
+    if (data.customLayoutId !== undefined) {
+      result.custom_layout_id = data.customLayoutId;
     }
 
     if (data.prefetchProducts !== undefined) {

@@ -7,6 +7,7 @@ import { AdaptyAccessLevelCoder } from './adapty-access-level';
 import { AdaptyConfigurationCoder } from './adapty-configuration';
 import { AdaptyDiscountPhaseCoder } from './adapty-discount-phase';
 import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
+import { AdaptyFlowUiSchemaCoder } from './adapty-flow-ui-schema';
 import { AdaptyFlowCoder } from './adapty-flow';
 import { AdaptyIdentifyParamsCoder } from './adapty-identify-params';
 import { AdaptyInstallationDetailsCoder } from './adapty-installation-details';
@@ -18,6 +19,7 @@ import { AdaptyOnboardingCoder } from './adapty-onboarding';
 import { AdaptyPaywallProductCoder } from './adapty-paywall-product';
 import { AdaptyPlacementCoder } from './adapty-placement';
 import { AdaptyPriceCoder } from './adapty-price';
+import { AdaptyPromotedProductCoder } from './adapty-promoted-product';
 import { AdaptyProfileParametersCoder } from './adapty-profile-parameters';
 import { AdaptyProfileCoder } from './adapty-profile';
 import { AdaptyPurchaseParamsCoder } from './adapty-purchase-params';
@@ -125,6 +127,10 @@ export class CoderFactory {
     return new AdaptyFlowPaywallCoder(this.deps.platform);
   }
 
+  createFlowUiSchemaCoder(): AdaptyFlowUiSchemaCoder {
+    return new AdaptyFlowUiSchemaCoder();
+  }
+
   createPaywallProductCoder(): AdaptyPaywallProductCoder {
     return new AdaptyPaywallProductCoder(this.deps.platform);
   }
@@ -147,6 +153,10 @@ export class CoderFactory {
 
   createProfileParametersCoder(): AdaptyProfileParametersCoder {
     return new AdaptyProfileParametersCoder(this.deps.platform);
+  }
+
+  createPromotedProductCoder(): AdaptyPromotedProductCoder {
+    return new AdaptyPromotedProductCoder(this.deps.platform);
   }
 
   createRemoteConfigCoder(): AdaptyRemoteConfigCoder {

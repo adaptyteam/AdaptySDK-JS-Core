@@ -10,6 +10,7 @@ const AdaptyTypes = [
   'AdaptyPurchaseResult',
   'AdaptyFlow',
   'AdaptyPaywallProduct',
+  'AdaptyPromotedProduct',
   'AdaptyOnboarding',
   'AdaptyRemoteConfig',
   'AdaptyInstallationStatus',
@@ -109,6 +110,10 @@ export function parseCommonEvent(
   switch (event) {
     case 'did_load_latest_profile':
       return getCoder(factory, 'AdaptyProfile', ctx)?.decode(obj['profile']);
+    case 'did_receive_promoted_purchase':
+      return getCoder(factory, 'AdaptyPromotedProduct', ctx)?.decode(
+        obj['product'],
+      );
     case 'on_installation_details_success':
       return getCoder(factory, 'AdaptyInstallationDetails', ctx)?.decode(
         obj['details'],
@@ -136,6 +141,8 @@ function getCoder(
       return factory.createFlowCoder();
     case 'AdaptyPaywallProduct':
       return factory.createPaywallProductCoder();
+    case 'AdaptyPromotedProduct':
+      return factory.createPromotedProductCoder();
     case 'AdaptyRemoteConfig':
       return factory.createRemoteConfigCoder();
     case 'AdaptyOnboarding':

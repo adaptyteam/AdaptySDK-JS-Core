@@ -162,6 +162,16 @@ export interface ActivateParamsInput {
    * @defaultValue `false`
    */
   ipAddressCollectionDisabled?: boolean;
+  /**
+   * Enables the Adapty Attribution service.
+   *
+   * @remarks
+   * When enabled, the SDK registers the install with Adapty Attribution so
+   * acquisition data can be attributed without a third-party attribution SDK.
+   *
+   * @defaultValue `false`
+   */
+  adaptyAttributionEnabled?: boolean;
   ios?: {
     /**
      * Disables IDFA collection
