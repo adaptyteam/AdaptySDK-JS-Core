@@ -106,7 +106,10 @@ export interface AdaptyFlowPaywall {
 
 /**
  * Describes a single layout of a flow UI schema.
- * @public
+ *
+ * @remarks
+ * Renderer data, not a public API.
+ * @internal
  */
 export interface AdaptyFlowUiSchemaLayout {
   readonly flowLayoutId: string;
@@ -116,9 +119,8 @@ export interface AdaptyFlowUiSchemaLayout {
  * Describes a single grid of a flow UI schema.
  *
  * @remarks
- * A grid maps its {@link AdaptyFlowUiSchemaGrid.cells} onto the flow layouts
- * for a given set of platforms, devices and breakpoints.
- * @public
+ * Renderer data, not a public API.
+ * @internal
  */
 export interface AdaptyFlowUiSchemaGrid {
   /**
@@ -139,7 +141,10 @@ export interface AdaptyFlowUiSchemaGrid {
 
 /**
  * Layout schema used by the Adapty UI builder to render a flow.
- * @public
+ *
+ * @remarks
+ * Renderer data, not a public API.
+ * @internal
  */
 export interface AdaptyFlowUiSchema {
   readonly layouts: AdaptyFlowUiSchemaLayout[];
@@ -177,6 +182,10 @@ export interface AdaptyFlow {
   readonly paywalls: AdaptyFlowPaywall[];
   /**
    * Layout schema used by the Adapty UI builder to render this flow.
+   *
+   * @remarks
+   * Renderer data, not a public API.
+   * @internal
    * @readonly
    */
   readonly uiSchema?: AdaptyFlowUiSchema;
