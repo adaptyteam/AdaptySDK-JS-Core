@@ -106,7 +106,10 @@ export interface AdaptyFlowPaywall {
 
 /**
  * Describes a single layout of a flow UI schema.
- * @public
+ *
+ * @remarks
+ * Renderer data, not a public API.
+ * @internal
  */
 export interface AdaptyFlowUiSchemaLayout {
   readonly flowLayoutId: string;
@@ -116,9 +119,8 @@ export interface AdaptyFlowUiSchemaLayout {
  * Describes a single grid of a flow UI schema.
  *
  * @remarks
- * A grid maps its {@link AdaptyFlowUiSchemaGrid.cells} onto the flow layouts
- * for a given set of platforms, devices and breakpoints.
- * @public
+ * Renderer data, not a public API.
+ * @internal
  */
 export interface AdaptyFlowUiSchemaGrid {
   /**
@@ -139,7 +141,10 @@ export interface AdaptyFlowUiSchemaGrid {
 
 /**
  * Layout schema used by the Adapty UI builder to render a flow.
- * @public
+ *
+ * @remarks
+ * Renderer data, not a public API.
+ * @internal
  */
 export interface AdaptyFlowUiSchema {
   readonly layouts: AdaptyFlowUiSchemaLayout[];
@@ -177,6 +182,10 @@ export interface AdaptyFlow {
   readonly paywalls: AdaptyFlowPaywall[];
   /**
    * Layout schema used by the Adapty UI builder to render this flow.
+   *
+   * @remarks
+   * Renderer data, not a public API.
+   * @internal
    * @readonly
    */
   readonly uiSchema?: AdaptyFlowUiSchema;
@@ -291,14 +300,18 @@ export type AdaptyPurchaseResult =
     };
 
 /**
- * Identifier of an attribution source applied to a profile.
+ * Identifiers of attribution providers applied to the profile.
  *
- * Known value is `'apple_search_ads'`. Other identifiers may be emitted
- * in future versions, so any string is accepted — clients must tolerate
- * unknown values.
+ * Other identifiers may be emitted in future versions, so any string is accepted
  * @public
  */
-export type AttributionSource = 'apple_search_ads' | (string & {});
+export type AdaptyExternalAttributionProvider =
+  | 'apple_search_ads'
+  | 'adjust'
+  | 'appsflyer'
+  | 'branch'
+  | 'tenjin'
+  | (string & {});
 
 /**
  * Interface representing a user profile in Adapty,
@@ -315,12 +328,10 @@ export interface AdaptyProfile {
   readonly accessLevels?: Record<string, AdaptyAccessLevel>;
 
   /**
-   * Identifiers of attribution sources applied to the profile.
-   * Known value is `'apple_search_ads'`; unknown values may appear
-   * in future versions.
+   * Identifiers of attribution providers applied to the profile.
    * @readonly
    */
-  readonly appliedAttributionSources?: AttributionSource[];
+  readonly appliedExternalAttributionProviders?: AdaptyExternalAttributionProvider[];
 
   /**
    * Object representing custom attributes set for the user using
