@@ -6,7 +6,7 @@ import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
 import { AdaptySubscriptionOfferCoder } from '@/coders/adapty-subscription-offer';
 
 type Model = AdaptySubscriptionDetails;
-type Serializable = Def['AdaptyPaywallProduct.Subscription'];
+type Serializable = Def['AdaptyProduct.Subscription'];
 
 export class AdaptySubscriptionDetailsCoder extends SimpleCoder<
   Model,

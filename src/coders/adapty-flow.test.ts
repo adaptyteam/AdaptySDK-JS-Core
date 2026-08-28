@@ -2,6 +2,7 @@ import type { AdaptyFlow } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptyFlowCoder } from './adapty-flow';
 import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
+import { AdaptyFlowUiSchemaCoder } from './adapty-flow-ui-schema';
 import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
 import { ArrayCoder } from './array';
 
@@ -26,6 +27,21 @@ const mocks: Def['AdaptyFlow'][] = [
     remote_configs: [{ lang: 'en', data: '{"key":"value"}' }],
     flow_version_id: 'fv1',
     payload_data: 'additionalData',
+    ui_schema: {
+      layouts: [{ flow_layout_id: 'layout1' }, { flow_layout_id: 'layout2' }],
+      grids: [
+        {
+          platforms: 'all',
+          devices: ['phone'],
+          custom_id: 'grid1',
+          h_breakpoints: [320, 768],
+          v_breakpoints: [480],
+          cells: [0, 1],
+        },
+        // Only the required field: everything else must stay absent
+        { cells: [1] },
+      ],
+    },
     variations: [
       {
         placement,
@@ -79,6 +95,9 @@ function toModel(mock: (typeof mocks)[number]): Model {
     ...(mock.flow_version_id && { flowVersionId: mock.flow_version_id }),
     // Each variation now carries its own placement on the wire.
     paywalls: _paywalls.decode(mock.variations),
+    ...(mock.ui_schema && {
+      uiSchema: new AdaptyFlowUiSchemaCoder().decode(mock.ui_schema),
+    }),
     responseCreatedAt: mock.response_created_at,
     ...(mock.payload_data && { payloadData: mock.payload_data }),
   };

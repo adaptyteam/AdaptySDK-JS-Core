@@ -38,6 +38,24 @@ describe('AdaptyUICreateFlowViewParamsCoder', () => {
     });
   });
 
+  it('should encode customLayoutId', () => {
+    const input: CreateFlowViewParamsInput = {
+      customLayoutId: 'tablet_layout',
+    };
+
+    const result = coder.encode(input);
+
+    expect(result).toEqual({
+      custom_layout_id: 'tablet_layout',
+    });
+  });
+
+  it('should omit custom_layout_id when customLayoutId is undefined', () => {
+    expect(coder.encode({ locale: 'en' })).not.toHaveProperty(
+      'custom_layout_id',
+    );
+  });
+
   it('should encode custom tags', () => {
     const input: CreateFlowViewParamsInput = {
       customTags: {

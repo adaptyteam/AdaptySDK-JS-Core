@@ -29,6 +29,8 @@ export class AdaptyConfigurationCoder {
     config['observer_mode'] = params.observerMode ?? false;
     config['ip_address_collection_disabled'] =
       params.ipAddressCollectionDisabled ?? false;
+    config['adapty_attribution_enabled'] =
+      params.adaptyAttributionEnabled ?? false;
 
     if (params.logLevel) {
       config['log_level'] = params.logLevel;

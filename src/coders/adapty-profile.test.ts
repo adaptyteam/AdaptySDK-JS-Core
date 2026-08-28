@@ -202,7 +202,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
       nonSubscriptions: _nonsubs.decode(mock.non_subscriptions),
     }),
     ...(mock.applied_attribution_sources && {
-      appliedAttributionSources: mock.applied_attribution_sources,
+      appliedExternalAttributionProviders: mock.applied_attribution_sources,
     }),
     customAttributes: mock.custom_attributes,
     customerUserId: mock.customer_user_id,

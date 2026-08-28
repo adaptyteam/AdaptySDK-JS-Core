@@ -28,6 +28,7 @@ export interface components {
       method: 'adapty_ui_create_flow_view';
       flow: components['defs']['AdaptyFlow'];
       locale?: components['defs']['AdaptyLocale'];
+      custom_layout_id?: string;
       load_timeout?: number;
       preload_products?: boolean;
       custom_tags?: components['defs']['AdaptyUI.CustomTagsValues'];
@@ -272,6 +273,18 @@ export interface components {
       ]
     >;
 
+    'MakePromotedPurchase.Request': {
+      method: 'make_promoted_purchase';
+      product: components['defs']['AdaptyPromotedProduct.Request'];
+    };
+
+    'MakePromotedPurchase.Response': OneOf<
+      [
+        { error: components['defs']['AdaptyError'] },
+        { success: components['defs']['AdaptyPurchaseResult'] },
+      ]
+    >;
+
     'OpenWebPaywall.Request': {
       method: 'open_web_paywall';
       open_in?: components['defs']['AdaptyWebPresentation'];
@@ -366,13 +379,13 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'UpdateAttributionData.Request': {
-      method: 'update_attribution_data';
+    'UpdateExternalAttributionData.Request': {
+      method: 'update_external_attribution_data';
       attribution: string;
-      source: string;
+      provider: string;
     };
 
-    'UpdateAttributionData.Response': OneOf<
+    'UpdateExternalAttributionData.Response': OneOf<
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
@@ -489,6 +502,11 @@ export interface components {
     'Event.DidLoadLatestProfile': {
       id: 'did_load_latest_profile';
       profile: components['defs']['AdaptyProfile'];
+    };
+
+    'Event.DidReceivePromotedPurchase': {
+      id: 'did_receive_promoted_purchase';
+      product: components['defs']['AdaptyPromotedProduct.Response'];
     };
 
     'Event.OnInstallationDetailsSuccess': {
@@ -694,6 +712,7 @@ export interface components {
       google_enable_pending_prepaid_plans?: boolean;
       google_local_access_level_allowed?: boolean;
       ip_address_collection_disabled?: boolean;
+      adapty_attribution_enabled?: boolean;
       clear_data_on_backup?: boolean;
       server_cluster?: 'default' | 'eu' | 'cn';
       backend_proxy_host?: string;
@@ -731,7 +750,7 @@ export interface components {
       is_family_shareable?: boolean;
       region_code?: string;
       price: components['defs']['AdaptyPrice'];
-      subscription?: components['defs']['AdaptyPaywallProduct.Subscription'];
+      subscription?: components['defs']['AdaptyProduct.Subscription'];
       payload_data?: string;
     };
 
@@ -742,7 +761,28 @@ export interface components {
       localized_string?: string;
     };
 
-    'AdaptyPaywallProduct.Subscription': {
+    'AdaptyPromotedProduct.Request': {
+      vendor_product_id: string;
+      subscription?: {
+        offer?: {
+          offer_identifier: components['defs']['AdaptySubscriptionOffer.Identifier'];
+        };
+      };
+      payload_data?: string;
+    };
+
+    'AdaptyPromotedProduct.Response': {
+      vendor_product_id: string;
+      localized_description: string;
+      localized_title: string;
+      is_family_shareable?: boolean;
+      region_code?: string;
+      price: components['defs']['AdaptyPrice'];
+      subscription?: components['defs']['AdaptyProduct.Subscription'];
+      payload_data?: string;
+    };
+
+    'AdaptyProduct.Subscription': {
       group_identifier?: string;
       period: components['defs']['AdaptySubscriptionPeriod'];
       localized_period?: string;
@@ -757,7 +797,11 @@ export interface components {
       access_level_id: string;
       product_type: string;
       paywall_product_index: number;
-      subscription_offer_identifier?: components['defs']['AdaptySubscriptionOffer.Identifier'];
+      subscription?: {
+        offer?: {
+          offer_identifier: components['defs']['AdaptySubscriptionOffer.Identifier'];
+        };
+      };
       paywall_variation_id: string;
       paywall_ab_test_name: string;
       paywall_name: string;
@@ -802,6 +846,19 @@ export interface components {
       remote_configs?: components['defs']['AdaptyRemoteConfig'][];
       flow_version_id?: string;
       variations: components['defs']['AdaptyFlowPaywall'][];
+      ui_schema?: {
+        layouts: {
+          flow_layout_id: string;
+        }[];
+        grids: {
+          platforms?: OneOf<['all', ('ios' | 'android')[]]>;
+          devices?: OneOf<['all', ('phone' | 'tab')[]]>;
+          custom_id?: string;
+          h_breakpoints?: number[];
+          v_breakpoints?: number[];
+          cells: number[];
+        }[];
+      };
       payload_data?: string;
       response_created_at: number;
     };

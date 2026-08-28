@@ -1,12 +1,13 @@
 /**
- * Valid list of callable bridge handlers
- * Must be the same as
- * - iOS RNAConstants.MethodName
+ * Valid list of callable bridge handlers.
+ *
+ * The source of truth is `cross_platform.yaml`: one entry per `$requests`
+ * method const. `bridge.test.ts` asserts the two stay in sync — a method the
+ * native side does not register would fail at runtime, not at compile time.
  * @internal
  */
 export const MethodNames = [
   'activate',
-  'adapty_ui_activate',
   'adapty_ui_create_flow_view',
   'adapty_ui_dismiss_flow_view',
   'adapty_ui_present_flow_view',
@@ -23,9 +24,12 @@ export const MethodNames = [
   'get_onboarding',
   'get_onboarding_for_default_audience',
   'get_profile',
+  'get_log_level',
+  'get_sdk_version',
   'identify',
   'log_show_flow',
   'logout',
+  'make_promoted_purchase',
   'make_purchase',
   'open_web_paywall',
   'present_code_redemption_sheet',
@@ -34,8 +38,8 @@ export const MethodNames = [
   'set_fallback',
   'set_integration_identifiers',
   'set_log_level',
-  'update_attribution_data',
   'update_collecting_refund_data_consent',
+  'update_external_attribution_data',
   'update_profile',
   'update_refund_preference',
   'flow_view_did_answer_permission',
@@ -82,6 +86,7 @@ export interface AdaptyBridgeError {
 
 interface EventMap {
   onLatestProfileLoad: string;
+  onPromotedPurchaseReceived: string;
   onInstallationDetailsSuccess: string;
   onInstallationDetailsFail: string;
 }

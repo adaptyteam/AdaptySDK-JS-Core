@@ -105,6 +105,53 @@ export interface AdaptyFlowPaywall {
 }
 
 /**
+ * Describes a single layout of a flow UI schema.
+ *
+ * @remarks
+ * Renderer data, not a public API.
+ * @internal
+ */
+export interface AdaptyFlowUiSchemaLayout {
+  readonly flowLayoutId: string;
+}
+
+/**
+ * Describes a single grid of a flow UI schema.
+ *
+ * @remarks
+ * Renderer data, not a public API.
+ * @internal
+ */
+export interface AdaptyFlowUiSchemaGrid {
+  /**
+   * Platforms this grid applies to, or `'all'` for every platform.
+   * @readonly
+   */
+  readonly platforms?: 'all' | ('ios' | 'android')[];
+  /**
+   * Device classes this grid applies to, or `'all'` for every device class.
+   * @readonly
+   */
+  readonly devices?: 'all' | ('phone' | 'tab')[];
+  readonly customId?: string;
+  readonly hBreakpoints?: number[];
+  readonly vBreakpoints?: number[];
+  readonly cells: number[];
+}
+
+/**
+ * Layout schema used by the Adapty UI builder to render a flow.
+ *
+ * @remarks
+ * Renderer data, not a public API.
+ * @internal
+ */
+export interface AdaptyFlowUiSchema {
+  readonly layouts: AdaptyFlowUiSchemaLayout[];
+  readonly grids: AdaptyFlowUiSchemaGrid[];
+}
+
+/**
  * Describes an object that represents a flow,
  * fetched for a placement.
  * @public
@@ -133,6 +180,15 @@ export interface AdaptyFlow {
    * @readonly
    */
   readonly paywalls: AdaptyFlowPaywall[];
+  /**
+   * Layout schema used by the Adapty UI builder to render this flow.
+   *
+   * @remarks
+   * Renderer data, not a public API.
+   * @internal
+   * @readonly
+   */
+  readonly uiSchema?: AdaptyFlowUiSchema;
 
   id: string;
   flowVersionId?: string;
@@ -244,14 +300,18 @@ export type AdaptyPurchaseResult =
     };
 
 /**
- * Identifier of an attribution source applied to a profile.
+ * Identifiers of attribution providers applied to the profile.
  *
- * Known value is `'apple_search_ads'`. Other identifiers may be emitted
- * in future versions, so any string is accepted — clients must tolerate
- * unknown values.
+ * Other identifiers may be emitted in future versions, so any string is accepted
  * @public
  */
-export type AttributionSource = 'apple_search_ads' | (string & {});
+export type AdaptyExternalAttributionProvider =
+  | 'apple_search_ads'
+  | 'adjust'
+  | 'appsflyer'
+  | 'branch'
+  | 'tenjin'
+  | (string & {});
 
 /**
  * Interface representing a user profile in Adapty,
@@ -268,12 +328,10 @@ export interface AdaptyProfile {
   readonly accessLevels?: Record<string, AdaptyAccessLevel>;
 
   /**
-   * Identifiers of attribution sources applied to the profile.
-   * Known value is `'apple_search_ads'`; unknown values may appear
-   * in future versions.
+   * Identifiers of attribution providers applied to the profile.
    * @readonly
    */
-  readonly appliedAttributionSources?: AttributionSource[];
+  readonly appliedExternalAttributionProviders?: AdaptyExternalAttributionProvider[];
 
   /**
    * Object representing custom attributes set for the user using
@@ -658,6 +716,56 @@ export interface AdaptyPaywallProduct {
   readonly vendorProductId: string;
   paywallProductIndex: number;
   webPurchaseUrl?: string;
+  /**
+   * Internal payload data attached to the product.
+   * @internal
+   */
+  payloadData?: string;
+  subscription?: AdaptySubscriptionDetails;
+  ios?: {
+    /**
+     * Boolean value that indicates
+     * whether the product is available for family sharing
+     * in App Store Connect.
+     * Will be `false` for iOS version below 14.0 and macOS version below 11.0.
+     * @see {@link https://developer.apple.com/documentation/storekit/skproduct/3564805-isfamilyshareable}
+     */
+    readonly isFamilyShareable: boolean;
+  };
+}
+
+/**
+ * Describes a product promoted in the App Store,
+ * received through the `'onPromotedPurchaseReceived'` event.
+ *
+ * @remarks
+ * Unlike {@link AdaptyPaywallProduct}, a promoted product does not belong to a
+ * paywall, so it carries no placement, variation or A/B test information.
+ * @public
+ */
+export interface AdaptyPromotedProduct {
+  /**
+   * A description of the product.
+   */
+  readonly localizedDescription: string;
+  /**
+   * The name of the product.
+   */
+  readonly localizedTitle: string;
+  /**
+   * The region code of the locale used to format the price of the product.
+   * ISO 3166 ALPHA-2 (US, DE)
+   */
+  readonly regionCode?: string;
+  /**
+   * The cost of the product in the local currency
+   */
+  readonly price?: AdaptyPrice;
+  /**
+   * Unique identifier of a product
+   * from App Store Connect or Google Play Console
+   */
+  readonly vendorProductId: string;
   /**
    * Internal payload data attached to the product.
    * @internal
