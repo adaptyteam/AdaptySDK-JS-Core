@@ -115,7 +115,7 @@ export type UserEventName = keyof EventMap;
  * `string` there is what lets a typo compile, because nothing downstream
  * compares it against the schema.
  */
-export type UserEventId = EventMap[UserEventName];
+export type UserEventNativeId = EventMap[UserEventName];
 
 /**
  * Handler name -> native wire id, for the global events.
