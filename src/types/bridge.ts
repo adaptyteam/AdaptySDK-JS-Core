@@ -90,32 +90,34 @@ export interface AdaptyBridgeError {
  * The SDK's global events - the ones not scoped to a flow view or an
  * onboarding - as public handler name -> native wire id.
  *
- * Both halves are load-bearing. `keyof` gives {@link UserEventName}, the names
+ * Both halves are load-bearing. `keyof` gives {@link GlobalEventName}, the names
  * a consumer passes to `addEventListener`; the values are the ids the native
  * side actually emits. The ids come off `cross_platform.yaml` through the
  * generated schema rather than being written out as free strings, so a typo in
- * {@link USER_EVENT_TO_NATIVE_ID} cannot reach a bridge subscription.
+ * {@link GLOBAL_EVENT_TO_NATIVE_EVENT} cannot reach a bridge subscription.
  * `bridge.test.ts` covers the other direction - that no global event in the
  * schema is missing from the map.
  */
-interface EventMap {
+interface GlobalEventMap {
   onLatestProfileLoad: Event['Event.DidLoadLatestProfile']['id'];
   onPromotedPurchaseReceived: Event['Event.DidReceivePromotedPurchase']['id'];
   onInstallationDetailsSuccess: Event['Event.OnInstallationDetailsSuccess']['id'];
   onInstallationDetailsFail: Event['Event.OnInstallationDetailsFail']['id'];
 }
 
-export type UserEventName = keyof EventMap;
+export type GlobalEventName = keyof GlobalEventMap;
 
 /**
- * Native wire id of a global SDK event.
+ * Native wire id of a global SDK event - the counterpart of
+ * `FlowEventIdType` and `OnboardingEventIdType` for the events that are not
+ * scoped to a view.
  *
  * @remarks
  * Type anything that subscribes to a global event by wire id with this. A bare
  * `string` there is what lets a typo compile, because nothing downstream
  * compares it against the schema.
  */
-export type UserEventNativeId = EventMap[UserEventName];
+export type GlobalEventIdType = GlobalEventMap[GlobalEventName];
 
 /**
  * Handler name -> native wire id, for the global events.
@@ -124,9 +126,9 @@ export type UserEventNativeId = EventMap[UserEventName];
  * Wrappers subscribe by handler name, so this is what turns the name the app
  * wrote into the string the bridge expects. It is the global-event counterpart
  * of `HANDLER_TO_NATIVE_EVENT` (flow views) and `HANDLER_TO_EVENT_CONFIG`
- * (onboardings).
+ * (onboardings), which own the unqualified names for historical reasons.
  */
-export const USER_EVENT_TO_NATIVE_ID: EventMap = {
+export const GLOBAL_EVENT_TO_NATIVE_EVENT: GlobalEventMap = {
   onLatestProfileLoad: 'did_load_latest_profile',
   onPromotedPurchaseReceived: 'did_receive_promoted_purchase',
   onInstallationDetailsSuccess: 'on_installation_details_success',

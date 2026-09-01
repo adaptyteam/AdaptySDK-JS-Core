@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import yaml from 'js-yaml';
-import { MethodNames, USER_EVENT_TO_NATIVE_ID } from './bridge';
+import { MethodNames, GLOBAL_EVENT_TO_NATIVE_EVENT } from './bridge';
 
 /**
  * Only the slice of cross_platform.yaml this test reads.
@@ -41,19 +41,19 @@ function schemaGlobalEventIds(): string[] {
   return [...new Set(ids)].sort();
 }
 
-describe('USER_EVENT_TO_NATIVE_ID', () => {
+describe('GLOBAL_EVENT_TO_NATIVE_EVENT', () => {
   // The values are already checked against the schema by the compiler, through
-  // EventMap. What the compiler cannot see is an event the schema gained and
+  // GlobalEventMap. What the compiler cannot see is an event the schema gained and
   // this map never got: a wrapper would then have no way to subscribe to it,
   // and nothing would say so.
   it('covers every global event in cross_platform.yaml, and no others', () => {
-    expect(Object.values(USER_EVENT_TO_NATIVE_ID).sort()).toStrictEqual(
+    expect(Object.values(GLOBAL_EVENT_TO_NATIVE_EVENT).sort()).toStrictEqual(
       schemaGlobalEventIds(),
     );
   });
 
   it('maps each handler name to a distinct native event', () => {
-    const ids = Object.values(USER_EVENT_TO_NATIVE_ID);
+    const ids = Object.values(GLOBAL_EVENT_TO_NATIVE_EVENT);
 
     expect(new Set(ids).size).toBe(ids.length);
   });
