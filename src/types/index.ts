@@ -160,6 +160,17 @@ export interface AdaptyFlow {
   readonly placement: AdaptyPlacement;
 
   /**
+   * If `true`, it is possible to fetch the view object
+   * and use it with AdaptyUI library.
+   *
+   * @remarks
+   * Derived on decode: `true` only when the flow has both a
+   * `flowVersionId` and a `uiSchema`.
+   * @readonly
+   */
+  readonly hasViewConfiguration: boolean;
+
+  /**
    * A flow name.
    * @readonly
    */
@@ -191,6 +202,15 @@ export interface AdaptyFlow {
   readonly uiSchema?: AdaptyFlowUiSchema;
 
   id: string;
+  /**
+   * Renderer-internal version of the flow's view configuration.
+   *
+   * @remarks
+   * Opaque to the app: carried only so a flow handed back to the native side
+   * keeps it. Use {@link AdaptyFlow.hasViewConfiguration} to tell whether the
+   * flow can be rendered.
+   * @internal
+   */
   flowVersionId?: string;
   /** Server response creation timestamp in milliseconds. */
   responseCreatedAt: number;
