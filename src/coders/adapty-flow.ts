@@ -2,17 +2,20 @@ import type { AdaptyFlow } from '@/types';
 import type { Def } from '@/types/schema';
 import type { Properties } from './types';
 import { ArrayCoder } from './array';
-import { SimpleCoder } from './coder';
+import { Coder } from './coder';
 import { AdaptyPlacementCoder } from '@/coders/adapty-placement';
 import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
 import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
 import { AdaptyFlowUiSchemaCoder } from './adapty-flow-ui-schema';
 
 type Model = AdaptyFlow;
+// `hasViewConfiguration` is derived on decode and is not part of the wire
+// schema, so it must be stripped before encoding the flow back to native.
+type CodableModel = Omit<Model, 'hasViewConfiguration'>;
 type Serializable = Def['AdaptyFlow'];
 
-export class AdaptyFlowCoder extends SimpleCoder<Model, Serializable> {
-  protected properties: Properties<Model, Serializable> = {
+export class AdaptyFlowCoder extends Coder<Model, CodableModel, Serializable> {
+  protected properties: Properties<CodableModel, Serializable> = {
     placement: {
       key: 'placement',
       required: true,
@@ -52,4 +55,20 @@ export class AdaptyFlowCoder extends SimpleCoder<Model, Serializable> {
     },
     payloadData: { key: 'payload_data', required: false, type: 'string' },
   };
+
+  override decode(data: Serializable): Model {
+    const codablePart = super.decode(data);
+
+    return {
+      ...codablePart,
+      hasViewConfiguration:
+        codablePart.flowVersionId !== undefined &&
+        codablePart.uiSchema !== undefined,
+    };
+  }
+
+  override encode(data: Model): Serializable {
+    const { hasViewConfiguration, ...codablePart } = data;
+    return super.encode(codablePart);
+  }
 }

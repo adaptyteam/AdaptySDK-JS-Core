@@ -67,6 +67,26 @@ const mocks: Def['AdaptyFlow'][] = [
     response_created_at: 1632458390000,
     variations: [],
   },
+  {
+    placement,
+    flow_id: 'flow789',
+    flow_name: 'Flow3',
+    variation_id: 'var003',
+    response_created_at: 1633458390000,
+    // flow_version_id without ui_schema -> no view configuration
+    flow_version_id: 'fv3',
+    variations: [],
+  },
+  {
+    placement,
+    flow_id: 'flow101',
+    flow_name: 'Flow4',
+    variation_id: 'var004',
+    response_created_at: 1634458390000,
+    // ui_schema without flow_version_id -> no view configuration
+    ui_schema: { layouts: [], grids: [] },
+    variations: [],
+  },
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
@@ -89,6 +109,8 @@ function toModel(mock: (typeof mocks)[number]): Model {
     id: mock.flow_id,
     name: mock.flow_name,
     variationId: mock.variation_id,
+    hasViewConfiguration:
+      mock.flow_version_id !== undefined && mock.ui_schema !== undefined,
     ...(mock.remote_configs && {
       remoteConfigs: _remoteConfigs.decode(mock.remote_configs),
     }),
@@ -118,5 +140,29 @@ describe('AdaptyFlowCoder', () => {
     const decoded = coder.decode(mock);
     const encoded = coder.encode(decoded);
     expect(encoded).toStrictEqual(mock);
+  });
+
+  const viewConfigurationCases: {
+    label: string;
+    mock: Def['AdaptyFlow'];
+    expected: boolean;
+  }[] = [
+    { label: 'flow_version_id + ui_schema', mock: mocks[0]!, expected: true },
+    { label: 'neither field', mock: mocks[1]!, expected: false },
+    { label: 'only flow_version_id', mock: mocks[2]!, expected: false },
+    { label: 'only ui_schema', mock: mocks[3]!, expected: false },
+  ];
+
+  it.each(viewConfigurationCases)(
+    'should derive hasViewConfiguration=$expected for $label',
+    ({ mock, expected }) => {
+      expect(coder.decode(mock).hasViewConfiguration).toBe(expected);
+    },
+  );
+
+  it('should not encode the derived hasViewConfiguration field', () => {
+    const decoded = coder.decode(mocks[0]!);
+
+    expect(coder.encode(decoded)).not.toHaveProperty('hasViewConfiguration');
   });
 });
