@@ -1,17 +1,27 @@
 import type { OnboardingEventHandlers } from './types';
 import { OnboardingEventId } from '@/types/onboarding-events';
-import type { ParsedOnboardingEvent } from '@/types/onboarding-events';
+import type {
+  OnboardingEventIdType,
+  ParsedOnboardingEvent,
+} from '@/types/onboarding-events';
 
 type EventName = keyof OnboardingEventHandlers;
 
-type UiEventMapping = {
-  [nativeEventId: string]: {
+/**
+ * Keyed by {@link OnboardingEventIdType} rather than `string`, so an id that is
+ * not a real onboarding event cannot be mapped and a newly added one cannot be
+ * forgotten. This is what lets {@link HANDLER_TO_EVENT_CONFIG} expose
+ * `nativeEvent` as a checked id instead of a bare string.
+ */
+type UiEventMapping = Record<
+  OnboardingEventIdType,
+  {
     handlerName: keyof OnboardingEventHandlers;
     propertyMap?: {
       [key: string]: string;
     };
-  }[];
-};
+  }[]
+>;
 
 export const ONBOARDING_EVENT_MAPPINGS: UiEventMapping = {
   onboarding_on_close_action: [
@@ -54,14 +64,16 @@ export const ONBOARDING_EVENT_MAPPINGS: UiEventMapping = {
 export const HANDLER_TO_EVENT_CONFIG: Record<
   keyof OnboardingEventHandlers,
   {
-    nativeEvent: string;
+    nativeEvent: OnboardingEventIdType;
     handlerName: keyof OnboardingEventHandlers;
   }
 > = Object.entries(ONBOARDING_EVENT_MAPPINGS).reduce(
   (acc, [nativeEvent, mappings]) => {
     mappings.forEach(({ handlerName }) => {
       acc[handlerName] = {
-        nativeEvent,
+        // Object.entries widens the key to `string`; UiEventMapping already
+        // constrains it, so the narrowing is a restatement, not an assumption.
+        nativeEvent: nativeEvent as OnboardingEventIdType,
         handlerName,
       };
     });
@@ -70,7 +82,7 @@ export const HANDLER_TO_EVENT_CONFIG: Record<
   {} as Record<
     keyof OnboardingEventHandlers,
     {
-      nativeEvent: string;
+      nativeEvent: OnboardingEventIdType;
       handlerName: keyof OnboardingEventHandlers;
     }
   >,
