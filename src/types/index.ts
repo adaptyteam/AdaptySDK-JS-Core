@@ -331,6 +331,7 @@ export type AdaptyExternalAttributionProvider =
   | 'appsflyer'
   | 'branch'
   | 'tenjin'
+  | 'custom'
   | (string & {});
 
 /**
