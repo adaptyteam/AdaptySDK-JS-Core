@@ -78,6 +78,15 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
+    'AdaptyUIDestroyFlowView.Request': {
+      method: 'adapty_ui_destroy_flow_view';
+      id: string;
+    };
+
+    'AdaptyUIDestroyFlowView.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'AdaptyUIPresentOnboardingView.Request': {
       method: 'adapty_ui_present_onboarding_view';
       id: string;

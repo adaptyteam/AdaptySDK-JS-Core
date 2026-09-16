@@ -11,6 +11,7 @@ import type { Event } from './schema';
 export const MethodNames = [
   'activate',
   'adapty_ui_create_flow_view',
+  'adapty_ui_destroy_flow_view',
   'adapty_ui_dismiss_flow_view',
   'adapty_ui_present_flow_view',
   'adapty_ui_show_dialog',
