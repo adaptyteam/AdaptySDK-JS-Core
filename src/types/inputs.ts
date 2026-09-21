@@ -87,6 +87,26 @@ export type GetPlacementForDefaultAudienceParamsInput =
     };
 
 /**
+ * Describes optional parameters for the placement preload methods.
+ *
+ * @remarks
+ * Preloading has no fetch policy: it always goes to the network and only warms
+ * the placement cache, so unlike {@link GetPlacementParamsInput} the only knob
+ * is the timeout.
+ */
+export interface PreloadPlacementsParamsInput {
+  /**
+   * This value limits the timeout (in milliseconds) for this method.
+   *
+   * @remarks
+   * The native SDKs clamp anything below 1000 ms up to 1000 ms. Reaching the
+   * timeout is not an error by itself — the affected placements are retried
+   * against the default audience source.
+   */
+  loadTimeoutMs?: number;
+}
+
+/**
  * Describes optional parameters for the {@link activate} method.
  */
 export interface ActivateParamsInput {
