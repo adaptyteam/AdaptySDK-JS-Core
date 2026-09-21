@@ -71,7 +71,7 @@ export interface components {
     'AdaptyUIDismissFlowView.Request': {
       method: 'adapty_ui_dismiss_flow_view';
       id: string;
-      destroy?: boolean;
+      destroy: boolean;
     };
 
     'AdaptyUIDismissFlowView.Response': OneOf<
@@ -194,6 +194,46 @@ export interface components {
       ]
     >;
 
+    'PreloadFlows.Request': {
+      method: 'preload_flows';
+      placement_ids: string[];
+      load_timeout?: number;
+    };
+
+    'PreloadFlows.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'PreloadFlowsForDefaultAudience.Request': {
+      method: 'preload_flows_for_default_audience';
+      placement_ids: string[];
+    };
+
+    'PreloadFlowsForDefaultAudience.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'PreloadOnboardings.Request': {
+      method: 'preload_onboardings';
+      placement_ids: string[];
+      locale?: components['defs']['AdaptyLocale'];
+      load_timeout?: number;
+    };
+
+    'PreloadOnboardings.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'PreloadOnboardingsForDefaultAudience.Request': {
+      method: 'preload_onboardings_for_default_audience';
+      placement_ids: string[];
+      locale?: components['defs']['AdaptyLocale'];
+    };
+
+    'PreloadOnboardingsForDefaultAudience.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'GetPaywallProducts.Request': {
       method: 'get_paywall_products';
       flow: components['defs']['AdaptyFlow'];
@@ -292,6 +332,26 @@ export interface components {
         { error: components['defs']['AdaptyError'] },
         { success: components['defs']['AdaptyPurchaseResult'] },
       ]
+    >;
+
+    'GetPendingStoreMessageTypes.Request': {
+      method: 'get_pending_store_message_types';
+    };
+
+    'GetPendingStoreMessageTypes.Response': OneOf<
+      [
+        { error: components['defs']['AdaptyError'] },
+        { success: components['defs']['AdaptyStoreMessageType'][] },
+      ]
+    >;
+
+    'ShowStoreMessage.Request': {
+      method: 'show_store_messages';
+      filter?: components['defs']['AdaptyStoreMessageType'][];
+    };
+
+    'ShowStoreMessage.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
     'OpenWebPaywall.Request': {
@@ -716,6 +776,7 @@ export interface components {
       customer_user_id?: string;
       customer_identity_parameters?: components['defs']['CustomerIdentityParameters'];
       observer_mode?: boolean;
+      store_messages_handling?: components['defs']['StoreMessagesHandling'];
       apple_idfa_collection_disabled?: boolean;
       google_adid_collection_disabled?: boolean;
       google_enable_pending_prepaid_plans?: boolean;
@@ -736,6 +797,10 @@ export interface components {
         disk_storage_size_limit?: number;
       };
     };
+
+    StoreMessagesHandling: 'auto' | 'manual' | 'default';
+
+    AdaptyStoreMessageType: string;
 
     CustomerIdentityParameters: {
       app_account_token?: string;
@@ -852,6 +917,7 @@ export interface components {
       flow_id: string;
       flow_name: string;
       variation_id: string;
+      variation_name?: string;
       remote_configs?: components['defs']['AdaptyRemoteConfig'][];
       flow_version_id?: string;
       variations: components['defs']['AdaptyFlowPaywall'][];
