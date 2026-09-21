@@ -686,7 +686,7 @@ export interface components {
           | 'products_screen_presented'
           | 'user_email_collected'
           | 'onboarding_completed'
-          | string;
+          | (string & {});
         element_id?: string;
         reply?: string;
       };
@@ -800,7 +800,12 @@ export interface components {
 
     StoreMessagesHandling: 'auto' | 'manual' | 'default';
 
-    AdaptyStoreMessageType: string;
+    AdaptyStoreMessageType:
+      | 'generic'
+      | 'price_increase_consent'
+      | 'billing_issue'
+      | 'win_back_offer'
+      | (string & {});
 
     CustomerIdentityParameters: {
       app_account_token?: string;
@@ -1194,7 +1199,7 @@ export interface components {
       | 'health'
       | 'siri'
       | 'music'
-      | string;
+      | (string & {});
 
     'AdaptyUI.CustomTagsValues': {
       [key: string]: string;
