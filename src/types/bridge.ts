@@ -38,8 +38,6 @@ export const MethodNames = [
   'open_web_paywall',
   'preload_flows',
   'preload_flows_for_default_audience',
-  'preload_onboardings',
-  'preload_onboardings_for_default_audience',
   'present_code_redemption_sheet',
   'report_transaction',
   'restore_purchases',

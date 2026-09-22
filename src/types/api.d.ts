@@ -213,27 +213,6 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
-    'PreloadOnboardings.Request': {
-      method: 'preload_onboardings';
-      placement_ids: string[];
-      locale?: components['defs']['AdaptyLocale'];
-      load_timeout?: number;
-    };
-
-    'PreloadOnboardings.Response': OneOf<
-      [{ error: components['defs']['AdaptyError'] }, { success: true }]
-    >;
-
-    'PreloadOnboardingsForDefaultAudience.Request': {
-      method: 'preload_onboardings_for_default_audience';
-      placement_ids: string[];
-      locale?: components['defs']['AdaptyLocale'];
-    };
-
-    'PreloadOnboardingsForDefaultAudience.Response': OneOf<
-      [{ error: components['defs']['AdaptyError'] }, { success: true }]
-    >;
-
     'GetPaywallProducts.Request': {
       method: 'get_paywall_products';
       flow: components['defs']['AdaptyFlow'];
