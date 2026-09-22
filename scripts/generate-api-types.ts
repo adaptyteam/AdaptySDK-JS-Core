@@ -212,13 +212,21 @@ function isPrimitiveOneOf(variants: SchemaNode[]): boolean {
     if (v.type === 'integer' && !v.properties && !v.oneOf) return true;
     if (v.type === 'boolean' && !v.properties && !v.oneOf) return true;
     if (v.enum) return true;
+    // A branch that only narrows the parent `type: string` with a regex,
+    // e.g. `- pattern: "^storekit_-?[0-9]+$"`. TS cannot express the pattern,
+    // so the branch contributes an open `string`.
+    if (v.pattern && !v.type && !v.properties && !v.oneOf) return true;
     return false;
   });
 }
 
 /**
  * Renders a union of primitive types and enums.
- * E.g., oneOf: [{type: string}, {enum: [a, b, c]}] → 'a' | 'b' | 'c' | string
+ * E.g., oneOf: [{type: string}, {enum: [a, b, c]}] → 'a' | 'b' | 'c' | (string & {})
+ *
+ * An open `string` next to enum literals is emitted as `(string & {})`: a bare
+ * `string` would swallow them, since TS collapses `'a' | string` to `string`,
+ * and the documented values would be lost from both the type and autocomplete.
  */
 function renderPrimitiveUnion(variants: SchemaNode[]): string {
   const parts: string[] = [];
@@ -230,10 +238,14 @@ function renderPrimitiveUnion(variants: SchemaNode[]): string {
       );
     }
   }
+  const hasEnumLiterals = parts.length > 0;
   for (const v of variants) {
-    if (!v.enum) {
-      parts.push(resolvePrimitive(v.type));
-    }
+    if (v.enum) continue;
+    // A `pattern`-only branch inherits `string` from the parent node.
+    const rendered = !v.type && v.pattern ? 'string' : resolvePrimitive(v.type);
+    parts.push(
+      hasEnumLiterals && rendered === 'string' ? '(string & {})' : rendered,
+    );
   }
   return parts.join(' | ');
 }
@@ -522,6 +534,14 @@ function resolveTopLevelType(node: SchemaNode, depth: number): string {
     return renderOneOf(node.oneOf, depth);
   }
 
+  // type: string + anyOf → open enum union, e.g. 'a' | 'b' | (string & {})
+  if (node.type === 'string' && node.anyOf) {
+    if (isPrimitiveOneOf(node.anyOf)) {
+      return renderPrimitiveUnion(node.anyOf);
+    }
+    return renderAnyOf(node.anyOf, depth);
+  }
+
   // type: object with oneOf and no properties → OneOf or discriminated union
   if (node.type === 'object' && node.oneOf && !node.properties) {
     if (node.required) {
@@ -536,7 +556,7 @@ function resolveTopLevelType(node: SchemaNode, depth: number): string {
   }
 
   // Simple string aliases
-  if (node.type === 'string' && !node.enum && !node.oneOf) {
+  if (node.type === 'string' && !node.enum && !node.oneOf && !node.anyOf) {
     return 'string';
   }
 
