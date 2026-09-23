@@ -182,6 +182,11 @@ export interface AdaptyFlow {
    */
   readonly variationId: string;
   /**
+   * A name of the variation.
+   * @readonly
+   */
+  readonly variationName?: string;
+  /**
    * Remote configs configured in Adapty Dashboard for this flow.
    * @readonly
    */
@@ -332,6 +337,22 @@ export type AdaptyExternalAttributionProvider =
   | 'branch'
   | 'tenjin'
   | 'custom'
+  | (string & {});
+
+/**
+ * Reason StoreKit wants to show an App Store message.
+ *
+ * @remarks
+ * Reasons unknown to the SDK arrive as `storekit_<rawValue>`,
+ * so any string is accepted.
+ * Requires iOS 16+.
+ * @public
+ */
+export type AdaptyStoreMessageType =
+  | 'generic'
+  | 'price_increase_consent'
+  | 'billing_issue'
+  | 'win_back_offer'
   | (string & {});
 
 /**

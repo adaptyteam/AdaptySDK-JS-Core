@@ -68,6 +68,9 @@ export class AdaptyConfigurationCoder {
       if (params.ios?.clearDataOnBackup !== undefined) {
         config['clear_data_on_backup'] = params.ios.clearDataOnBackup;
       }
+      if (params.ios?.storeMessagesHandling) {
+        config['store_messages_handling'] = params.ios.storeMessagesHandling;
+      }
     }
 
     if (this.platform.OS === 'android') {
