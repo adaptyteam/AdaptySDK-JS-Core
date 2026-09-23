@@ -204,6 +204,18 @@ export interface ActivateParamsInput {
      * @defaultValue `false`
      */
     clearDataOnBackup?: boolean;
+    /**
+     * Controls who decides when App Store messages (price increase consent,
+     * billing issue, win-back offer, etc.) are shown.
+     *
+     * @remarks
+     * - `'auto'` — StoreKit presents them automatically.
+     * - `'manual'` — the SDK captures them and the app decides when to show them.
+     *
+     * Requires iOS 16+.
+     * @defaultValue `'auto'`
+     */
+    storeMessagesHandling?: 'auto' | 'manual';
   };
   android?: {
     /**
