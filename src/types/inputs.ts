@@ -192,6 +192,21 @@ export interface ActivateParamsInput {
    * @defaultValue `false`
    */
   adaptyAttributionEnabled?: boolean;
+  /**
+   * Controls who decides when store messages are shown: App Store messages
+   * (price increase consent, billing issue, win-back offer, etc.) on iOS,
+   * Google Play in-app messages (e.g. a declined payment) on Android.
+   *
+   * @remarks
+   * - `'auto'` — iOS: StoreKit presents them automatically. Android: the SDK
+   *   requests them on every `Activity.onResume`.
+   * - `'manual'` — messages are shown only when the app calls `showStoreMessages`.
+   *   On iOS the SDK also keeps them in a queue readable via `getPendingStoreMessageTypes`.
+   *
+   * Has no effect below iOS 16.
+   * @defaultValue `'auto'`
+   */
+  storeMessagesHandling?: 'auto' | 'manual';
   ios?: {
     /**
      * Disables IDFA collection
@@ -204,18 +219,6 @@ export interface ActivateParamsInput {
      * @defaultValue `false`
      */
     clearDataOnBackup?: boolean;
-    /**
-     * Controls who decides when App Store messages (price increase consent,
-     * billing issue, win-back offer, etc.) are shown.
-     *
-     * @remarks
-     * - `'auto'` — StoreKit presents them automatically.
-     * - `'manual'` — the SDK captures them and the app decides when to show them.
-     *
-     * Requires iOS 16+.
-     * @defaultValue `'auto'`
-     */
-    storeMessagesHandling?: 'auto' | 'manual';
   };
   android?: {
     /**
