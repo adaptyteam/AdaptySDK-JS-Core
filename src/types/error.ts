@@ -122,6 +122,16 @@ const ErrorCodeMapping = Object.freeze({
   3007: 'unsupportedData',
   3100: 'persistingDataError',
   3101: 'fetchTimeoutError',
+  /**
+   * Another operation of the same kind is already in progress
+   * (e.g. a store message show).
+   */
+  3201: 'operationInProgress',
+  /**
+   * A required resource could not be resolved
+   * (e.g. no foreground-active window scene to show store messages).
+   */
+  3202: 'resolverFailure',
   9000: 'operationInterrupted',
 });
 
@@ -177,6 +187,8 @@ export const ErrorCodeName = Object.freeze({
   unsupportedData: 3007,
   persistingDataError: 3100,
   fetchTimeoutError: 3101,
+  operationInProgress: 3201,
+  resolverFailure: 3202,
   operationInterrupted: 9000,
 } as const);
 export type ErrorCodeName = keyof typeof ErrorCodeName;
