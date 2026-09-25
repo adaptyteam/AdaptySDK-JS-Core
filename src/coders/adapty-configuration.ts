@@ -32,6 +32,10 @@ export class AdaptyConfigurationCoder {
     config['adapty_attribution_enabled'] =
       params.adaptyAttributionEnabled ?? false;
 
+    if (params.storeMessagesHandling) {
+      config['store_messages_handling'] = params.storeMessagesHandling;
+    }
+
     if (params.logLevel) {
       config['log_level'] = params.logLevel;
     }
@@ -67,9 +71,6 @@ export class AdaptyConfigurationCoder {
       }
       if (params.ios?.clearDataOnBackup !== undefined) {
         config['clear_data_on_backup'] = params.ios.clearDataOnBackup;
-      }
-      if (params.ios?.storeMessagesHandling) {
-        config['store_messages_handling'] = params.ios.storeMessagesHandling;
       }
     }
 
