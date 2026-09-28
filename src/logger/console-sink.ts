@@ -11,6 +11,7 @@ function getConsoleForLevel(
     case 'warn':
       return console.warn;
     case 'verbose':
+    case 'debug':
       return console.debug;
     case 'info':
     default:

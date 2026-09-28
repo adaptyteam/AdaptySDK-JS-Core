@@ -1,33 +1,40 @@
 import { AdaptyUiMediaCache } from '@/ui-builder/types';
 import type { AdaptyMockConfig } from '@/mock/types';
 /**
- * Log levels for the SDK
+ * Log levels for the SDK, ordered from the least to the most verbose:
+ * `ERROR` < `WARN` < `INFO` < `VERBOSE` < `DEBUG`.
  *
  * @remarks
+ * Setting a level enables it and all the levels above it in the list.
  * Logging is performed on a native side.
  * So you are expected to watch logs in Xcode or Android Studio.
  */
 export const LogLevel = Object.freeze({
   /**
-   * Logs any additional information that may be useful during debugging,
-   * such as function calls, API queries, etc.
-   */
-  VERBOSE: 'verbose',
-  /**
-   * Logs only errors
+   * Level 0 — logs only errors.
    */
   ERROR: 'error',
   /**
-   * Logs messages from the SDK
+   * Level 1 — logs errors and messages from the SDK
    * that do not cause critical errors,
-   * but are worth paying attention to
+   * but are worth paying attention to.
    */
   WARN: 'warn',
   /**
-   * Logs various information messages,
-   * such as those that log the lifecycle of various modules
+   * Level 2 — additionally logs various information messages,
+   * such as those that log the lifecycle of various modules.
    */
   INFO: 'info',
+  /**
+   * Level 3 — additionally logs any information that may be useful
+   * during debugging, such as function calls, API queries, etc.
+   */
+  VERBOSE: 'verbose',
+  /**
+   * Level 4 — the most detailed level, additionally logs
+   * low-level internal details of the native SDK.
+   */
+  DEBUG: 'debug',
 });
 
 export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
