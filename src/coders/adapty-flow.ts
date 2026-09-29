@@ -25,6 +25,7 @@ export class AdaptyFlowCoder extends Coder<Model, CodableModel, Serializable> {
     id: { key: 'flow_id', required: true, type: 'string' },
     name: { key: 'flow_name', required: true, type: 'string' },
     variationId: { key: 'variation_id', required: true, type: 'string' },
+    variationName: { key: 'variation_name', required: false, type: 'string' },
     remoteConfigs: {
       key: 'remote_configs',
       required: false,

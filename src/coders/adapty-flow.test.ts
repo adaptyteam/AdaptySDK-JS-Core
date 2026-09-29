@@ -23,6 +23,7 @@ const mocks: Def['AdaptyFlow'][] = [
     flow_id: 'flow123',
     flow_name: 'Flow1',
     variation_id: 'var001',
+    variation_name: 'Variation1',
     response_created_at: 1630458390000,
     remote_configs: [{ lang: 'en', data: '{"key":"value"}' }],
     flow_version_id: 'fv1',
@@ -109,6 +110,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
     id: mock.flow_id,
     name: mock.flow_name,
     variationId: mock.variation_id,
+    ...(mock.variation_name && { variationName: mock.variation_name }),
     hasViewConfiguration:
       mock.flow_version_id !== undefined && mock.ui_schema !== undefined,
     ...(mock.remote_configs && {
