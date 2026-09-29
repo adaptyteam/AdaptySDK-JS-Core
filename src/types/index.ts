@@ -182,6 +182,11 @@ export interface AdaptyFlow {
    */
   readonly variationId: string;
   /**
+   * A name of the variation.
+   * @readonly
+   */
+  readonly variationName?: string;
+  /**
    * Remote configs configured in Adapty Dashboard for this flow.
    * @readonly
    */
