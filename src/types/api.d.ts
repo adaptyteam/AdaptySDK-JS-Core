@@ -71,7 +71,7 @@ export interface components {
     'AdaptyUIDismissFlowView.Request': {
       method: 'adapty_ui_dismiss_flow_view';
       id: string;
-      destroy?: boolean;
+      destroy: boolean;
     };
 
     'AdaptyUIDismissFlowView.Response': OneOf<
@@ -843,6 +843,7 @@ export interface components {
       flow_id: string;
       flow_name: string;
       variation_id: string;
+      variation_name?: string;
       remote_configs?: components['defs']['AdaptyRemoteConfig'][];
       flow_version_id?: string;
       variations: components['defs']['AdaptyFlowPaywall'][];
