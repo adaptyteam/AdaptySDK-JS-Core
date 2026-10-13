@@ -69,6 +69,8 @@ export class Log {
         return 2;
       case LogLevel.VERBOSE:
         return 3;
+      case LogLevel.DEBUG:
+        return 4;
     }
   }
 
