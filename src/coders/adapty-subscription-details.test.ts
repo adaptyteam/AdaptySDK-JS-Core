@@ -3,6 +3,7 @@ import type { Def } from '@/types/schema';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
 import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
 import { AdaptySubscriptionOfferCoder } from '@/coders/adapty-subscription-offer';
+import { AdaptySubscriptionPricingTermsCoder } from './adapty-subscription-pricing-terms';
 
 type Model = AdaptySubscriptionDetails;
 const mocks: Def['AdaptyProduct.Subscription'][] = [
@@ -47,6 +48,31 @@ const mocks: Def['AdaptyProduct.Subscription'][] = [
       number_of_units: 1,
     },
     localized_period: '1 year',
+    pricing_terms: {
+      billing_plan_id: 'monthly',
+      billing_price: {
+        amount: 6.99,
+        currency_code: 'USD',
+        currency_symbol: '$',
+        localized_string: '$6.99',
+      },
+      billing_period: {
+        unit: 'month',
+        number_of_units: 1,
+      },
+      commitment_info: {
+        price: {
+          amount: 83.88,
+          currency_code: 'USD',
+          currency_symbol: '$',
+          localized_string: '$83.88',
+        },
+        period: {
+          unit: 'year',
+          number_of_units: 1,
+        },
+      },
+    },
     offer: {
       offer_identifier: {
         type: 'promotional',
@@ -77,6 +103,7 @@ const mocks: Def['AdaptyProduct.Subscription'][] = [
 function toModel(mock: (typeof mocks)[number]): Model {
   const _period = new AdaptySubscriptionPeriodCoder();
   const _offer = new AdaptySubscriptionOfferCoder();
+  const _pricingTerms = new AdaptySubscriptionPricingTermsCoder();
 
   return {
     subscriptionPeriod: _period.decode(mock.period),
@@ -96,6 +123,9 @@ function toModel(mock: (typeof mocks)[number]): Model {
       : {
           ios: {
             subscriptionGroupIdentifier: mock.group_identifier,
+            ...(mock.pricing_terms && {
+              pricingTerms: _pricingTerms.decode(mock.pricing_terms),
+            }),
           },
         }),
   };
@@ -119,5 +149,29 @@ describe('AdaptySubscriptionDetailsCoder', () => {
     const encoded = coder.encode(decoded);
 
     expect(encoded).toStrictEqual(mock);
+  });
+
+  it('should decode iOS pricing terms', () => {
+    const decoded = coder.decode(mocks[1]!);
+
+    expect(decoded.ios?.pricingTerms).toStrictEqual({
+      billingPlan: 'monthly',
+      billingPrice: {
+        amount: 6.99,
+        currencyCode: 'USD',
+        currencySymbol: '$',
+        localizedString: '$6.99',
+      },
+      billingPeriod: { unit: 'month', numberOfUnits: 1 },
+      commitmentInfo: {
+        price: {
+          amount: 83.88,
+          currencyCode: 'USD',
+          currencySymbol: '$',
+          localizedString: '$83.88',
+        },
+        period: { unit: 'year', numberOfUnits: 1 },
+      },
+    });
   });
 });

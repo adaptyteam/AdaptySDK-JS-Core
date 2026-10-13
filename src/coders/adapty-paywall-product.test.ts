@@ -89,6 +89,15 @@ const mocks: Def['AdaptyPaywallProduct.Response'][] = [
         number_of_units: 1,
       },
       localized_period: '1 year',
+      pricing_terms: {
+        billing_plan_id: 'monthly',
+        billing_price: { amount: 6.99, localized_string: '$6.99' },
+        billing_period: { unit: 'month', number_of_units: 1 },
+        commitment_info: {
+          price: { amount: 83.88, localized_string: '$83.88' },
+          period: { unit: 'year', number_of_units: 1 },
+        },
+      },
       offer: {
         offer_identifier: {
           type: 'promotional',
@@ -165,5 +174,24 @@ describe('AdaptyPaywallProductCoder', () => {
     const encoded = coder.encode(decoded);
 
     expect(encoded).toStrictEqual(mock);
+  });
+
+  describe('getInput', () => {
+    it('should map the billing plan and the offer identifier', () => {
+      expect(coder.getInput(mocks[1]!).subscription).toStrictEqual({
+        pricing_terms: { billing_plan_id: 'monthly' },
+        offer: {
+          offer_identifier: { type: 'promotional', id: 'test_promo_offer' },
+        },
+      });
+    });
+
+    it('should omit pricing terms when the product has none', () => {
+      expect(coder.getInput(mocks[0]!).subscription).toStrictEqual({
+        offer: {
+          offer_identifier: { type: 'introductory', id: 'test_intro_offer' },
+        },
+      });
+    });
   });
 });

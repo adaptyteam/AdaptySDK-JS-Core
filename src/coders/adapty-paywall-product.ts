@@ -3,7 +3,10 @@ import type { Def } from '@/types/schema';
 import type { Properties } from './types';
 import { SimpleCoder } from './coder';
 import { AdaptyPriceCoder } from './adapty-price';
-import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
+import {
+  AdaptySubscriptionDetailsCoder,
+  getSubscriptionInput,
+} from './adapty-subscription-details';
 
 type Model = AdaptyPaywallProduct;
 type Serializable = Def['AdaptyPaywallProduct.Response'];
@@ -85,13 +88,7 @@ export class AdaptyPaywallProductCoder extends SimpleCoder<
       payload_data: data.payload_data,
       paywall_name: data.paywall_name,
       paywall_variation_id: data.paywall_variation_id,
-      subscription: data.subscription?.offer
-        ? {
-            offer: {
-              offer_identifier: data.subscription.offer.offer_identifier,
-            },
-          }
-        : undefined,
+      subscription: getSubscriptionInput(data.subscription),
       vendor_product_id: data.vendor_product_id,
     };
   }

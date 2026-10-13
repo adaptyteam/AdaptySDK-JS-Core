@@ -1,4 +1,4 @@
-import type { ProductReference } from '@/types';
+import type { ProductReference, SubscriptionBillingPlan } from '@/types';
 import type { Def } from '@/types/schema';
 import { ProductReferenceCoder } from './product-reference';
 
@@ -16,8 +16,14 @@ const mocks: Def['AdaptyFlowPaywall.ProductReference'][] = [
     adapty_product_id: 'adaptyProduct456',
     access_level_id: 'premium',
     product_type: 'subscription',
-    promotional_offer_id: 'offer789',
-    win_back_offer_id: 'offer456',
+    pricing_terms: [
+      { billing_plan_id: 'monthly', promotional_offer_id: 'offer789' },
+      {
+        billing_plan_id: 'up_front',
+        promotional_offer_id: 'offer789',
+        win_back_offer_id: 'offer456',
+      },
+    ],
   },
   {
     vendor_product_id: 'product111',
@@ -33,8 +39,7 @@ const mocks: Def['AdaptyFlowPaywall.ProductReference'][] = [
     adapty_product_id: 'adaptyProductXYZ',
     access_level_id: 'premium',
     product_type: 'non_subscription',
-    promotional_offer_id: 'promoOfferIOS',
-    win_back_offer_id: 'winBackOfferIOS',
+    pricing_terms: [{ billing_plan_id: 'up_front' }],
     base_plan_id: 'baseAndroid',
     offer_id: 'offerAndroid',
   },
@@ -48,11 +53,16 @@ function toModel(mock: (typeof mocks)[number]): Model {
     accessLevelId: mock.access_level_id,
     productType: mock.product_type,
     ios: {
-      ...(mock.promotional_offer_id && {
-        promotionalOfferId: mock.promotional_offer_id,
-      }),
-      ...(mock.win_back_offer_id && {
-        winBackOfferId: mock.win_back_offer_id,
+      ...(mock.pricing_terms && {
+        pricingTerms: mock.pricing_terms.map(terms => ({
+          billingPlan: terms.billing_plan_id as SubscriptionBillingPlan,
+          ...(terms.promotional_offer_id && {
+            promotionalOfferId: terms.promotional_offer_id,
+          }),
+          ...(terms.win_back_offer_id && {
+            winBackOfferId: terms.win_back_offer_id,
+          }),
+        })),
       }),
     },
     android: {

@@ -3,6 +3,7 @@ import type { AdaptyAccessLevel } from '../types';
 import type { Properties } from './types';
 import { SimpleCoder } from './coder';
 import { DateCoder } from './date';
+import { AdaptyProfileSubscriptionCommitmentInfoCoder } from './adapty-profile-subscription-commitment-info';
 
 type Model = AdaptyAccessLevel;
 type Serializable = Def['AdaptyProfile.AccessLevel'];
@@ -104,6 +105,17 @@ export class AdaptyAccessLevelCoder extends SimpleCoder<Model, Serializable> {
       key: 'will_renew',
       required: true,
       type: 'boolean',
+    },
+    billingPlan: {
+      key: 'billing_plan_id',
+      required: false,
+      type: 'string',
+    },
+    commitmentInfo: {
+      key: 'commitment',
+      required: false,
+      type: 'object',
+      converter: new AdaptyProfileSubscriptionCommitmentInfoCoder(),
     },
     android: {
       offerId: {

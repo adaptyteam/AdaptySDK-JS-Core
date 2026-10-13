@@ -4,9 +4,14 @@ import type { Properties } from './types';
 import { SimpleCoder } from './coder';
 import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
 import { AdaptySubscriptionOfferCoder } from '@/coders/adapty-subscription-offer';
+import { AdaptySubscriptionPricingTermsCoder } from './adapty-subscription-pricing-terms';
 
 type Model = AdaptySubscriptionDetails;
 type Serializable = Def['AdaptyProduct.Subscription'];
+// Same shape for paywall and promoted product requests
+type SubscriptionInput = NonNullable<
+  Def['AdaptyPaywallProduct.Request']['subscription']
+>;
 
 export class AdaptySubscriptionDetailsCoder extends SimpleCoder<
   Model,
@@ -36,6 +41,12 @@ export class AdaptySubscriptionDetailsCoder extends SimpleCoder<
         required: false,
         type: 'string',
       },
+      pricingTerms: {
+        key: 'pricing_terms',
+        required: false,
+        type: 'object',
+        converter: new AdaptySubscriptionPricingTermsCoder(),
+      },
     },
     android: {
       basePlanId: {
@@ -57,4 +68,18 @@ export class AdaptySubscriptionDetailsCoder extends SimpleCoder<
     const { [propToRemove]: _, ...partialData } = baseResult;
     return partialData;
   }
+}
+
+// Picks the purchase-relevant subset of subscription details for native requests
+export function getSubscriptionInput(
+  data: Serializable | undefined,
+): SubscriptionInput | undefined {
+  const billingPlanId = data?.pricing_terms?.billing_plan_id;
+  const offerIdentifier = data?.offer?.offer_identifier;
+  if (!billingPlanId && !offerIdentifier) return undefined;
+
+  return {
+    ...(billingPlanId && { pricing_terms: { billing_plan_id: billingPlanId } }),
+    ...(offerIdentifier && { offer: { offer_identifier: offerIdentifier } }),
+  };
 }

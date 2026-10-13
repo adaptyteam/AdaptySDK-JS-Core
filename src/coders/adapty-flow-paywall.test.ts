@@ -28,8 +28,13 @@ const mocks: Def['AdaptyFlowPaywall'][] = [
         adapty_product_id: 'adaptyProduct1',
         access_level_id: 'premium',
         product_type: 'subscription',
-        promotional_offer_id: 'offer1',
-        win_back_offer_id: 'offer2',
+        pricing_terms: [
+          {
+            billing_plan_id: 'up_front',
+            promotional_offer_id: 'offer1',
+            win_back_offer_id: 'offer2',
+          },
+        ],
         base_plan_id: 'base1',
         offer_id: 'androidOffer1',
       },

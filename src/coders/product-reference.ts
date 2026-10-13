@@ -2,6 +2,8 @@ import type { Properties } from './types';
 import type { ProductReference } from '@/types';
 import type { Def } from '@/types/schema';
 import { SimpleCoder } from './coder';
+import { ArrayCoder } from './array';
+import { ProductReferencePricingTermsCoder } from './product-reference-pricing-terms';
 
 type Model = ProductReference;
 type Serializable = Def['AdaptyFlowPaywall.ProductReference'];
@@ -34,15 +36,13 @@ export class ProductReferenceCoder extends SimpleCoder<Model, Serializable> {
       type: 'string',
     },
     ios: {
-      promotionalOfferId: {
-        key: 'promotional_offer_id',
+      pricingTerms: {
+        key: 'pricing_terms',
         required: false,
-        type: 'string',
-      },
-      winBackOfferId: {
-        key: 'win_back_offer_id',
-        required: false,
-        type: 'string',
+        type: 'array',
+        converter: new ArrayCoder(
+          () => new ProductReferencePricingTermsCoder(),
+        ),
       },
     },
     android: {

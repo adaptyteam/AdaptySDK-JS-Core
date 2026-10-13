@@ -7,6 +7,7 @@ import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
 type Model = AdaptyPromotedProduct;
 const mocks: Def['AdaptyPromotedProduct.Response'][] = [
   {
+    purchase_intent_id: 'intent-1',
     is_family_shareable: false,
     localized_description: 'Get premium features with this plan',
     localized_title: 'Yearly Premium Plan',
@@ -55,6 +56,7 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
     },
   },
   {
+    purchase_intent_id: 'intent-2',
     is_family_shareable: true,
     localized_description: 'Get premium features with this plan',
     localized_title: 'Yearly Premium Plan',
@@ -73,6 +75,31 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
         number_of_units: 1,
       },
       localized_period: '1 year',
+      pricing_terms: {
+        billing_plan_id: 'monthly',
+        billing_price: {
+          amount: 6.99,
+          currency_code: 'USD',
+          currency_symbol: '$',
+          localized_string: '$6.99',
+        },
+        billing_period: {
+          unit: 'month',
+          number_of_units: 1,
+        },
+        commitment_info: {
+          price: {
+            amount: 83.88,
+            currency_code: 'USD',
+            currency_symbol: '$',
+            localized_string: '$83.88',
+          },
+          period: {
+            unit: 'year',
+            number_of_units: 1,
+          },
+        },
+      },
       offer: {
         offer_identifier: {
           type: 'promotional',
@@ -101,6 +128,7 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
   },
   {
     // Non-subscription product: no subscription, no optional fields
+    purchase_intent_id: 'intent-3',
     is_family_shareable: false,
     localized_description: 'Unlock all the things, once',
     localized_title: 'Lifetime Access',
@@ -121,6 +149,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
   return {
     ios: {
       isFamilyShareable: mock.is_family_shareable as boolean,
+      purchaseIntentId: mock.purchase_intent_id as string,
     },
     localizedDescription: mock.localized_description,
     localizedTitle: mock.localized_title,
@@ -159,6 +188,7 @@ describe('AdaptyPromotedProductCoder', () => {
   describe('getInput', () => {
     it('should map the nested subscription offer identifier', () => {
       expect(coder.getInput(mocks[0]!)).toStrictEqual({
+        purchase_intent_id: 'intent-1',
         vendor_product_id: 'yearly.premium.6999',
         payload_data: 'examplePayloadData',
         subscription: {
@@ -169,8 +199,23 @@ describe('AdaptyPromotedProductCoder', () => {
       });
     });
 
+    it('should map the billing plan alongside the offer identifier', () => {
+      expect(coder.getInput(mocks[1]!)).toStrictEqual({
+        purchase_intent_id: 'intent-2',
+        vendor_product_id: 'yearly.premium.6999',
+        payload_data: undefined,
+        subscription: {
+          pricing_terms: { billing_plan_id: 'monthly' },
+          offer: {
+            offer_identifier: { type: 'promotional', id: 'test_promo_offer' },
+          },
+        },
+      });
+    });
+
     it('should omit the subscription when the product has no offer', () => {
       expect(coder.getInput(mocks[2]!)).toStrictEqual({
+        purchase_intent_id: 'intent-3',
         vendor_product_id: 'lifetime.access.9999',
         payload_data: undefined,
         subscription: undefined,
