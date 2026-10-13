@@ -55,8 +55,13 @@ export const SubscriptionBillingPlan = Object.freeze({
   UpFront: 'up_front',
   Monthly: 'monthly',
 });
+/**
+ * Billing plan of a subscription.
+ * Open-ended: native SDKs may pass through plans unknown to this version.
+ */
 export type SubscriptionBillingPlan =
-  (typeof SubscriptionBillingPlan)[keyof typeof SubscriptionBillingPlan];
+  | (typeof SubscriptionBillingPlan)[keyof typeof SubscriptionBillingPlan]
+  | (string & {});
 
 export interface AdaptyPrice {
   /**
