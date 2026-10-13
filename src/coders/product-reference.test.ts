@@ -1,5 +1,6 @@
 import type { ProductReference, SubscriptionBillingPlan } from '@/types';
 import type { Def } from '@/types/schema';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { ProductReferenceCoder } from './product-reference';
 
 type Model = ProductReference;
@@ -91,4 +92,15 @@ describe('ProductReferenceCoder', () => {
 
     expect(encoded).toStrictEqual(mock);
   });
+
+  it.each(['ios', 'android'] as const)(
+    'should decode a reference without pricing terms on %s',
+    OS => {
+      const platformCoder = new ProductReferenceCoder({
+        OS,
+      } as IPlatformAdapter);
+
+      expect(platformCoder.decode(mocks[0]!).ios).toStrictEqual({});
+    },
+  );
 });

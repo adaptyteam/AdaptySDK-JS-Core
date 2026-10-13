@@ -1,5 +1,6 @@
 import type { AdaptyPaywallProduct } from '@/types';
 import type { Def } from '@/types/schema';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { AdaptyPriceCoder } from './adapty-price';
 import { AdaptyPaywallProductCoder } from './adapty-paywall-product';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
@@ -192,6 +193,33 @@ describe('AdaptyPaywallProductCoder', () => {
           offer_identifier: { type: 'introductory', id: 'test_intro_offer' },
         },
       });
+    });
+  });
+
+  describe('getInput after a model round-trip', () => {
+    const ios = new AdaptyPaywallProductCoder({
+      OS: 'ios',
+    } as IPlatformAdapter);
+
+    it('should send the billing plan when there is no offer', () => {
+      const { offer: _offer, ...subscription } = mocks[1]!.subscription!;
+      const model = ios.decode({ ...mocks[1]!, subscription });
+
+      expect(ios.getInput(ios.encode(model)).subscription).toStrictEqual({
+        pricing_terms: { billing_plan_id: 'monthly' },
+      });
+    });
+
+    it('should omit the subscription for Android products without an offer', () => {
+      const android = new AdaptyPaywallProductCoder({
+        OS: 'android',
+      } as IPlatformAdapter);
+      const { offer: _offer, ...subscription } = mocks[0]!.subscription!;
+      const model = android.decode({ ...mocks[0]!, subscription });
+
+      expect(android.getInput(android.encode(model)).subscription).toBe(
+        undefined,
+      );
     });
   });
 });

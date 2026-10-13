@@ -1,5 +1,6 @@
 import type { AdaptySubscriptionDetails } from '@/types';
 import type { Def } from '@/types/schema';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
 import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
 import { AdaptySubscriptionOfferCoder } from '@/coders/adapty-subscription-offer';
@@ -173,5 +174,31 @@ describe('AdaptySubscriptionDetailsCoder', () => {
         period: { unit: 'year', numberOfUnits: 1 },
       },
     });
+  });
+
+  it('should drop iOS pricing terms from Android subscriptions', () => {
+    const android = new AdaptySubscriptionDetailsCoder({
+      OS: 'android',
+    } as IPlatformAdapter);
+    const decoded = android.decode({
+      ...mocks[0]!,
+      pricing_terms: mocks[1]!.pricing_terms,
+    });
+
+    expect(decoded.ios).toBeUndefined();
+    expect(decoded.android).toStrictEqual({
+      basePlanId: 'androidPlan1',
+      renewalType: 'prepaid',
+    });
+  });
+
+  it('should keep iOS pricing terms on iOS', () => {
+    const ios = new AdaptySubscriptionDetailsCoder({
+      OS: 'ios',
+    } as IPlatformAdapter);
+
+    expect(ios.decode(mocks[1]!).ios?.pricingTerms?.billingPlan).toBe(
+      'monthly',
+    );
   });
 });

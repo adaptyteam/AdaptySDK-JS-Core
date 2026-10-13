@@ -1076,6 +1076,10 @@ export interface ProductReference {
   };
 }
 
+/**
+ * Billing plan with the offers available for it, as configured for a paywall product.
+ * @internal
+ */
 export interface ProductReferencePricingTerms {
   billingPlan: SubscriptionBillingPlan;
   promotionalOfferId?: string;

@@ -151,12 +151,12 @@ export class CoderFactory {
     return new ProductReferenceCoder(this.deps.platform);
   }
 
-  createProfileCoder(): AdaptyProfileCoder {
-    return new AdaptyProfileCoder(this.deps.platform);
-  }
-
   createProductReferencePricingTermsCoder(): ProductReferencePricingTermsCoder {
     return new ProductReferencePricingTermsCoder(this.deps.platform);
+  }
+
+  createProfileCoder(): AdaptyProfileCoder {
+    return new AdaptyProfileCoder(this.deps.platform);
   }
 
   createProfileParametersCoder(): AdaptyProfileParametersCoder {

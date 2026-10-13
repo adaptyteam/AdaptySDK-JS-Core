@@ -1,5 +1,6 @@
 import type { AdaptyPromotedProduct } from '@/types';
 import type { Def } from '@/types/schema';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { AdaptyPriceCoder } from './adapty-price';
 import { AdaptyPromotedProductCoder } from './adapty-promoted-product';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
@@ -219,6 +220,53 @@ describe('AdaptyPromotedProductCoder', () => {
         vendor_product_id: 'lifetime.access.9999',
         payload_data: undefined,
         subscription: undefined,
+      });
+    });
+  });
+
+  describe('platform', () => {
+    const ios = new AdaptyPromotedProductCoder({
+      OS: 'ios',
+    } as IPlatformAdapter);
+    const android = new AdaptyPromotedProductCoder({
+      OS: 'android',
+    } as IPlatformAdapter);
+    const { purchase_intent_id: _, ...withoutIntent } = mocks[1]!;
+
+    it('should require purchase_intent_id on iOS', () => {
+      expect(() => ios.decode(withoutIntent)).toThrow(/purchaseIntentId/);
+    });
+
+    it('should not require purchase_intent_id on Android', () => {
+      expect(android.decode(mocks[0]!).ios).toStrictEqual({
+        isFamilyShareable: false,
+        purchaseIntentId: 'intent-1',
+      });
+      expect(() => android.decode(withoutIntent)).not.toThrow();
+    });
+
+    it('should send purchase intent and billing plan after a model round-trip', () => {
+      const model = ios.decode(mocks[1]!);
+
+      expect(ios.getInput(ios.encode(model))).toStrictEqual({
+        purchase_intent_id: 'intent-2',
+        vendor_product_id: 'yearly.premium.6999',
+        payload_data: undefined,
+        subscription: {
+          pricing_terms: { billing_plan_id: 'monthly' },
+          offer: {
+            offer_identifier: { type: 'promotional', id: 'test_promo_offer' },
+          },
+        },
+      });
+    });
+
+    it('should send the billing plan when there is no offer', () => {
+      const { offer: _offer, ...subscription } = mocks[1]!.subscription!;
+      const model = ios.decode({ ...mocks[1]!, subscription });
+
+      expect(ios.getInput(ios.encode(model)).subscription).toStrictEqual({
+        pricing_terms: { billing_plan_id: 'monthly' },
       });
     });
   });
