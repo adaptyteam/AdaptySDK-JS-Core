@@ -745,6 +745,10 @@ export interface AdaptySubscription {
    * @readonly
    */
   readonly commitmentInfo?: AdaptyProfileSubscriptionCommitmentInfo;
+
+  android?: {
+    offerId?: string;
+  };
 }
 
 /**

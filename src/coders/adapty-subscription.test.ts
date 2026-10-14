@@ -41,6 +41,7 @@ const mocks: Def['AdaptyProfile.Subscription'][] = [
     renewed_at: '2023-07-09T12:34:56.789Z',
     starts_at: '2023-08-09T12:34:56.789Z',
     store: 'Google Play',
+    offer_id: 'androidOffer1',
     unsubscribed_at: '2023-08-09T12:34:56.789Z',
     vendor_original_transaction_id: 'originalTransaction456',
     vendor_product_id: 'product456',
@@ -80,6 +81,9 @@ function toModel(mock: (typeof mocks)[number]): Model {
     vendorProductId: mock.vendor_product_id,
     vendorTransactionId: mock.vendor_transaction_id,
     willRenew: mock.will_renew,
+    android: {
+      ...(mock.offer_id && { offerId: mock.offer_id }),
+    },
     ...(mock.billing_plan_id && {
       billingPlan: mock.billing_plan_id as SubscriptionBillingPlan,
     }),

@@ -127,5 +127,12 @@ export class AdaptySubscriptionCoder extends SimpleCoder<Model, Serializable> {
       type: 'object',
       converter: new AdaptyProfileSubscriptionCommitmentInfoCoder(),
     },
+    android: {
+      offerId: {
+        key: 'offer_id',
+        required: false,
+        type: 'string',
+      },
+    },
   };
 }
