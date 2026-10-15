@@ -17,7 +17,7 @@ export class AdaptyProfileCoder extends SimpleCoder<Model, Serializable> {
       key: 'paid_access_levels',
       required: false,
       type: 'object',
-      converter: new HashmapCoder(new AdaptyAccessLevelCoder()),
+      converter: new HashmapCoder(new AdaptyAccessLevelCoder(this.platform)),
     },
     appliedExternalAttributionProviders: {
       key: 'applied_attribution_sources',
@@ -39,7 +39,7 @@ export class AdaptyProfileCoder extends SimpleCoder<Model, Serializable> {
       required: false,
       type: 'object',
       converter: new HashmapCoder(
-        new ArrayCoder(() => new AdaptyNonSubscriptionCoder()),
+        new ArrayCoder(() => new AdaptyNonSubscriptionCoder(this.platform)),
       ),
     },
     profileId: {
@@ -51,7 +51,7 @@ export class AdaptyProfileCoder extends SimpleCoder<Model, Serializable> {
       key: 'subscriptions',
       required: false,
       type: 'object',
-      converter: new HashmapCoder(new AdaptySubscriptionCoder()),
+      converter: new HashmapCoder(new AdaptySubscriptionCoder(this.platform)),
     },
   };
 }

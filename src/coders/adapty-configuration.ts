@@ -52,7 +52,7 @@ export class AdaptyConfigurationCoder {
 
     config['activate_ui'] = params.activateUi ?? true;
 
-    const mediaCacheCoder = new AdaptyUiMediaCacheCoder();
+    const mediaCacheCoder = new AdaptyUiMediaCacheCoder(this.platform);
     config['media_cache'] = mediaCacheCoder.encode(
       params.mediaCache ?? {
         memoryStorageTotalCostLimit: 100 * 1024 * 1024,

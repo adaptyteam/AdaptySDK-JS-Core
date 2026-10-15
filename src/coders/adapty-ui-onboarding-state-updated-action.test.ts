@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyUiOnboardingStateUpdatedActionCoder } from './adapty-ui-onboarding-state-updated-action';
 import type { OnboardingStateUpdatedAction } from '@/ui-builder/types';
 import type { Event } from '@/types/schema';
@@ -95,7 +96,9 @@ describe('AdaptyUiOnboardingStateUpdatedActionCoder', () => {
   let coder: AdaptyUiOnboardingStateUpdatedActionCoder;
 
   beforeEach(() => {
-    coder = new AdaptyUiOnboardingStateUpdatedActionCoder();
+    coder = new AdaptyUiOnboardingStateUpdatedActionCoder(
+      new DefaultPlatformAdapter(),
+    );
   });
 
   it.each(mocks.map((mock, idx) => ({ mock, expected: expectedResults[idx] })))(

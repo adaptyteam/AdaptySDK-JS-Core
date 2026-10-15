@@ -21,14 +21,17 @@ import { AdaptyPlacementCoder } from './adapty-placement';
 import { AdaptyPriceCoder } from './adapty-price';
 import { AdaptyPromotedProductCoder } from './adapty-promoted-product';
 import { AdaptyProfileParametersCoder } from './adapty-profile-parameters';
+import { AdaptyProfileSubscriptionCommitmentInfoCoder } from './adapty-profile-subscription-commitment-info';
 import { AdaptyProfileCoder } from './adapty-profile';
 import { AdaptyPurchaseParamsCoder } from './adapty-purchase-params';
 import { AdaptyPurchaseResultCoder } from './adapty-purchase-result';
 import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
+import { AdaptySubscriptionCommitmentInfoCoder } from './adapty-subscription-commitment-info';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
 import { AdaptySubscriptionOfferIdCoder } from './adapty-subscription-offer-identifier';
 import { AdaptySubscriptionOfferCoder } from './adapty-subscription-offer';
 import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
+import { AdaptySubscriptionPricingTermsCoder } from './adapty-subscription-pricing-terms';
 import { AdaptySubscriptionCoder } from './adapty-subscription';
 import { AdaptyUiDialogConfigCoder } from './adapty-ui-dialog-config';
 import { AdaptyUICreateOnboardingViewParamsCoder } from './adapty-ui-create-onboarding-view-params';
@@ -43,6 +46,7 @@ import { DateCoder } from './date';
 import { HashmapCoder } from './hashmap';
 import { JSONCoder } from './json';
 import { ProductReferenceCoder } from './product-reference';
+import { ProductReferencePricingTermsCoder } from './product-reference-pricing-terms';
 import type { Converter } from './types';
 
 /**
@@ -147,12 +151,20 @@ export class CoderFactory {
     return new ProductReferenceCoder(this.deps.platform);
   }
 
+  createProductReferencePricingTermsCoder(): ProductReferencePricingTermsCoder {
+    return new ProductReferencePricingTermsCoder(this.deps.platform);
+  }
+
   createProfileCoder(): AdaptyProfileCoder {
     return new AdaptyProfileCoder(this.deps.platform);
   }
 
   createProfileParametersCoder(): AdaptyProfileParametersCoder {
     return new AdaptyProfileParametersCoder(this.deps.platform);
+  }
+
+  createProfileSubscriptionCommitmentInfoCoder(): AdaptyProfileSubscriptionCommitmentInfoCoder {
+    return new AdaptyProfileSubscriptionCommitmentInfoCoder(this.deps.platform);
   }
 
   createPromotedProductCoder(): AdaptyPromotedProductCoder {
@@ -165,6 +177,10 @@ export class CoderFactory {
 
   createSubscriptionCoder(): AdaptySubscriptionCoder {
     return new AdaptySubscriptionCoder(this.deps.platform);
+  }
+
+  createSubscriptionCommitmentInfoCoder(): AdaptySubscriptionCommitmentInfoCoder {
+    return new AdaptySubscriptionCommitmentInfoCoder(this.deps.platform);
   }
 
   createSubscriptionDetailsCoder(): AdaptySubscriptionDetailsCoder {
@@ -181,6 +197,10 @@ export class CoderFactory {
 
   createSubscriptionPeriodCoder(): AdaptySubscriptionPeriodCoder {
     return new AdaptySubscriptionPeriodCoder(this.deps.platform);
+  }
+
+  createSubscriptionPricingTermsCoder(): AdaptySubscriptionPricingTermsCoder {
+    return new AdaptySubscriptionPricingTermsCoder(this.deps.platform);
   }
 
   createUiCreateOnboardingViewParamsCoder(): AdaptyUICreateOnboardingViewParamsCoder {

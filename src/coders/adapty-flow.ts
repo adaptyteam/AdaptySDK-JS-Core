@@ -20,7 +20,7 @@ export class AdaptyFlowCoder extends Coder<Model, CodableModel, Serializable> {
       key: 'placement',
       required: true,
       type: 'object',
-      converter: new AdaptyPlacementCoder(),
+      converter: new AdaptyPlacementCoder(this.platform),
     },
     id: { key: 'flow_id', required: true, type: 'string' },
     name: { key: 'flow_name', required: true, type: 'string' },
@@ -30,7 +30,9 @@ export class AdaptyFlowCoder extends Coder<Model, CodableModel, Serializable> {
       key: 'remote_configs',
       required: false,
       type: 'array',
-      converter: new ArrayCoder(() => new AdaptyRemoteConfigCoder()),
+      converter: new ArrayCoder(
+        () => new AdaptyRemoteConfigCoder(this.platform),
+      ),
     },
     flowVersionId: {
       key: 'flow_version_id',
@@ -41,7 +43,9 @@ export class AdaptyFlowCoder extends Coder<Model, CodableModel, Serializable> {
       key: 'variations',
       required: true,
       type: 'array',
-      converter: new ArrayCoder(() => new AdaptyFlowPaywallCoder()),
+      converter: new ArrayCoder(
+        () => new AdaptyFlowPaywallCoder(this.platform),
+      ),
     },
     uiSchema: {
       key: 'ui_schema',

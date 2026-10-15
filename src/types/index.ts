@@ -51,6 +51,18 @@ export const ProductPeriod = Object.freeze({
 });
 export type ProductPeriod = (typeof ProductPeriod)[keyof typeof ProductPeriod];
 
+export const SubscriptionBillingPlan = Object.freeze({
+  UpFront: 'up_front',
+  Monthly: 'monthly',
+});
+/**
+ * Billing plan of a subscription.
+ * Open-ended: native SDKs may pass through plans unknown to this version.
+ */
+export type SubscriptionBillingPlan =
+  | (typeof SubscriptionBillingPlan)[keyof typeof SubscriptionBillingPlan]
+  | (string & {});
+
 export interface AdaptyPrice {
   /**
    * Price as number
@@ -524,7 +536,31 @@ export interface AdaptyAccessLevel {
    */
   readonly willRenew: boolean;
 
+  /**
+   * Billing plan of the subscription. Set for App Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly billingPlan?: SubscriptionBillingPlan;
+
+  /**
+   * Commitment progress of a subscription bought with a commitment billing plan.
+   * Set for App Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly commitmentInfo?: AdaptyProfileSubscriptionCommitmentInfo;
+
+  /**
+   * Identifier of the Google Play offer the subscription was bought with.
+   * Set for Play Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly offerId?: string;
+
   android?: {
+    /**
+     * @deprecated Use the top-level {@link AdaptyAccessLevel.offerId}:
+     * the value depends on the purchase store, not on the device OS.
+     */
     offerId?: string;
   };
 }
@@ -707,6 +743,48 @@ export interface AdaptySubscription {
    * @readonly
    */
   readonly willRenew: boolean;
+
+  /**
+   * Billing plan of the subscription. Set for App Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly billingPlan?: SubscriptionBillingPlan;
+
+  /**
+   * Commitment progress of a subscription bought with a commitment billing plan.
+   * Set for App Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly commitmentInfo?: AdaptyProfileSubscriptionCommitmentInfo;
+
+  /**
+   * Identifier of the Google Play offer the subscription was bought with.
+   * Set for Play Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly offerId?: string;
+}
+
+/**
+ * Commitment progress of a subscription purchased with a commitment billing plan.
+ * @public
+ */
+export interface AdaptyProfileSubscriptionCommitmentInfo {
+  /**
+   * Number of the current billing period within the commitment.
+   * @readonly
+   */
+  readonly billingPeriodNumber: number;
+  /**
+   * Total number of billing periods in the commitment.
+   * @readonly
+   */
+  readonly totalBillingPeriods: number;
+  /**
+   * The date and time when the commitment expires.
+   * @readonly
+   */
+  readonly expiresAt: Date;
 }
 
 /**
@@ -823,6 +901,11 @@ export interface AdaptyPromotedProduct {
      * @see {@link https://developer.apple.com/documentation/storekit/skproduct/3564805-isfamilyshareable}
      */
     readonly isFamilyShareable: boolean;
+    /**
+     * StoreKit purchase intent identifier, passed back to native on purchase.
+     * @internal
+     */
+    readonly purchaseIntentId: string;
   };
 }
 
@@ -849,12 +932,63 @@ export interface AdaptySubscriptionDetails {
      * Will be `null` for iOS version below 12.0 and macOS version below 10.14.
      */
     subscriptionGroupIdentifier?: string;
+    /**
+     * Billing terms of the subscription: billing plan, price per billing period
+     * and the total commitment.
+     */
+    pricingTerms?: AdaptySubscriptionPricingTerms;
   };
 
   android?: {
     basePlanId: string;
     renewalType?: 'prepaid' | 'autorenewable';
   };
+}
+
+/**
+ * Billing terms of a subscription product.
+ * iOS only.
+ * @public
+ */
+export interface AdaptySubscriptionPricingTerms {
+  /**
+   * Billing plan of the subscription.
+   * @readonly
+   */
+  readonly billingPlan: SubscriptionBillingPlan;
+  /**
+   * Price charged for each billing period.
+   * @readonly
+   */
+  readonly billingPrice: AdaptyPrice;
+  /**
+   * Period between charges.
+   * @readonly
+   */
+  readonly billingPeriod: AdaptySubscriptionPeriod;
+  /**
+   * Total price and period the user commits to.
+   * @readonly
+   */
+  readonly commitmentInfo: AdaptySubscriptionCommitmentInfo;
+}
+
+/**
+ * Total price and period of a subscription commitment.
+ * iOS only.
+ * @public
+ */
+export interface AdaptySubscriptionCommitmentInfo {
+  /**
+   * Total price of the commitment.
+   * @readonly
+   */
+  readonly price: AdaptyPrice;
+  /**
+   * Total period of the commitment.
+   * @readonly
+   */
+  readonly period: AdaptySubscriptionPeriod;
 }
 
 /**
@@ -951,14 +1085,23 @@ export interface ProductReference {
   productType: string;
 
   ios?: {
-    promotionalOfferId?: string;
-    winBackOfferId?: string;
+    pricingTerms?: ProductReferencePricingTerms[];
   };
 
   android?: {
     basePlanId?: string;
     offerId?: string;
   };
+}
+
+/**
+ * Billing plan with the offers available for it, as configured for a paywall product.
+ * @internal
+ */
+export interface ProductReferencePricingTerms {
+  billingPlan: SubscriptionBillingPlan;
+  promotionalOfferId?: string;
+  winBackOfferId?: string;
 }
 
 /**

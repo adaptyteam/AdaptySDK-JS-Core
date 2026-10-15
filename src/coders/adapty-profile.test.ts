@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { Def } from '@/types/schema';
 import type { AdaptyProfile } from '@/types';
 import { AdaptyProfileCoder } from './adapty-profile';
@@ -185,10 +186,16 @@ const mocks: Omit<
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _levels = new HashmapCoder(new AdaptyAccessLevelCoder());
-  const _subs = new HashmapCoder(new AdaptySubscriptionCoder());
+  const _levels = new HashmapCoder(
+    new AdaptyAccessLevelCoder(new DefaultPlatformAdapter()),
+  );
+  const _subs = new HashmapCoder(
+    new AdaptySubscriptionCoder(new DefaultPlatformAdapter()),
+  );
   const _nonsubs = new HashmapCoder(
-    new ArrayCoder(() => new AdaptyNonSubscriptionCoder()),
+    new ArrayCoder(
+      () => new AdaptyNonSubscriptionCoder(new DefaultPlatformAdapter()),
+    ),
   );
 
   return {
@@ -214,7 +221,7 @@ describe('AdaptyProfileCoder', () => {
   let coder: AdaptyProfileCoder;
 
   beforeEach(() => {
-    coder = new AdaptyProfileCoder();
+    coder = new AdaptyProfileCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {
