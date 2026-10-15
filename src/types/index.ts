@@ -537,14 +537,14 @@ export interface AdaptyAccessLevel {
   readonly willRenew: boolean;
 
   /**
-   * Billing plan of the subscription.
-   * iOS only.
+   * Billing plan of the subscription. Set for App Store purchases only, see {@link store}.
    * @readonly
    */
   readonly billingPlan?: SubscriptionBillingPlan;
 
   /**
-   * Commitment progress of a subscription purchased with a commitment billing plan.
+   * Commitment progress of a subscription bought with a commitment billing plan.
+   * Set for App Store purchases only, see {@link store}.
    * @readonly
    */
   readonly commitmentInfo?: AdaptyProfileSubscriptionCommitmentInfo;
@@ -734,14 +734,14 @@ export interface AdaptySubscription {
   readonly willRenew: boolean;
 
   /**
-   * Billing plan of the subscription.
-   * iOS only.
+   * Billing plan of the subscription. Set for App Store purchases only, see {@link store}.
    * @readonly
    */
   readonly billingPlan?: SubscriptionBillingPlan;
 
   /**
-   * Commitment progress of a subscription purchased with a commitment billing plan.
+   * Commitment progress of a subscription bought with a commitment billing plan.
+   * Set for App Store purchases only, see {@link store}.
    * @readonly
    */
   readonly commitmentInfo?: AdaptyProfileSubscriptionCommitmentInfo;
