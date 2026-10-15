@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { ProductReference, SubscriptionBillingPlan } from '@/types';
 import type { Def } from '@/types/schema';
 import type { IPlatformAdapter } from '@/adapters/interfaces';
@@ -77,7 +78,7 @@ describe('ProductReferenceCoder', () => {
   let coder: ProductReferenceCoder;
 
   beforeEach(() => {
-    coder = new ProductReferenceCoder();
+    coder = new ProductReferenceCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

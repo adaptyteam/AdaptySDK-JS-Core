@@ -17,13 +17,13 @@ export class AdaptySubscriptionCommitmentInfoCoder extends SimpleCoder<
       key: 'price',
       required: true,
       type: 'object',
-      converter: new AdaptyPriceCoder(),
+      converter: new AdaptyPriceCoder(this.platform),
     },
     period: {
       key: 'period',
       required: true,
       type: 'object',
-      converter: new AdaptySubscriptionPeriodCoder(),
+      converter: new AdaptySubscriptionPeriodCoder(this.platform),
     },
   };
 }

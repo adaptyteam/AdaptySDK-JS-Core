@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptyFlowPaywall } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptyFlowPaywallCoder } from './adapty-flow-paywall';
@@ -64,7 +65,9 @@ const mocks: Def['AdaptyFlowPaywall'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _products = new ArrayCoder(() => new ProductReferenceCoder());
+  const _products = new ArrayCoder(
+    () => new ProductReferenceCoder(new DefaultPlatformAdapter()),
+  );
 
   // `products` is kept on the runtime object (matching the coder's decode
   // output) but is not part of the public `Model` type — hence the cast.
@@ -96,7 +99,7 @@ describe('AdaptyFlowPaywallCoder', () => {
   let coder: AdaptyFlowPaywallCoder;
 
   beforeEach(() => {
-    coder = new AdaptyFlowPaywallCoder();
+    coder = new AdaptyFlowPaywallCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

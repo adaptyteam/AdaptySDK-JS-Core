@@ -23,19 +23,19 @@ export class AdaptySubscriptionPricingTermsCoder extends SimpleCoder<
       key: 'billing_price',
       required: true,
       type: 'object',
-      converter: new AdaptyPriceCoder(),
+      converter: new AdaptyPriceCoder(this.platform),
     },
     billingPeriod: {
       key: 'billing_period',
       required: true,
       type: 'object',
-      converter: new AdaptySubscriptionPeriodCoder(),
+      converter: new AdaptySubscriptionPeriodCoder(this.platform),
     },
     commitmentInfo: {
       key: 'commitment_info',
       required: true,
       type: 'object',
-      converter: new AdaptySubscriptionCommitmentInfoCoder(),
+      converter: new AdaptySubscriptionCommitmentInfoCoder(this.platform),
     },
   };
 }

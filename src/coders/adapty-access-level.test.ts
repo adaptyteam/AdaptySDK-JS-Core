@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type {
   AdaptyAccessLevel,
   CancellationReason,
@@ -107,7 +108,7 @@ describe('AdaptyAccessLevelCoder', () => {
   let coder: AdaptyAccessLevelCoder;
 
   beforeEach(() => {
-    coder = new AdaptyAccessLevelCoder();
+    coder = new AdaptyAccessLevelCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

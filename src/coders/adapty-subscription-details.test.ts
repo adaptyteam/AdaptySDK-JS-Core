@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptySubscriptionDetails } from '@/types';
 import type { Def } from '@/types/schema';
 import type { IPlatformAdapter } from '@/adapters/interfaces';
@@ -102,9 +103,13 @@ const mocks: Def['AdaptyProduct.Subscription'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _period = new AdaptySubscriptionPeriodCoder();
-  const _offer = new AdaptySubscriptionOfferCoder();
-  const _pricingTerms = new AdaptySubscriptionPricingTermsCoder();
+  const _period = new AdaptySubscriptionPeriodCoder(
+    new DefaultPlatformAdapter(),
+  );
+  const _offer = new AdaptySubscriptionOfferCoder(new DefaultPlatformAdapter());
+  const _pricingTerms = new AdaptySubscriptionPricingTermsCoder(
+    new DefaultPlatformAdapter(),
+  );
 
   return {
     subscriptionPeriod: _period.decode(mock.period),
@@ -136,7 +141,7 @@ describe('AdaptySubscriptionDetailsCoder', () => {
   let coder: AdaptySubscriptionDetailsCoder;
 
   beforeEach(() => {
-    coder = new AdaptySubscriptionDetailsCoder();
+    coder = new AdaptySubscriptionDetailsCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

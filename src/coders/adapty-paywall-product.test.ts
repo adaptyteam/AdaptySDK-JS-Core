@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptyPaywallProduct } from '@/types';
 import type { Def } from '@/types/schema';
 import type { IPlatformAdapter } from '@/adapters/interfaces';
@@ -128,8 +129,10 @@ const mocks: Def['AdaptyPaywallProduct.Response'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _price = new AdaptyPriceCoder();
-  const _details = new AdaptySubscriptionDetailsCoder();
+  const _price = new AdaptyPriceCoder(new DefaultPlatformAdapter());
+  const _details = new AdaptySubscriptionDetailsCoder(
+    new DefaultPlatformAdapter(),
+  );
 
   return {
     ios: {
@@ -161,7 +164,7 @@ describe('AdaptyPaywallProductCoder', () => {
   let coder: AdaptyPaywallProductCoder;
 
   beforeEach(() => {
-    coder = new AdaptyPaywallProductCoder();
+    coder = new AdaptyPaywallProductCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

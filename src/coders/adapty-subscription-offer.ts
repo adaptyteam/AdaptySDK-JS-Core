@@ -18,13 +18,15 @@ export class AdaptySubscriptionOfferCoder extends SimpleCoder<
       key: 'offer_identifier',
       required: true,
       type: 'object',
-      converter: new AdaptySubscriptionOfferIdCoder(),
+      converter: new AdaptySubscriptionOfferIdCoder(this.platform),
     },
     phases: {
       key: 'phases',
       required: true,
       type: 'array',
-      converter: new ArrayCoder(() => new AdaptyDiscountPhaseCoder()),
+      converter: new ArrayCoder(
+        () => new AdaptyDiscountPhaseCoder(this.platform),
+      ),
     },
     android: {
       offerTags: {

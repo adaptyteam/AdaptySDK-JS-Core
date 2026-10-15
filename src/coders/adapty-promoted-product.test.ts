@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptyPromotedProduct } from '@/types';
 import type { Def } from '@/types/schema';
 import type { IPlatformAdapter } from '@/adapters/interfaces';
@@ -144,8 +145,10 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _price = new AdaptyPriceCoder();
-  const _details = new AdaptySubscriptionDetailsCoder();
+  const _price = new AdaptyPriceCoder(new DefaultPlatformAdapter());
+  const _details = new AdaptySubscriptionDetailsCoder(
+    new DefaultPlatformAdapter(),
+  );
 
   return {
     ios: {
@@ -170,7 +173,7 @@ describe('AdaptyPromotedProductCoder', () => {
   let coder: AdaptyPromotedProductCoder;
 
   beforeEach(() => {
-    coder = new AdaptyPromotedProductCoder();
+    coder = new AdaptyPromotedProductCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {
@@ -232,6 +235,9 @@ describe('AdaptyPromotedProductCoder', () => {
       OS: 'android',
     } as IPlatformAdapter);
     const { purchase_intent_id: _, ...withoutIntent } = mocks[1]!;
+    // Android products always carry base_plan_id, so the Android case uses the Android-shaped mock
+    const { purchase_intent_id: _androidIntent, ...androidWithoutIntent } =
+      mocks[0]!;
 
     it('should require purchase_intent_id on iOS', () => {
       expect(() => ios.decode(withoutIntent)).toThrow(/purchaseIntentId/);
@@ -242,7 +248,7 @@ describe('AdaptyPromotedProductCoder', () => {
         isFamilyShareable: false,
         purchaseIntentId: 'intent-1',
       });
-      expect(() => android.decode(withoutIntent)).not.toThrow();
+      expect(() => android.decode(androidWithoutIntent)).not.toThrow();
     });
 
     it('should send purchase intent and billing plan after a model round-trip', () => {

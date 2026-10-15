@@ -22,7 +22,7 @@ export class AdaptySubscriptionDetailsCoder extends SimpleCoder<
       key: 'period',
       required: true,
       type: 'object',
-      converter: new AdaptySubscriptionPeriodCoder(),
+      converter: new AdaptySubscriptionPeriodCoder(this.platform),
     },
     localizedSubscriptionPeriod: {
       key: 'localized_period',
@@ -33,7 +33,7 @@ export class AdaptySubscriptionDetailsCoder extends SimpleCoder<
       key: 'offer',
       required: false,
       type: 'object',
-      converter: new AdaptySubscriptionOfferCoder(),
+      converter: new AdaptySubscriptionOfferCoder(this.platform),
     },
     ios: {
       subscriptionGroupIdentifier: {
@@ -45,7 +45,7 @@ export class AdaptySubscriptionDetailsCoder extends SimpleCoder<
         key: 'pricing_terms',
         required: false,
         type: 'object',
-        converter: new AdaptySubscriptionPricingTermsCoder(),
+        converter: new AdaptySubscriptionPricingTermsCoder(this.platform),
       },
     },
     android: {

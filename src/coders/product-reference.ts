@@ -41,7 +41,7 @@ export class ProductReferenceCoder extends SimpleCoder<Model, Serializable> {
         required: false,
         type: 'array',
         converter: new ArrayCoder(
-          () => new ProductReferencePricingTermsCoder(),
+          () => new ProductReferencePricingTermsCoder(this.platform),
         ),
       },
     },

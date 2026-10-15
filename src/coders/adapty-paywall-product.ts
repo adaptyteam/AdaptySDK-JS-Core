@@ -55,7 +55,7 @@ export class AdaptyPaywallProductCoder extends SimpleCoder<
       key: 'price',
       required: false, // Native SDKs require this
       type: 'object',
-      converter: new AdaptyPriceCoder(),
+      converter: new AdaptyPriceCoder(this.platform),
     },
     webPurchaseUrl: {
       key: 'web_purchase_url',
@@ -67,7 +67,7 @@ export class AdaptyPaywallProductCoder extends SimpleCoder<
       key: 'subscription',
       required: false,
       type: 'object',
-      converter: new AdaptySubscriptionDetailsCoder(),
+      converter: new AdaptySubscriptionDetailsCoder(this.platform),
     },
     ios: {
       isFamilyShareable: {

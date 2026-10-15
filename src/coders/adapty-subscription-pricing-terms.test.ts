@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptySubscriptionPricingTerms, ProductPeriod } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptySubscriptionPricingTermsCoder } from './adapty-subscription-pricing-terms';
@@ -50,7 +51,9 @@ describe('AdaptySubscriptionPricingTermsCoder', () => {
   let coder: AdaptySubscriptionPricingTermsCoder;
 
   beforeEach(() => {
-    coder = new AdaptySubscriptionPricingTermsCoder();
+    coder = new AdaptySubscriptionPricingTermsCoder(
+      new DefaultPlatformAdapter(),
+    );
   });
 
   it.each(mocks)('should decode to expected result', mock => {

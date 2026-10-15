@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptyProfileSubscriptionCommitmentInfo } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptyProfileSubscriptionCommitmentInfoCoder } from './adapty-profile-subscription-commitment-info';
@@ -28,7 +29,9 @@ describe('AdaptyProfileSubscriptionCommitmentInfoCoder', () => {
   let coder: AdaptyProfileSubscriptionCommitmentInfoCoder;
 
   beforeEach(() => {
-    coder = new AdaptyProfileSubscriptionCommitmentInfoCoder();
+    coder = new AdaptyProfileSubscriptionCommitmentInfoCoder(
+      new DefaultPlatformAdapter(),
+    );
   });
 
   it.each(mocks)('should decode to expected result', mock => {

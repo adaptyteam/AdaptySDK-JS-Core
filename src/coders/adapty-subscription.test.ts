@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type {
   AdaptySubscription,
   CancellationReason,
@@ -99,7 +100,7 @@ describe('AdaptySubscriptionCoder', () => {
   let coder: AdaptySubscriptionCoder;
 
   beforeEach(() => {
-    coder = new AdaptySubscriptionCoder();
+    coder = new AdaptySubscriptionCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

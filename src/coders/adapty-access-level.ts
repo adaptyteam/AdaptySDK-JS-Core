@@ -115,7 +115,9 @@ export class AdaptyAccessLevelCoder extends SimpleCoder<Model, Serializable> {
       key: 'commitment',
       required: false,
       type: 'object',
-      converter: new AdaptyProfileSubscriptionCommitmentInfoCoder(),
+      converter: new AdaptyProfileSubscriptionCommitmentInfoCoder(
+        this.platform,
+      ),
     },
     offerId: {
       key: 'offer_id',

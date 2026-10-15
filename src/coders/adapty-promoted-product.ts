@@ -32,14 +32,14 @@ export class AdaptyPromotedProductCoder extends SimpleCoder<
       key: 'price',
       required: false, // Native SDKs require this
       type: 'object',
-      converter: new AdaptyPriceCoder(),
+      converter: new AdaptyPriceCoder(this.platform),
     },
     payloadData: { key: 'payload_data', required: false, type: 'string' },
     subscription: {
       key: 'subscription',
       required: false,
       type: 'object',
-      converter: new AdaptySubscriptionDetailsCoder(),
+      converter: new AdaptySubscriptionDetailsCoder(this.platform),
     },
     ios: {
       isFamilyShareable: {

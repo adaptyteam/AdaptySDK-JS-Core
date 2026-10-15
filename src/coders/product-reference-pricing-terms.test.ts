@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { ProductReferencePricingTerms } from '@/types';
 import type { Def } from '@/types/schema';
 import { ProductReferencePricingTermsCoder } from './product-reference-pricing-terms';
@@ -28,7 +29,7 @@ describe('ProductReferencePricingTermsCoder', () => {
   let coder: ProductReferencePricingTermsCoder;
 
   beforeEach(() => {
-    coder = new ProductReferencePricingTermsCoder();
+    coder = new ProductReferencePricingTermsCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {
