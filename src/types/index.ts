@@ -549,7 +549,18 @@ export interface AdaptyAccessLevel {
    */
   readonly commitmentInfo?: AdaptyProfileSubscriptionCommitmentInfo;
 
+  /**
+   * Identifier of the Google Play offer the subscription was bought with.
+   * Set for Play Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly offerId?: string;
+
   android?: {
+    /**
+     * @deprecated Use the top-level {@link AdaptyAccessLevel.offerId}:
+     * the value depends on the purchase store, not on the device OS.
+     */
     offerId?: string;
   };
 }
@@ -746,9 +757,12 @@ export interface AdaptySubscription {
    */
   readonly commitmentInfo?: AdaptyProfileSubscriptionCommitmentInfo;
 
-  android?: {
-    offerId?: string;
-  };
+  /**
+   * Identifier of the Google Play offer the subscription was bought with.
+   * Set for Play Store purchases only, see {@link store}.
+   * @readonly
+   */
+  readonly offerId?: string;
 }
 
 /**

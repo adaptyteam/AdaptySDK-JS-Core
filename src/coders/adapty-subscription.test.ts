@@ -81,9 +81,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
     vendorProductId: mock.vendor_product_id,
     vendorTransactionId: mock.vendor_transaction_id,
     willRenew: mock.will_renew,
-    android: {
-      ...(mock.offer_id && { offerId: mock.offer_id }),
-    },
+    ...(mock.offer_id && { offerId: mock.offer_id }),
     ...(mock.billing_plan_id && {
       billingPlan: mock.billing_plan_id as SubscriptionBillingPlan,
     }),

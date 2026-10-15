@@ -94,6 +94,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
         expiresAt: new Date(mock.commitment.expires_at),
       },
     }),
+    ...(mock.offer_id && { offerId: mock.offer_id }),
     android: {
       ...(mock.offer_id && {
         offerId: mock.offer_id,

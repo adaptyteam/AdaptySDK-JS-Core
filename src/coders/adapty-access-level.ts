@@ -117,6 +117,12 @@ export class AdaptyAccessLevelCoder extends SimpleCoder<Model, Serializable> {
       type: 'object',
       converter: new AdaptyProfileSubscriptionCommitmentInfoCoder(),
     },
+    offerId: {
+      key: 'offer_id',
+      required: false,
+      type: 'string',
+    },
+    // Deprecated alias of the top-level offerId
     android: {
       offerId: {
         key: 'offer_id',
