@@ -16,45 +16,43 @@ type CodableModel = Omit<Model, 'productIdentifiers'> & {
 };
 type Serializable = Def['AdaptyFlowPaywall'];
 
-// Wire-level properties including the internal `products` field.
-// The `as unknown as` cast is intentional: `products` is required on the wire
-// but optional in CodableModel (so that Model extends CodableModel for
-// override compatibility). The cast bridges the required/optional mismatch.
-const PROPERTIES = {
-  placement: {
-    key: 'placement',
-    required: true,
-    type: 'object',
-    converter: new AdaptyPlacementCoder(),
-  },
-  id: { key: 'paywall_id', required: true, type: 'string' },
-  name: { key: 'paywall_name', required: true, type: 'string' },
-  products: {
-    key: 'products',
-    required: true,
-    type: 'array',
-    converter: new ArrayCoder(() => new ProductReferenceCoder()),
-  },
-  variationId: { key: 'variation_id', required: true, type: 'string' },
-  webPurchaseUrl: {
-    key: 'web_purchase_url',
-    required: false,
-    type: 'string',
-  },
-} as unknown as Properties<CodableModel, Serializable>;
-
 export class AdaptyFlowPaywallCoder extends Coder<
   Model,
   CodableModel,
   Serializable
 > {
-  protected properties: Properties<CodableModel, Serializable> = PROPERTIES;
+  // Wire-level properties including the internal `products` field.
+  // The `as unknown as` cast is intentional: `products` is required on the wire
+  // but optional in CodableModel (so that Model extends CodableModel for
+  // override compatibility). The cast bridges the required/optional mismatch.
+  protected properties: Properties<CodableModel, Serializable> = {
+    placement: {
+      key: 'placement',
+      required: true,
+      type: 'object',
+      converter: new AdaptyPlacementCoder(this.platform),
+    },
+    id: { key: 'paywall_id', required: true, type: 'string' },
+    name: { key: 'paywall_name', required: true, type: 'string' },
+    products: {
+      key: 'products',
+      required: true,
+      type: 'array',
+      converter: new ArrayCoder(() => new ProductReferenceCoder(this.platform)),
+    },
+    variationId: { key: 'variation_id', required: true, type: 'string' },
+    webPurchaseUrl: {
+      key: 'web_purchase_url',
+      required: false,
+      type: 'string',
+    },
+  } as unknown as Properties<CodableModel, Serializable>;
 
   override decode(data: Serializable): Model {
     const codablePart = super.decode(data);
     // Keep `products` on the runtime object (for encode round-trip) while
     // exposing only `productIdentifiers` on the public type.
-    // products is always present on the wire (required: true in PROPERTIES).
+    // products is always present on the wire (required: true in properties).
     return {
       ...codablePart,
       productIdentifiers: codablePart.products!.map(product => ({

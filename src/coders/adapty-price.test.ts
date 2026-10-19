@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyPriceCoder } from './adapty-price';
 import type { AdaptyPrice } from '@/types';
 import type { Def } from '@/types/schema';
@@ -26,7 +27,7 @@ describe('AdaptyPriceCoder', () => {
   let coder: AdaptyPriceCoder;
 
   beforeEach(() => {
-    coder = new AdaptyPriceCoder();
+    coder = new AdaptyPriceCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

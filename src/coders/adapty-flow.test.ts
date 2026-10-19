@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptyFlow } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptyFlowCoder } from './adapty-flow';
@@ -91,8 +92,12 @@ const mocks: Def['AdaptyFlow'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _remoteConfigs = new ArrayCoder(() => new AdaptyRemoteConfigCoder());
-  const _paywalls = new ArrayCoder(() => new AdaptyFlowPaywallCoder());
+  const _remoteConfigs = new ArrayCoder(
+    () => new AdaptyRemoteConfigCoder(new DefaultPlatformAdapter()),
+  );
+  const _paywalls = new ArrayCoder(
+    () => new AdaptyFlowPaywallCoder(new DefaultPlatformAdapter()),
+  );
 
   const decodedPlacement = {
     abTestName: mock.placement.ab_test_name,
@@ -131,7 +136,7 @@ describe('AdaptyFlowCoder', () => {
   let coder: AdaptyFlowCoder;
 
   beforeEach(() => {
-    coder = new AdaptyFlowCoder();
+    coder = new AdaptyFlowCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

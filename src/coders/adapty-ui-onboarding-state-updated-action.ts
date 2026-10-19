@@ -13,7 +13,9 @@ export class AdaptyUiOnboardingStateUpdatedActionCoder extends SimpleCoder<
   BaseModel,
   Serializable
 > {
-  private readonly paramCoder = new AdaptyUiOnboardingStateParamsCoder();
+  private readonly paramCoder = new AdaptyUiOnboardingStateParamsCoder(
+    this.platform,
+  );
 
   protected properties: Properties<BaseModel, Serializable> = {
     elementId: {

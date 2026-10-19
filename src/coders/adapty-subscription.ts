@@ -3,6 +3,7 @@ import type { Def } from '@/types/schema';
 import type { Properties } from './types';
 import { SimpleCoder } from './coder';
 import { DateCoder } from './date';
+import { AdaptyProfileSubscriptionCommitmentInfoCoder } from './adapty-profile-subscription-commitment-info';
 
 type Model = AdaptySubscription;
 type Serializable = Def['AdaptyProfile.Subscription'];
@@ -112,6 +113,24 @@ export class AdaptySubscriptionCoder extends SimpleCoder<Model, Serializable> {
     },
     cancellationReason: {
       key: 'cancellation_reason',
+      required: false,
+      type: 'string',
+    },
+    billingPlan: {
+      key: 'billing_plan_id',
+      required: false,
+      type: 'string',
+    },
+    commitmentInfo: {
+      key: 'commitment',
+      required: false,
+      type: 'object',
+      converter: new AdaptyProfileSubscriptionCommitmentInfoCoder(
+        this.platform,
+      ),
+    },
+    offerId: {
+      key: 'offer_id',
       required: false,
       type: 'string',
     },
