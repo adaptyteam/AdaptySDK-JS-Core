@@ -383,6 +383,7 @@ export interface components {
       method: 'report_transaction';
       variation_id?: string;
       transaction_id: string;
+      apple_jws_transaction?: string;
     };
 
     'ReportTransaction.Response': OneOf<
