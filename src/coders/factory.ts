@@ -25,6 +25,7 @@ import { AdaptyProfileSubscriptionCommitmentInfoCoder } from './adapty-profile-s
 import { AdaptyProfileCoder } from './adapty-profile';
 import { AdaptyPurchaseParamsCoder } from './adapty-purchase-params';
 import { AdaptyPurchaseResultCoder } from './adapty-purchase-result';
+import { AdaptyReportTransactionParamsCoder } from './adapty-report-transaction-params';
 import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
 import { AdaptySubscriptionCommitmentInfoCoder } from './adapty-subscription-commitment-info';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
@@ -173,6 +174,10 @@ export class CoderFactory {
 
   createRemoteConfigCoder(): AdaptyRemoteConfigCoder {
     return new AdaptyRemoteConfigCoder(this.deps.platform);
+  }
+
+  createReportTransactionParamsCoder(): AdaptyReportTransactionParamsCoder {
+    return new AdaptyReportTransactionParamsCoder(this.deps.platform);
   }
 
   createSubscriptionCoder(): AdaptySubscriptionCoder {
