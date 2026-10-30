@@ -248,6 +248,15 @@ export interface IdentifyParamsInput {
   };
 }
 
+export interface ReportTransactionParamsInput {
+  transactionId: string;
+  variationId?: string;
+  ios?: {
+    /** StoreKit 2 JWS representation of the transaction */
+    jwsTransaction?: string;
+  };
+}
+
 export interface GetPaywallProductsParamsInput {}
 
 export const AdaptyAndroidSubscriptionUpdateReplacementMode = Object.freeze({
