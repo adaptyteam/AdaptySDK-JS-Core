@@ -3,7 +3,10 @@ import type { Def } from '@/types/schema';
 import type { Properties } from './types';
 import { SimpleCoder } from './coder';
 import { AdaptyPriceCoder } from './adapty-price';
-import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
+import {
+  AdaptySubscriptionDetailsCoder,
+  getSubscriptionInput,
+} from './adapty-subscription-details';
 
 type Model = AdaptyPromotedProduct;
 type Serializable = Def['AdaptyPromotedProduct.Response'];
@@ -29,14 +32,14 @@ export class AdaptyPromotedProductCoder extends SimpleCoder<
       key: 'price',
       required: false, // Native SDKs require this
       type: 'object',
-      converter: new AdaptyPriceCoder(),
+      converter: new AdaptyPriceCoder(this.platform),
     },
     payloadData: { key: 'payload_data', required: false, type: 'string' },
     subscription: {
       key: 'subscription',
       required: false,
       type: 'object',
-      converter: new AdaptySubscriptionDetailsCoder(),
+      converter: new AdaptySubscriptionDetailsCoder(this.platform),
     },
     ios: {
       isFamilyShareable: {
@@ -44,20 +47,20 @@ export class AdaptyPromotedProductCoder extends SimpleCoder<
         required: true,
         type: 'boolean',
       },
+      purchaseIntentId: {
+        key: 'purchase_intent_id',
+        required: true,
+        type: 'string',
+      },
     },
   };
 
   public getInput(data: Serializable): Def['AdaptyPromotedProduct.Request'] {
     return {
+      purchase_intent_id: data.purchase_intent_id,
       vendor_product_id: data.vendor_product_id,
       payload_data: data.payload_data,
-      subscription: data.subscription?.offer
-        ? {
-            offer: {
-              offer_identifier: data.subscription.offer.offer_identifier,
-            },
-          }
-        : undefined,
+      subscription: getSubscriptionInput(data.subscription),
     };
   }
 }

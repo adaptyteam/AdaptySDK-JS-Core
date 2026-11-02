@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { Def } from '@/types/schema';
 import { AdaptyUiMediaCacheCoder } from '@/coders/adapty-ui-media-cache';
 
@@ -10,7 +11,7 @@ const mocks: Required<Def['AdaptyConfiguration']>['media_cache'][] = [
 ];
 
 describe('AdaptyUiMediaCacheCoder', () => {
-  const coder = new AdaptyUiMediaCacheCoder();
+  const coder = new AdaptyUiMediaCacheCoder(new DefaultPlatformAdapter());
 
   it.each(mocks)('should encode/decode', mock => {
     const decoded = coder.decode(mock);

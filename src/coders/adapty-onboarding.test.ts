@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyOnboardingCoder } from './adapty-onboarding';
 import type { AdaptyOnboarding } from '@/types';
 import type { Def } from '@/types/schema';
@@ -84,7 +85,7 @@ describe('AdaptyOnboardingCoder', () => {
   let coder: AdaptyOnboardingCoder;
 
   beforeEach(() => {
-    coder = new AdaptyOnboardingCoder();
+    coder = new AdaptyOnboardingCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

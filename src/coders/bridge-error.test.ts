@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyBridgeError } from '@/types/bridge';
 import { BridgeErrorCoder } from './bridge-error';
 import { AdaptyError } from '@/adapty-error';
@@ -12,7 +13,7 @@ describe('BridgeErrorCoder', () => {
   };
 
   beforeEach(() => {
-    coder = new BridgeErrorCoder();
+    coder = new BridgeErrorCoder(new DefaultPlatformAdapter());
   });
 
   it('should be Error', () => {

@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptySubscriptionOfferId } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptySubscriptionOfferIdCoder } from '@/coders/adapty-subscription-offer-identifier';
@@ -48,7 +49,7 @@ describe('AdaptySubscriptionOfferIdCoder', () => {
   let coder: AdaptySubscriptionOfferIdCoder;
 
   beforeEach(() => {
-    coder = new AdaptySubscriptionOfferIdCoder();
+    coder = new AdaptySubscriptionOfferIdCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

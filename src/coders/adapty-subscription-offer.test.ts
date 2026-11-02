@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptySubscriptionOffer } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptyDiscountPhaseCoder } from './adapty-discount-phase';
@@ -59,8 +60,12 @@ const mocks: Def['AdaptySubscriptionOffer'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _offerId = new AdaptySubscriptionOfferIdCoder();
-  const _discounts = new ArrayCoder(() => new AdaptyDiscountPhaseCoder());
+  const _offerId = new AdaptySubscriptionOfferIdCoder(
+    new DefaultPlatformAdapter(),
+  );
+  const _discounts = new ArrayCoder(
+    () => new AdaptyDiscountPhaseCoder(new DefaultPlatformAdapter()),
+  );
 
   return {
     identifier: _offerId.decode(mock.offer_identifier),
@@ -77,7 +82,7 @@ describe('AdaptySubscriptionOfferCoder', () => {
   let coder: AdaptySubscriptionOfferCoder;
 
   beforeEach(() => {
-    coder = new AdaptySubscriptionOfferCoder();
+    coder = new AdaptySubscriptionOfferCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

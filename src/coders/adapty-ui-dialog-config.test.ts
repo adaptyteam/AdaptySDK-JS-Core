@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { Def } from '@/types/schema';
 import { AdaptyUiDialogConfigCoder } from '@/coders/adapty-ui-dialog-config';
 
@@ -14,7 +15,7 @@ const mocks: Def['AdaptyUI.DialogConfiguration'][] = [
 ];
 
 describe('AdaptyUiDialogConfigCoder', () => {
-  const coder = new AdaptyUiDialogConfigCoder();
+  const coder = new AdaptyUiDialogConfigCoder(new DefaultPlatformAdapter());
 
   it.each(mocks)('should encode/decode', mock => {
     const decoded = coder.decode(mock);

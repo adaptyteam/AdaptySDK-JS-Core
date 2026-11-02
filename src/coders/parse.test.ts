@@ -116,6 +116,16 @@ describe('parseMethodResult', () => {
       );
       expect(result).toBe('primary');
     });
+
+    it('returns Array<AdaptyStoreMessageType> payload without decoding', () => {
+      const types = ['billing_issue', 'storekit_-42'];
+      const result = parseMethodResult(
+        factory,
+        JSON.stringify({ success: types }),
+        'Array<AdaptyStoreMessageType>',
+      );
+      expect(result).toEqual(types);
+    });
   });
 
   describe('success is routed to the matching coder', () => {

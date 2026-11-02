@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyUiOnboardingMetaCoder } from './adapty-ui-onboarding-meta';
 import type { AdaptyUiOnboardingMeta } from '@/ui-builder/types';
 import type { Def } from '@/types/schema';
@@ -31,7 +32,7 @@ describe('AdaptyUiOnboardingMetaCoder', () => {
   let coder: AdaptyUiOnboardingMetaCoder;
 
   beforeEach(() => {
-    coder = new AdaptyUiOnboardingMetaCoder();
+    coder = new AdaptyUiOnboardingMetaCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

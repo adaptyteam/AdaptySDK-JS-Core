@@ -1,5 +1,7 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptyPromotedProduct } from '@/types';
 import type { Def } from '@/types/schema';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { AdaptyPriceCoder } from './adapty-price';
 import { AdaptyPromotedProductCoder } from './adapty-promoted-product';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
@@ -7,6 +9,7 @@ import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
 type Model = AdaptyPromotedProduct;
 const mocks: Def['AdaptyPromotedProduct.Response'][] = [
   {
+    purchase_intent_id: 'intent-1',
     is_family_shareable: false,
     localized_description: 'Get premium features with this plan',
     localized_title: 'Yearly Premium Plan',
@@ -55,6 +58,7 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
     },
   },
   {
+    purchase_intent_id: 'intent-2',
     is_family_shareable: true,
     localized_description: 'Get premium features with this plan',
     localized_title: 'Yearly Premium Plan',
@@ -73,6 +77,31 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
         number_of_units: 1,
       },
       localized_period: '1 year',
+      pricing_terms: {
+        billing_plan_id: 'monthly',
+        billing_price: {
+          amount: 6.99,
+          currency_code: 'USD',
+          currency_symbol: '$',
+          localized_string: '$6.99',
+        },
+        billing_period: {
+          unit: 'month',
+          number_of_units: 1,
+        },
+        commitment_info: {
+          price: {
+            amount: 83.88,
+            currency_code: 'USD',
+            currency_symbol: '$',
+            localized_string: '$83.88',
+          },
+          period: {
+            unit: 'year',
+            number_of_units: 1,
+          },
+        },
+      },
       offer: {
         offer_identifier: {
           type: 'promotional',
@@ -101,6 +130,7 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
   },
   {
     // Non-subscription product: no subscription, no optional fields
+    purchase_intent_id: 'intent-3',
     is_family_shareable: false,
     localized_description: 'Unlock all the things, once',
     localized_title: 'Lifetime Access',
@@ -115,12 +145,15 @@ const mocks: Def['AdaptyPromotedProduct.Response'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _price = new AdaptyPriceCoder();
-  const _details = new AdaptySubscriptionDetailsCoder();
+  const _price = new AdaptyPriceCoder(new DefaultPlatformAdapter());
+  const _details = new AdaptySubscriptionDetailsCoder(
+    new DefaultPlatformAdapter(),
+  );
 
   return {
     ios: {
       isFamilyShareable: mock.is_family_shareable as boolean,
+      purchaseIntentId: mock.purchase_intent_id as string,
     },
     localizedDescription: mock.localized_description,
     localizedTitle: mock.localized_title,
@@ -140,7 +173,7 @@ describe('AdaptyPromotedProductCoder', () => {
   let coder: AdaptyPromotedProductCoder;
 
   beforeEach(() => {
-    coder = new AdaptyPromotedProductCoder();
+    coder = new AdaptyPromotedProductCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {
@@ -159,6 +192,7 @@ describe('AdaptyPromotedProductCoder', () => {
   describe('getInput', () => {
     it('should map the nested subscription offer identifier', () => {
       expect(coder.getInput(mocks[0]!)).toStrictEqual({
+        purchase_intent_id: 'intent-1',
         vendor_product_id: 'yearly.premium.6999',
         payload_data: 'examplePayloadData',
         subscription: {
@@ -169,11 +203,76 @@ describe('AdaptyPromotedProductCoder', () => {
       });
     });
 
+    it('should map the billing plan alongside the offer identifier', () => {
+      expect(coder.getInput(mocks[1]!)).toStrictEqual({
+        purchase_intent_id: 'intent-2',
+        vendor_product_id: 'yearly.premium.6999',
+        payload_data: undefined,
+        subscription: {
+          pricing_terms: { billing_plan_id: 'monthly' },
+          offer: {
+            offer_identifier: { type: 'promotional', id: 'test_promo_offer' },
+          },
+        },
+      });
+    });
+
     it('should omit the subscription when the product has no offer', () => {
       expect(coder.getInput(mocks[2]!)).toStrictEqual({
+        purchase_intent_id: 'intent-3',
         vendor_product_id: 'lifetime.access.9999',
         payload_data: undefined,
         subscription: undefined,
+      });
+    });
+  });
+
+  describe('platform', () => {
+    const ios = new AdaptyPromotedProductCoder({
+      OS: 'ios',
+    } as IPlatformAdapter);
+    const android = new AdaptyPromotedProductCoder({
+      OS: 'android',
+    } as IPlatformAdapter);
+    const { purchase_intent_id: _, ...withoutIntent } = mocks[1]!;
+    // Android products always carry base_plan_id, so the Android case uses the Android-shaped mock
+    const { purchase_intent_id: _androidIntent, ...androidWithoutIntent } =
+      mocks[0]!;
+
+    it('should require purchase_intent_id on iOS', () => {
+      expect(() => ios.decode(withoutIntent)).toThrow(/purchaseIntentId/);
+    });
+
+    it('should not require purchase_intent_id on Android', () => {
+      expect(android.decode(mocks[0]!).ios).toStrictEqual({
+        isFamilyShareable: false,
+        purchaseIntentId: 'intent-1',
+      });
+      expect(() => android.decode(androidWithoutIntent)).not.toThrow();
+    });
+
+    it('should send purchase intent and billing plan after a model round-trip', () => {
+      const model = ios.decode(mocks[1]!);
+
+      expect(ios.getInput(ios.encode(model))).toStrictEqual({
+        purchase_intent_id: 'intent-2',
+        vendor_product_id: 'yearly.premium.6999',
+        payload_data: undefined,
+        subscription: {
+          pricing_terms: { billing_plan_id: 'monthly' },
+          offer: {
+            offer_identifier: { type: 'promotional', id: 'test_promo_offer' },
+          },
+        },
+      });
+    });
+
+    it('should send the billing plan when there is no offer', () => {
+      const { offer: _offer, ...subscription } = mocks[1]!.subscription!;
+      const model = ios.decode({ ...mocks[1]!, subscription });
+
+      expect(ios.getInput(ios.encode(model)).subscription).toStrictEqual({
+        pricing_terms: { billing_plan_id: 'monthly' },
       });
     });
   });

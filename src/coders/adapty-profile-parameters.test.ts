@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { Def } from '@/types/schema';
 import { AdaptyProfileParametersCoder } from './adapty-profile-parameters';
 
@@ -16,7 +17,7 @@ const mocks: Def['AdaptyProfileParameters'][] = [
 ];
 
 describe('AdaptyProfileParametersCoder', () => {
-  const coder = new AdaptyProfileParametersCoder();
+  const coder = new AdaptyProfileParametersCoder(new DefaultPlatformAdapter());
 
   it.each(mocks)('should encode/decode', mock => {
     const decoded = coder.decode(mock);

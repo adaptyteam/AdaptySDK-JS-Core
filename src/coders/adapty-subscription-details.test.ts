@@ -1,8 +1,11 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { AdaptySubscriptionDetails } from '@/types';
 import type { Def } from '@/types/schema';
+import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { AdaptySubscriptionDetailsCoder } from './adapty-subscription-details';
 import { AdaptySubscriptionPeriodCoder } from './adapty-subscription-period';
 import { AdaptySubscriptionOfferCoder } from '@/coders/adapty-subscription-offer';
+import { AdaptySubscriptionPricingTermsCoder } from './adapty-subscription-pricing-terms';
 
 type Model = AdaptySubscriptionDetails;
 const mocks: Def['AdaptyProduct.Subscription'][] = [
@@ -47,6 +50,31 @@ const mocks: Def['AdaptyProduct.Subscription'][] = [
       number_of_units: 1,
     },
     localized_period: '1 year',
+    pricing_terms: {
+      billing_plan_id: 'monthly',
+      billing_price: {
+        amount: 6.99,
+        currency_code: 'USD',
+        currency_symbol: '$',
+        localized_string: '$6.99',
+      },
+      billing_period: {
+        unit: 'month',
+        number_of_units: 1,
+      },
+      commitment_info: {
+        price: {
+          amount: 83.88,
+          currency_code: 'USD',
+          currency_symbol: '$',
+          localized_string: '$83.88',
+        },
+        period: {
+          unit: 'year',
+          number_of_units: 1,
+        },
+      },
+    },
     offer: {
       offer_identifier: {
         type: 'promotional',
@@ -75,8 +103,13 @@ const mocks: Def['AdaptyProduct.Subscription'][] = [
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {
-  const _period = new AdaptySubscriptionPeriodCoder();
-  const _offer = new AdaptySubscriptionOfferCoder();
+  const _period = new AdaptySubscriptionPeriodCoder(
+    new DefaultPlatformAdapter(),
+  );
+  const _offer = new AdaptySubscriptionOfferCoder(new DefaultPlatformAdapter());
+  const _pricingTerms = new AdaptySubscriptionPricingTermsCoder(
+    new DefaultPlatformAdapter(),
+  );
 
   return {
     subscriptionPeriod: _period.decode(mock.period),
@@ -96,6 +129,9 @@ function toModel(mock: (typeof mocks)[number]): Model {
       : {
           ios: {
             subscriptionGroupIdentifier: mock.group_identifier,
+            ...(mock.pricing_terms && {
+              pricingTerms: _pricingTerms.decode(mock.pricing_terms),
+            }),
           },
         }),
   };
@@ -105,7 +141,7 @@ describe('AdaptySubscriptionDetailsCoder', () => {
   let coder: AdaptySubscriptionDetailsCoder;
 
   beforeEach(() => {
-    coder = new AdaptySubscriptionDetailsCoder();
+    coder = new AdaptySubscriptionDetailsCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {
@@ -119,5 +155,55 @@ describe('AdaptySubscriptionDetailsCoder', () => {
     const encoded = coder.encode(decoded);
 
     expect(encoded).toStrictEqual(mock);
+  });
+
+  it('should decode iOS pricing terms', () => {
+    const decoded = coder.decode(mocks[1]!);
+
+    expect(decoded.ios?.pricingTerms).toStrictEqual({
+      billingPlan: 'monthly',
+      billingPrice: {
+        amount: 6.99,
+        currencyCode: 'USD',
+        currencySymbol: '$',
+        localizedString: '$6.99',
+      },
+      billingPeriod: { unit: 'month', numberOfUnits: 1 },
+      commitmentInfo: {
+        price: {
+          amount: 83.88,
+          currencyCode: 'USD',
+          currencySymbol: '$',
+          localizedString: '$83.88',
+        },
+        period: { unit: 'year', numberOfUnits: 1 },
+      },
+    });
+  });
+
+  it('should drop iOS pricing terms from Android subscriptions', () => {
+    const android = new AdaptySubscriptionDetailsCoder({
+      OS: 'android',
+    } as IPlatformAdapter);
+    const decoded = android.decode({
+      ...mocks[0]!,
+      pricing_terms: mocks[1]!.pricing_terms,
+    });
+
+    expect(decoded.ios).toBeUndefined();
+    expect(decoded.android).toStrictEqual({
+      basePlanId: 'androidPlan1',
+      renewalType: 'prepaid',
+    });
+  });
+
+  it('should keep iOS pricing terms on iOS', () => {
+    const ios = new AdaptySubscriptionDetailsCoder({
+      OS: 'ios',
+    } as IPlatformAdapter);
+
+    expect(ios.decode(mocks[1]!).ios?.pricingTerms?.billingPlan).toBe(
+      'monthly',
+    );
   });
 });

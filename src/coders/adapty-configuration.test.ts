@@ -210,6 +210,24 @@ describe('AdaptyConfigurationCoder', () => {
     expect(resultWithTrue.clear_data_on_backup).toBe(true);
   });
 
+  it.each(['ios', 'android'] as const)(
+    'should encode storeMessagesHandling on %s only when set',
+    os => {
+      const platformCoder = createCoder(os);
+      expect(
+        platformCoder.encode(apiKey, {}).store_messages_handling,
+      ).toBeUndefined();
+      expect(
+        platformCoder.encode(apiKey, { storeMessagesHandling: 'manual' })
+          .store_messages_handling,
+      ).toBe('manual');
+      expect(
+        platformCoder.encode(apiKey, { storeMessagesHandling: 'auto' })
+          .store_messages_handling,
+      ).toBe('auto');
+    },
+  );
+
   it('should default adaptyAttributionEnabled to false', () => {
     expect(coder.encode(apiKey, {}).adapty_attribution_enabled).toBe(false);
     expect(

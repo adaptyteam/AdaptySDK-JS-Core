@@ -1,5 +1,4 @@
 import { AdaptyError } from '@/adapty-error';
-import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { IPlatformAdapter } from '@/adapters/interfaces';
 import { Converter, Properties, StrType } from './types';
 
@@ -11,7 +10,7 @@ export abstract class Coder<
   protected readonly platform: IPlatformAdapter;
   protected abstract properties: Properties<CodableModel, Serializable>;
 
-  constructor(platform: IPlatformAdapter = new DefaultPlatformAdapter()) {
+  constructor(platform: IPlatformAdapter) {
     this.platform = platform;
   }
 

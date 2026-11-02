@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyPlacementCoder } from './adapty-placement';
 import type { AdaptyPlacement } from '@/types';
 import type { Def } from '@/types/schema';
@@ -38,7 +39,7 @@ describe('AdaptyPlacementCoder', () => {
   let coder: AdaptyPlacementCoder;
 
   beforeEach(() => {
-    coder = new AdaptyPlacementCoder();
+    coder = new AdaptyPlacementCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

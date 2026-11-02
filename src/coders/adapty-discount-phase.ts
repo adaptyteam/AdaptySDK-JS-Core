@@ -30,13 +30,13 @@ export class AdaptyDiscountPhaseCoder extends SimpleCoder<Model, Serializable> {
       key: 'price',
       required: true,
       type: 'object',
-      converter: new AdaptyPriceCoder(),
+      converter: new AdaptyPriceCoder(this.platform),
     },
     subscriptionPeriod: {
       key: 'subscription_period',
       required: true,
       type: 'object',
-      converter: new AdaptySubscriptionPeriodCoder(),
+      converter: new AdaptySubscriptionPeriodCoder(this.platform),
     },
   };
 }

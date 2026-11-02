@@ -87,11 +87,13 @@ This repo uses platform dependency injection to keep `@adapty/core` platform-agn
   - `ILoggerAdapter` for logging
 - **Instantiation rule:** do not instantiate `*Coder` via `new` outside `src/coders/**`. In SDK / bridge / feature code, use `CoderFactory` as the single entry point.
 - **When adding a new coder:** add a corresponding `create*Coder()` method to `CoderFactory` and use it instead of direct construction.
+- **Platform propagation:** `Coder` requires an `IPlatformAdapter` in its constructor. A coder that nests another coder (in `properties`, fields, methods, `ArrayCoder`/`HashmapCoder`) must pass `this.platform`; otherwise platform-gated `required` checks inside `ios`/`android` blocks of the nested coder never fire.
 
 ### Testing Guidance
 
 - Tests should create coders with mock adapters, not mutate `Platform` globals.
 - Prefer inline adapters: `{ OS: 'ios' }` / `{ OS: 'android' }`.
+- Coder tests that do not care about the platform pass `new DefaultPlatformAdapter()` (OS `'unknown'`, platform-gated checks off). `src/coders/nested-platform.test.ts` verifies that every coder reachable from `CoderFactory` shares the factory's adapter.
 
 ### Usage in Downstream SDKs
 

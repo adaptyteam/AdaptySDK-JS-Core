@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyNativeErrorCoder } from './adapty-native-error';
 import { AdaptyError } from '@/adapty-error';
 import type { AdaptyNativeError } from '@/types/bridge';
@@ -30,7 +31,7 @@ describe('AdaptyNativeErrorCoder', () => {
   let coder: AdaptyNativeErrorCoder;
 
   beforeEach(() => {
-    coder = new AdaptyNativeErrorCoder();
+    coder = new AdaptyNativeErrorCoder(new DefaultPlatformAdapter());
   });
 
   // Important for analytics systems, etc.

@@ -1,6 +1,8 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type {
   AdaptySubscription,
   CancellationReason,
+  SubscriptionBillingPlan,
   VendorStore,
 } from '@/types';
 import type { Def } from '@/types/schema';
@@ -10,6 +12,12 @@ type Model = AdaptySubscription;
 const mocks: Def['AdaptyProfile.Subscription'][] = [
   {
     activated_at: '2023-08-09T12:34:56.789Z',
+    billing_plan_id: 'monthly',
+    commitment: {
+      billing_period_number: 3,
+      total_billing_periods: 12,
+      expires_at: '2024-08-08T12:00:00.000Z',
+    },
     is_active: true,
     is_in_grace_period: false,
     is_lifetime: false,
@@ -34,6 +42,7 @@ const mocks: Def['AdaptyProfile.Subscription'][] = [
     renewed_at: '2023-07-09T12:34:56.789Z',
     starts_at: '2023-08-09T12:34:56.789Z',
     store: 'Google Play',
+    offer_id: 'androidOffer1',
     unsubscribed_at: '2023-08-09T12:34:56.789Z',
     vendor_original_transaction_id: 'originalTransaction456',
     vendor_product_id: 'product456',
@@ -73,6 +82,17 @@ function toModel(mock: (typeof mocks)[number]): Model {
     vendorProductId: mock.vendor_product_id,
     vendorTransactionId: mock.vendor_transaction_id,
     willRenew: mock.will_renew,
+    ...(mock.offer_id && { offerId: mock.offer_id }),
+    ...(mock.billing_plan_id && {
+      billingPlan: mock.billing_plan_id as SubscriptionBillingPlan,
+    }),
+    ...(mock.commitment && {
+      commitmentInfo: {
+        billingPeriodNumber: mock.commitment.billing_period_number,
+        totalBillingPeriods: mock.commitment.total_billing_periods,
+        expiresAt: new Date(mock.commitment.expires_at),
+      },
+    }),
   };
 }
 
@@ -80,7 +100,7 @@ describe('AdaptySubscriptionCoder', () => {
   let coder: AdaptySubscriptionCoder;
 
   beforeEach(() => {
-    coder = new AdaptySubscriptionCoder();
+    coder = new AdaptySubscriptionCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

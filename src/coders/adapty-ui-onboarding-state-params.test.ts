@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyUiOnboardingStateParamsCoder } from './adapty-ui-onboarding-state-params';
 import type { AdaptyUiOnboardingStateParams } from '@/ui-builder/types';
 import type { Def } from '@/types/schema';
@@ -28,7 +29,9 @@ describe('AdaptyUiOnboardingStateParamsCoder', () => {
   let coder: AdaptyUiOnboardingStateParamsCoder;
 
   beforeEach(() => {
-    coder = new AdaptyUiOnboardingStateParamsCoder();
+    coder = new AdaptyUiOnboardingStateParamsCoder(
+      new DefaultPlatformAdapter(),
+    );
   });
 
   it.each(mocks)('should decode to expected result', mock => {

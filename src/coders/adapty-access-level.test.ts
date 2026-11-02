@@ -1,7 +1,9 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type {
   AdaptyAccessLevel,
   CancellationReason,
   OfferType,
+  SubscriptionBillingPlan,
   VendorStore,
 } from '@/types';
 import type { Def } from '@/types/schema';
@@ -15,6 +17,12 @@ const mocks: Def['AdaptyProfile.AccessLevel'][] = [
     active_promotional_offer_id: 'iosOffer1',
     active_promotional_offer_type: 'promo1',
     billing_issue_detected_at: '2023-08-08T12:00:00.000Z',
+    billing_plan_id: 'monthly',
+    commitment: {
+      billing_period_number: 3,
+      total_billing_periods: 12,
+      expires_at: '2024-08-08T12:00:00.000Z',
+    },
     cancellation_reason: 'user_cancelled',
     expires_at: '2023-10-08T12:00:00.000Z',
     id: 'accessLevel1',
@@ -77,6 +85,17 @@ function toModel(mock: (typeof mocks)[number]): Model {
       activePromotionalOfferType:
         mock.active_promotional_offer_type as OfferType,
     }),
+    ...(mock.billing_plan_id && {
+      billingPlan: mock.billing_plan_id as SubscriptionBillingPlan,
+    }),
+    ...(mock.commitment && {
+      commitmentInfo: {
+        billingPeriodNumber: mock.commitment.billing_period_number,
+        totalBillingPeriods: mock.commitment.total_billing_periods,
+        expiresAt: new Date(mock.commitment.expires_at),
+      },
+    }),
+    ...(mock.offer_id && { offerId: mock.offer_id }),
     android: {
       ...(mock.offer_id && {
         offerId: mock.offer_id,
@@ -89,7 +108,7 @@ describe('AdaptyAccessLevelCoder', () => {
   let coder: AdaptyAccessLevelCoder;
 
   beforeEach(() => {
-    coder = new AdaptyAccessLevelCoder();
+    coder = new AdaptyAccessLevelCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

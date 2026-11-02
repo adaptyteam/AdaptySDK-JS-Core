@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type { Def } from '@/types/schema';
 import type { AdaptyNonSubscription, VendorStore } from '@/types';
 import { AdaptyNonSubscriptionCoder } from './adapty-non-subscription';
@@ -44,7 +45,7 @@ describe('AdaptyNonSubscriptionCoder', () => {
   let coder: AdaptyNonSubscriptionCoder;
 
   beforeEach(() => {
-    coder = new AdaptyNonSubscriptionCoder();
+    coder = new AdaptyNonSubscriptionCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

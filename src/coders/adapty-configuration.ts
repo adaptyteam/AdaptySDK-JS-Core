@@ -32,6 +32,10 @@ export class AdaptyConfigurationCoder {
     config['adapty_attribution_enabled'] =
       params.adaptyAttributionEnabled ?? false;
 
+    if (params.storeMessagesHandling) {
+      config['store_messages_handling'] = params.storeMessagesHandling;
+    }
+
     if (params.logLevel) {
       config['log_level'] = params.logLevel;
     }
@@ -48,7 +52,7 @@ export class AdaptyConfigurationCoder {
 
     config['activate_ui'] = params.activateUi ?? true;
 
-    const mediaCacheCoder = new AdaptyUiMediaCacheCoder();
+    const mediaCacheCoder = new AdaptyUiMediaCacheCoder(this.platform);
     config['media_cache'] = mediaCacheCoder.encode(
       params.mediaCache ?? {
         memoryStorageTotalCostLimit: 100 * 1024 * 1024,

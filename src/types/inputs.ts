@@ -1,33 +1,40 @@
 import { AdaptyUiMediaCache } from '@/ui-builder/types';
 import type { AdaptyMockConfig } from '@/mock/types';
 /**
- * Log levels for the SDK
+ * Log levels for the SDK, ordered from the least to the most verbose:
+ * `ERROR` < `WARN` < `INFO` < `VERBOSE` < `DEBUG`.
  *
  * @remarks
+ * Setting a level enables it and all the levels above it in the list.
  * Logging is performed on a native side.
  * So you are expected to watch logs in Xcode or Android Studio.
  */
 export const LogLevel = Object.freeze({
   /**
-   * Logs any additional information that may be useful during debugging,
-   * such as function calls, API queries, etc.
-   */
-  VERBOSE: 'verbose',
-  /**
-   * Logs only errors
+   * Level 0 — logs only errors.
    */
   ERROR: 'error',
   /**
-   * Logs messages from the SDK
+   * Level 1 — logs errors and messages from the SDK
    * that do not cause critical errors,
-   * but are worth paying attention to
+   * but are worth paying attention to.
    */
   WARN: 'warn',
   /**
-   * Logs various information messages,
-   * such as those that log the lifecycle of various modules
+   * Level 2 — additionally logs various information messages,
+   * such as those that log the lifecycle of various modules.
    */
   INFO: 'info',
+  /**
+   * Level 3 — additionally logs any information that may be useful
+   * during debugging, such as function calls, API queries, etc.
+   */
+  VERBOSE: 'verbose',
+  /**
+   * Level 4 — the most detailed level, additionally logs
+   * low-level internal details of the native SDK.
+   */
+  DEBUG: 'debug',
 });
 
 export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
@@ -85,6 +92,26 @@ export type GetPlacementForDefaultAudienceParamsInput =
        */
       maxAgeSeconds: number;
     };
+
+/**
+ * Describes optional parameters for the placement preload methods.
+ *
+ * @remarks
+ * Preloading has no fetch policy: it always goes to the network and only warms
+ * the placement cache, so unlike {@link GetPlacementParamsInput} the only knob
+ * is the timeout.
+ */
+export interface PreloadPlacementsParamsInput {
+  /**
+   * This value limits the timeout (in milliseconds) for this method.
+   *
+   * @remarks
+   * The native SDKs clamp anything below 1000 ms up to 1000 ms. Reaching the
+   * timeout is not an error by itself — the affected placements are retried
+   * against the default audience source.
+   */
+  loadTimeoutMs?: number;
+}
 
 /**
  * Describes optional parameters for the {@link activate} method.
@@ -172,6 +199,21 @@ export interface ActivateParamsInput {
    * @defaultValue `false`
    */
   adaptyAttributionEnabled?: boolean;
+  /**
+   * Controls who decides when store messages are shown: App Store messages
+   * (price increase consent, billing issue, win-back offer, etc.) on iOS,
+   * Google Play in-app messages (e.g. a declined payment) on Android.
+   *
+   * @remarks
+   * - `'auto'` — iOS: StoreKit presents them automatically. Android: the SDK
+   *   requests them on every `Activity.onResume`.
+   * - `'manual'` — messages are shown only when the app calls `showStoreMessages`.
+   *   On iOS the SDK also keeps them in a queue readable via `getPendingStoreMessageTypes`.
+   *
+   * Has no effect below iOS 16.
+   * @defaultValue `'auto'`
+   */
+  storeMessagesHandling?: 'auto' | 'manual';
   ios?: {
     /**
      * Disables IDFA collection
@@ -203,6 +245,15 @@ export interface IdentifyParamsInput {
   };
   android?: {
     obfuscatedAccountId?: string;
+  };
+}
+
+export interface ReportTransactionParamsInput {
+  transactionId: string;
+  variationId?: string;
+  ios?: {
+    /** StoreKit 2 JWS representation of the transaction */
+    jwsTransaction?: string;
   };
 }
 

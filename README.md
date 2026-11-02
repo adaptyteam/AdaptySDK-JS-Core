@@ -14,7 +14,7 @@
 >
 > This package is an internal dependency of Adapty JavaScript SDKs. It is not intended for direct installation.
 
-This package contains the shared TypeScript foundation used by Adapty JavaScript SDKs, like React Native and Capacitor.
+This package contains the shared TypeScript foundation used by Adapty JavaScript SDKs: React Native and Capacitor.
 
 ## Documentation
 

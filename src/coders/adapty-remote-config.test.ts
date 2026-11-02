@@ -1,3 +1,4 @@
+import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import { AdaptyRemoteConfigCoder } from './adapty-remote-config';
 import type { AdaptyRemoteConfig } from '@/types';
 import type { Def } from '@/types/schema';
@@ -26,7 +27,7 @@ describe('AdaptyRemoteConfigCoder', () => {
   let coder: AdaptyRemoteConfigCoder;
 
   beforeEach(() => {
-    coder = new AdaptyRemoteConfigCoder();
+    coder = new AdaptyRemoteConfigCoder(new DefaultPlatformAdapter());
   });
 
   it.each(mocks)('should decode to expected result', mock => {

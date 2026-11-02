@@ -21,6 +21,7 @@ const AdaptyTypes = [
   'AdaptyUiOnboardingStateParams',
   'AdaptyUiOnboardingStateUpdatedAction',
   'Array<AdaptyPaywallProduct>',
+  'Array<AdaptyStoreMessageType>',
   'BridgeError',
   'String',
   'Boolean',
@@ -73,6 +74,7 @@ export function parseMethodResult<T>(
         'Void',
         'AdaptyUiView',
         'AdaptyUiDialogActionType',
+        'Array<AdaptyStoreMessageType>',
       ].includes(resultType)
     ) {
       return obj.success as T;

@@ -78,6 +78,15 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
+    'AdaptyUIDestroyFlowView.Request': {
+      method: 'adapty_ui_destroy_flow_view';
+      id: string;
+    };
+
+    'AdaptyUIDestroyFlowView.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'AdaptyUIPresentOnboardingView.Request': {
       method: 'adapty_ui_present_onboarding_view';
       id: string;
@@ -185,6 +194,25 @@ export interface components {
       ]
     >;
 
+    'PreloadFlows.Request': {
+      method: 'preload_flows';
+      placement_ids: string[];
+      load_timeout?: number;
+    };
+
+    'PreloadFlows.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
+    'PreloadFlowsForDefaultAudience.Request': {
+      method: 'preload_flows_for_default_audience';
+      placement_ids: string[];
+    };
+
+    'PreloadFlowsForDefaultAudience.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'GetPaywallProducts.Request': {
       method: 'get_paywall_products';
       flow: components['defs']['AdaptyFlow'];
@@ -285,6 +313,26 @@ export interface components {
       ]
     >;
 
+    'GetPendingStoreMessageTypes.Request': {
+      method: 'get_pending_store_message_types';
+    };
+
+    'GetPendingStoreMessageTypes.Response': OneOf<
+      [
+        { error: components['defs']['AdaptyError'] },
+        { success: components['defs']['AdaptyStoreMessageType'][] },
+      ]
+    >;
+
+    'ShowStoreMessage.Request': {
+      method: 'show_store_messages';
+      filter?: components['defs']['AdaptyStoreMessageType'][];
+    };
+
+    'ShowStoreMessage.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'OpenWebPaywall.Request': {
       method: 'open_web_paywall';
       open_in?: components['defs']['AdaptyWebPresentation'];
@@ -335,6 +383,7 @@ export interface components {
       method: 'report_transaction';
       variation_id?: string;
       transaction_id: string;
+      apple_jws_transaction?: string;
     };
 
     'ReportTransaction.Response': OneOf<
@@ -617,7 +666,7 @@ export interface components {
           | 'products_screen_presented'
           | 'user_email_collected'
           | 'onboarding_completed'
-          | string;
+          | (string & {});
         element_id?: string;
         reply?: string;
       };
@@ -707,6 +756,7 @@ export interface components {
       customer_user_id?: string;
       customer_identity_parameters?: components['defs']['CustomerIdentityParameters'];
       observer_mode?: boolean;
+      store_messages_handling?: components['defs']['StoreMessagesHandling'];
       apple_idfa_collection_disabled?: boolean;
       google_adid_collection_disabled?: boolean;
       google_enable_pending_prepaid_plans?: boolean;
@@ -727,6 +777,15 @@ export interface components {
         disk_storage_size_limit?: number;
       };
     };
+
+    StoreMessagesHandling: 'auto' | 'manual' | 'default';
+
+    AdaptyStoreMessageType:
+      | 'generic'
+      | 'price_increase_consent'
+      | 'billing_issue'
+      | 'win_back_offer'
+      | (string & {});
 
     CustomerIdentityParameters: {
       app_account_token?: string;
@@ -762,8 +821,12 @@ export interface components {
     };
 
     'AdaptyPromotedProduct.Request': {
+      purchase_intent_id?: string;
       vendor_product_id: string;
       subscription?: {
+        pricing_terms?: {
+          billing_plan_id: string;
+        };
         offer?: {
           offer_identifier: components['defs']['AdaptySubscriptionOffer.Identifier'];
         };
@@ -772,6 +835,7 @@ export interface components {
     };
 
     'AdaptyPromotedProduct.Response': {
+      purchase_intent_id?: string;
       vendor_product_id: string;
       localized_description: string;
       localized_title: string;
@@ -782,10 +846,23 @@ export interface components {
       payload_data?: string;
     };
 
+    AdaptySubscriptionPricingTerms: {
+      billing_plan_id: string;
+      billing_price: components['defs']['AdaptyPrice'];
+      billing_period: components['defs']['AdaptySubscriptionPeriod'];
+      commitment_info: components['defs']['AdaptySubscriptionCommitmentInfo'];
+    };
+
+    AdaptySubscriptionCommitmentInfo: {
+      price: components['defs']['AdaptyPrice'];
+      period: components['defs']['AdaptySubscriptionPeriod'];
+    };
+
     'AdaptyProduct.Subscription': {
       group_identifier?: string;
       period: components['defs']['AdaptySubscriptionPeriod'];
       localized_period?: string;
+      pricing_terms?: components['defs']['AdaptySubscriptionPricingTerms'];
       offer?: components['defs']['AdaptySubscriptionOffer'];
       renewal_type?: 'prepaid' | 'autorenewable';
       base_plan_id?: string;
@@ -798,6 +875,9 @@ export interface components {
       product_type: string;
       paywall_product_index: number;
       subscription?: {
+        pricing_terms?: {
+          billing_plan_id: string;
+        };
         offer?: {
           offer_identifier: components['defs']['AdaptySubscriptionOffer.Identifier'];
         };
@@ -904,10 +984,13 @@ export interface components {
       adapty_product_id: string;
       access_level_id: string;
       product_type: string;
-      promotional_offer_id?: string;
-      win_back_offer_id?: string;
       base_plan_id?: string;
       offer_id?: string;
+      pricing_terms?: {
+        billing_plan_id: string;
+        promotional_offer_id?: string;
+        win_back_offer_id?: string;
+      }[];
     };
 
     AdaptySubscriptionPeriod: {
@@ -960,6 +1043,8 @@ export interface components {
       billing_issue_detected_at?: components['defs']['Date'];
       starts_at?: components['defs']['Date'];
       cancellation_reason?: string;
+      billing_plan_id?: string;
+      commitment?: components['defs']['AdaptyProfile.SubscriptionCommitmentInfo'];
       is_refund: boolean;
     };
 
@@ -996,6 +1081,14 @@ export interface components {
       active_promotional_offer_id?: string;
       offer_id?: string;
       cancellation_reason?: string;
+      billing_plan_id?: string;
+      commitment?: components['defs']['AdaptyProfile.SubscriptionCommitmentInfo'];
+    };
+
+    'AdaptyProfile.SubscriptionCommitmentInfo': {
+      billing_period_number: number;
+      total_billing_periods: number;
+      expires_at: components['defs']['Date'];
     };
 
     'AdaptyProfile.CustomAttributes': {
@@ -1120,7 +1213,7 @@ export interface components {
       | 'health'
       | 'siri'
       | 'music'
-      | string;
+      | (string & {});
 
     'AdaptyUI.CustomTagsValues': {
       [key: string]: string;
