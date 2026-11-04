@@ -162,7 +162,16 @@ const ErrorCodeMapping = Object.freeze({
 });
 
 export const ErrorCode = ErrorCodeMapping;
-export type ErrorCode = keyof typeof ErrorCodeMapping;
+/** A code known to this version of the SDK. */
+export type KnownErrorCode = keyof typeof ErrorCodeMapping;
+/**
+ * Code of an {@link AdaptyError}.
+ *
+ * @remarks
+ * Native SDKs may send codes this version doesn't know yet, so any number is accepted.
+ * Known codes still autocomplete; use {@link isKnownErrorCode} to narrow.
+ */
+export type ErrorCode = KnownErrorCode | (number & {});
 
 export const ErrorCodeName = Object.freeze({
   unknown: 0,
@@ -229,11 +238,18 @@ export const ErrorCodeName = Object.freeze({
 } as const);
 export type ErrorCodeName = keyof typeof ErrorCodeName;
 
-export function getErrorCode(
-  error: (typeof ErrorCode)[ErrorCode],
-): ErrorCode | undefined {
+export function isKnownErrorCode(code: number): code is KnownErrorCode {
+  return Object.prototype.hasOwnProperty.call(ErrorCodeMapping, code);
+}
+
+/** Returns the name of a code, or `undefined` for a code unknown to this SDK version. */
+export function getErrorCodeName(code: number): ErrorCodeName | undefined {
+  return isKnownErrorCode(code) ? ErrorCodeMapping[code] : undefined;
+}
+
+export function getErrorCode(error: ErrorCodeName): KnownErrorCode | undefined {
   const errorCode = Object.keys(ErrorCode).find(keyStr => {
-    const key = Number(keyStr) as ErrorCode;
+    const key = Number(keyStr) as KnownErrorCode;
     return ErrorCode[key] === error;
   });
 
@@ -241,15 +257,11 @@ export function getErrorCode(
     return undefined;
   }
 
-  return Number(errorCode) as ErrorCode;
+  return Number(errorCode) as KnownErrorCode;
 }
 
-export function getErrorPrompt(code: ErrorCode): (typeof ErrorCode)[ErrorCode] {
-  const prompt = ErrorCode[code];
-
-  if (!prompt) {
-    return `Unknown code: ${code}` as (typeof ErrorCode)[ErrorCode];
-  }
-
-  return prompt;
+export function getErrorPrompt(
+  code: ErrorCode,
+): ErrorCodeName | `Unknown code: ${number}` {
+  return getErrorCodeName(code) ?? `Unknown code: ${code}`;
 }

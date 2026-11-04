@@ -1,8 +1,11 @@
+import { AdaptyError } from '@/adapty-error';
 import {
   ErrorCode,
   ErrorCodeName,
   getErrorCode,
+  getErrorCodeName,
   getErrorPrompt,
+  isKnownErrorCode,
 } from './error';
 
 describe('error codes', () => {
@@ -28,5 +31,27 @@ describe('error codes', () => {
   ] as const)('maps native code %i to %s', (code, name) => {
     expect(getErrorPrompt(code)).toBe(name);
     expect(getErrorCode(name)).toBe(code);
+  });
+
+  it('accepts a code unknown to this SDK version', () => {
+    const error = new AdaptyError({ adaptyCode: 7777, message: 'New error' });
+
+    expect(isKnownErrorCode(7777)).toBe(false);
+    expect(getErrorCodeName(7777)).toBeUndefined();
+    expect(getErrorPrompt(7777)).toBe('Unknown code: 7777');
+    expect(error.adaptyCode === 7777).toBe(true);
+    expect(error.codeName).toBeUndefined();
+    expect(error.message).toBe('#7777 (unknown code): New error');
+  });
+
+  it('names a known code', () => {
+    const error = new AdaptyError({ adaptyCode: 1060, message: 'Unavailable' });
+
+    expect(isKnownErrorCode(1060)).toBe(true);
+    expect(error.adaptyCode === ErrorCodeName.billingPlanUnavailable).toBe(
+      true,
+    );
+    expect(error.codeName).toBe('billingPlanUnavailable');
+    expect(error.message).toBe('#1060 (billingPlanUnavailable): Unavailable');
   });
 });

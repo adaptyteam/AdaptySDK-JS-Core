@@ -1,4 +1,4 @@
-import { ErrorCode } from '@/types/error';
+import { ErrorCode, ErrorCodeName, getErrorCodeName } from '@/types/error';
 
 export interface AdaptyErrorInput {
   adaptyCode: ErrorCode;
@@ -27,6 +27,11 @@ export class AdaptyError extends Error {
     if (AdaptyError.middleware) {
       AdaptyError.middleware(this);
     }
+  }
+
+  /** Name of {@link adaptyCode}, or `undefined` if the code is newer than this SDK version. */
+  public get codeName(): ErrorCodeName | undefined {
+    return getErrorCodeName(this.adaptyCode);
   }
 
   public static set onError(callback: (error: AdaptyError) => void) {
@@ -60,7 +65,7 @@ export class AdaptyError extends Error {
 
   private static getMessage(input: AdaptyErrorInput): string {
     const code = input.adaptyCode;
-    const codeText = ErrorCode[code];
+    const codeText = getErrorCodeName(code) ?? 'unknown code';
 
     let message = `#${code} (${codeText}): ${input.message}`;
 
