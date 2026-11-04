@@ -11,6 +11,10 @@ const ErrorCodeMapping = Object.freeze({
    */
   1: 'clientInvalid',
   /**
+   * The user cancelled the payment request.
+   */
+  2: 'paymentCancelled',
+  /**
    * Invalid purchase identifier, etc.
    */
   3: 'paymentInvalid',
@@ -95,6 +99,17 @@ const ErrorCodeMapping = Object.freeze({
   1006: 'productPurchaseFailed',
   1010: 'refreshReceiptFailed',
   1011: 'receiveRestoredTransactionsFailed',
+  1020: 'fetchSubscriptionStatusFailed',
+  1030: 'unknownTransactionId',
+  /**
+   * The payment is deferred, e.g. awaiting Ask to Buy approval.
+   */
+  1050: 'paymentPendingError',
+  /**
+   * The product doesn't offer the requested billing plan on this device
+   * (e.g. a 12-month commitment plan below iOS 26.4). iOS only.
+   */
+  1060: 'billingPlanUnavailable',
 
   /**
    * You need to be authenticated to perform requests.
@@ -120,6 +135,10 @@ const ErrorCodeMapping = Object.freeze({
    */
   3006: 'profileWasChanged',
   3007: 'unsupportedData',
+  /**
+   * `logout` was called for a user that was never identified.
+   */
+  3020: 'unidentifiedUserLogout',
   3100: 'persistingDataError',
   3101: 'fetchTimeoutError',
   /**
@@ -132,6 +151,13 @@ const ErrorCodeMapping = Object.freeze({
    * (e.g. no foreground-active window scene to show store messages).
    */
   3202: 'resolverFailure',
+  /**
+   * Custom Android AdaptyUI codes.
+   */
+  4104: 'wrongAssetType',
+  4105: 'jsException',
+  4106: 'navigatorNotFound',
+  4107: 'invalidActionUrl',
   9000: 'operationInterrupted',
 });
 
@@ -141,6 +167,7 @@ export type ErrorCode = keyof typeof ErrorCodeMapping;
 export const ErrorCodeName = Object.freeze({
   unknown: 0,
   clientInvalid: 1,
+  paymentCancelled: 2,
   paymentInvalid: 3,
   paymentNotAllowed: 4,
   storeProductNotAvailable: 5,
@@ -174,6 +201,10 @@ export const ErrorCodeName = Object.freeze({
   productPurchaseFailed: 1006,
   refreshReceiptFailed: 1010,
   receiveRestoredTransactionsFailed: 1011,
+  fetchSubscriptionStatusFailed: 1020,
+  unknownTransactionId: 1030,
+  paymentPendingError: 1050,
+  billingPlanUnavailable: 1060,
   notActivated: 2002,
   badRequest: 2003,
   serverError: 2004,
@@ -185,10 +216,15 @@ export const ErrorCodeName = Object.freeze({
   activateOnceError: 3005,
   profileWasChanged: 3006,
   unsupportedData: 3007,
+  unidentifiedUserLogout: 3020,
   persistingDataError: 3100,
   fetchTimeoutError: 3101,
   operationInProgress: 3201,
   resolverFailure: 3202,
+  wrongAssetType: 4104,
+  jsException: 4105,
+  navigatorNotFound: 4106,
+  invalidActionUrl: 4107,
   operationInterrupted: 9000,
 } as const);
 export type ErrorCodeName = keyof typeof ErrorCodeName;
