@@ -22,7 +22,7 @@ export class AdaptyNativeErrorCoder
 
   public getError(data: Model): AdaptyError {
     return new AdaptyError({
-      adaptyCode: data.adaptyCode as AdaptyError['adaptyCode'],
+      adaptyCode: data.adaptyCode,
       message: data.message,
       detail: data.detail,
     });
