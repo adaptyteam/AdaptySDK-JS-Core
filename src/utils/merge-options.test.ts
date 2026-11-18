@@ -147,13 +147,96 @@ describe('mergeOptions', () => {
       expect(result).toEqual({ a: null, b: null, c: 3 });
     });
 
-    it('should handle undefined values', () => {
+    it('should treat undefined as not provided and keep the default', () => {
       const defaults = { a: 1, b: undefined };
       const options = { a: undefined, c: 3 };
 
       const result = mergeOptions(options, defaults);
 
-      expect(result).toEqual({ a: undefined, b: undefined, c: 3 });
+      expect(result).toStrictEqual({ a: 1, b: undefined, c: 3 });
+    });
+
+    it('should keep a nested object default when options pass undefined for it', () => {
+      const defaults = {
+        params: { fetchPolicy: 'reload', loadTimeoutMs: 5000 },
+      };
+
+      const result = mergeOptions({ id: 'p', params: undefined }, defaults);
+
+      expect(result).toStrictEqual({
+        id: 'p',
+        params: { fetchPolicy: 'reload', loadTimeoutMs: 5000 },
+      });
+    });
+
+    it('should keep nested defaults for undefined leaves', () => {
+      const defaults = {
+        params: { fetchPolicy: 'reload', loadTimeoutMs: 5000 },
+      };
+      const options = {
+        params: { fetchPolicy: undefined, loadTimeoutMs: 3000 },
+      };
+
+      const result = mergeOptions(options, defaults);
+
+      expect(result).toStrictEqual({
+        params: { fetchPolicy: 'reload', loadTimeoutMs: 3000 },
+      });
+    });
+
+    it('should omit undefined keys that have no default', () => {
+      const result = mergeOptions<Record<string, unknown>>(
+        { x: undefined },
+        { a: 1 },
+      );
+
+      expect(result).toStrictEqual({ a: 1 });
+      expect('x' in result).toBe(false);
+    });
+
+    it('should not pick up inherited props for undefined keys', () => {
+      const result = mergeOptions<object>({ toString: undefined }, { a: 1 });
+
+      expect(Object.prototype.hasOwnProperty.call(result, 'toString')).toBe(
+        false,
+      );
+    });
+
+    it('should return defaults when options is undefined', () => {
+      expect(mergeOptions(undefined, { a: 1 })).toStrictEqual({ a: 1 });
+    });
+
+    it('should keep a default array when options pass undefined for it', () => {
+      const result = mergeOptions({ items: undefined }, { items: [1, 2] });
+
+      expect(result).toStrictEqual({ items: [1, 2] });
+    });
+
+    it('should let null override defaults at any depth', () => {
+      const defaults = { params: { loadTimeoutMs: 5000 }, a: 1 };
+
+      expect(mergeOptions({ params: null }, defaults)).toStrictEqual({
+        params: null,
+        a: 1,
+      });
+      expect(
+        mergeOptions({ params: { loadTimeoutMs: null } }, defaults),
+      ).toStrictEqual({
+        params: { loadTimeoutMs: null },
+        a: 1,
+      });
+      expect(mergeOptions(null, defaults)).toBeNull();
+    });
+
+    it('should not mutate defaults', () => {
+      const defaults = Object.freeze({
+        params: Object.freeze({ loadTimeoutMs: 5000 }),
+      });
+
+      mergeOptions({ params: { loadTimeoutMs: undefined } }, defaults);
+      mergeOptions({ params: undefined }, defaults);
+
+      expect(defaults).toStrictEqual({ params: { loadTimeoutMs: 5000 } });
     });
 
     it('should handle null in nested objects', () => {
