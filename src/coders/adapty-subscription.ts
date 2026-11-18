@@ -1,7 +1,6 @@
-import type { AdaptySubscription } from '../types';
+import { type AdaptySubscription, SubscriptionBillingPlan } from '@/types';
 import type { Def } from '@/types/schema';
 import type { Properties } from './types';
-import { SubscriptionBillingPlan } from '../types';
 import { SimpleCoder } from './coder';
 import { DateCoder } from './date';
 import { AdaptyProfileSubscriptionCommitmentInfoCoder } from './adapty-profile-subscription-commitment-info';

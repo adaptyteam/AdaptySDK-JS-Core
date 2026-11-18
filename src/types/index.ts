@@ -537,7 +537,7 @@ export interface AdaptyAccessLevel {
   readonly willRenew: boolean;
 
   /**
-   * Billing plan of the subscription. Set for App Store purchases only, see {@link store}.
+   * Billing plan of the subscription. May be absent when the native SDK does not report it.
    * @readonly
    */
   readonly billingPlan?: SubscriptionBillingPlan;
