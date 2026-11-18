@@ -29,4 +29,12 @@ export class AdaptyPriceCoder extends SimpleCoder<Model, Serializable> {
       type: 'string',
     },
   };
+  // Treat null as missing so required fields reject it
+  override decode(data: Serializable): Model {
+    return super.decode(
+      Object.fromEntries(
+        Object.entries(data).filter(([, value]) => value !== null),
+      ) as Serializable,
+    );
+  }
 }

@@ -43,14 +43,16 @@ describe('AdaptyPriceCoder', () => {
     expect(encoded).toStrictEqual(mock);
   });
 
-  it.each(['currency_code', 'localized_string'] as const)(
-    'should fail to decode without required %s',
-    key => {
-      const { [key]: _omitted, ...mock } = mocks[0]!;
+  it.each([
+    ['currency_code', undefined],
+    ['currency_code', null],
+    ['localized_string', undefined],
+    ['localized_string', null],
+  ] as const)('should fail to decode when required %s is %p', (key, value) => {
+    const mock = { ...mocks[0]!, [key]: value };
 
-      expect(() => coder.decode(mock as Def['AdaptyPrice'])).toThrow(
-        key === 'currency_code' ? 'currencyCode' : 'localizedString',
-      );
-    },
-  );
+    expect(() => coder.decode(mock as Def['AdaptyPrice'])).toThrow(
+      key === 'currency_code' ? 'currencyCode' : 'localizedString',
+    );
+  });
 });
