@@ -287,7 +287,7 @@ function parseFlowUserAction(
       return {
         type,
         value: actionObj['value'] as string,
-        arguments:
+        args:
           typeof args === 'object' && args !== null && !Array.isArray(args)
             ? (args as Record<string, unknown>)
             : {},

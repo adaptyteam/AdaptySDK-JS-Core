@@ -169,7 +169,7 @@ describe('flow-event-mapping — did_perform_action', () => {
     action: {
       type: 'custom' as const,
       value: 'open_article',
-      arguments: { article_id: 42 },
+      args: { article_id: 42 },
     },
   };
 

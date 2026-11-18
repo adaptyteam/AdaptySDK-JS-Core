@@ -110,7 +110,7 @@ describe('parseFlowEvent — did_perform_action custom', () => {
       action: {
         type: 'custom',
         value: 'open_article',
-        arguments: { article_id: 42, tags: ['a', 'b'] },
+        args: { article_id: 42, tags: ['a', 'b'] },
       },
     });
   });
@@ -120,8 +120,10 @@ describe('parseFlowEvent — did_perform_action custom', () => {
     args => {
       expect(
         parseAction({ type: 'custom', value: 'open_article', arguments: args }),
-      ).toMatchObject({
-        action: { type: 'custom', value: 'open_article', arguments: {} },
+      ).toEqual({
+        id: 'flow_view_did_perform_action',
+        view: decodedView,
+        action: { type: 'custom', value: 'open_article', args: {} },
       });
     },
   );
