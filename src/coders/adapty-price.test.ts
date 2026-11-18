@@ -17,9 +17,9 @@ const mocks: Def['AdaptyPrice'][] = [
 function toModel(mock: (typeof mocks)[number]): Model {
   return {
     amount: mock.amount,
-    ...(mock.currency_code && { currencyCode: mock.currency_code }),
+    currencyCode: mock.currency_code,
     ...(mock.currency_symbol && { currencySymbol: mock.currency_symbol }),
-    ...(mock.localized_string && { localizedString: mock.localized_string }),
+    localizedString: mock.localized_string,
   };
 }
 
@@ -42,4 +42,15 @@ describe('AdaptyPriceCoder', () => {
 
     expect(encoded).toStrictEqual(mock);
   });
+
+  it.each(['currency_code', 'localized_string'] as const)(
+    'should fail to decode without required %s',
+    key => {
+      const { [key]: _omitted, ...mock } = mocks[0]!;
+
+      expect(() => coder.decode(mock as Def['AdaptyPrice'])).toThrow(
+        key === 'currency_code' ? 'currencyCode' : 'localizedString',
+      );
+    },
+  );
 });

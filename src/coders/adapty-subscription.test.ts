@@ -2,9 +2,9 @@ import { DefaultPlatformAdapter } from '@/adapters/defaults';
 import type {
   AdaptySubscription,
   CancellationReason,
-  SubscriptionBillingPlan,
   VendorStore,
 } from '@/types';
+import { SubscriptionBillingPlan } from '@/types';
 import type { Def } from '@/types/schema';
 import { AdaptySubscriptionCoder } from './adapty-subscription';
 
@@ -84,9 +84,7 @@ function toModel(mock: (typeof mocks)[number]): Model {
     vendorTransactionId: mock.vendor_transaction_id,
     willRenew: mock.will_renew,
     ...(mock.offer_id && { offerId: mock.offer_id }),
-    ...(mock.billing_plan_id && {
-      billingPlan: mock.billing_plan_id as SubscriptionBillingPlan,
-    }),
+    billingPlan: mock.billing_plan_id as SubscriptionBillingPlan,
     ...(mock.commitment && {
       commitmentInfo: {
         billingPeriodNumber: mock.commitment.billing_period_number,
@@ -116,4 +114,18 @@ describe('AdaptySubscriptionCoder', () => {
 
     expect(encoded).toStrictEqual(mock);
   });
+
+  it.each([undefined, null])(
+    'should default billing_plan_id %p to up_front like native SDKs',
+    billingPlanId => {
+      const mock = {
+        ...mocks[0]!,
+        billing_plan_id: billingPlanId,
+      } as unknown as Def['AdaptyProfile.Subscription'];
+
+      expect(coder.decode(mock).billingPlan).toBe(
+        SubscriptionBillingPlan.UpFront,
+      );
+    },
+  );
 });

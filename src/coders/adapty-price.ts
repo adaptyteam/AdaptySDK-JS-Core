@@ -15,7 +15,7 @@ export class AdaptyPriceCoder extends SimpleCoder<Model, Serializable> {
     },
     currencyCode: {
       key: 'currency_code',
-      required: false,
+      required: true,
       type: 'string',
     },
     currencySymbol: {
@@ -25,7 +25,7 @@ export class AdaptyPriceCoder extends SimpleCoder<Model, Serializable> {
     },
     localizedString: {
       key: 'localized_string',
-      required: false,
+      required: true,
       type: 'string',
     },
   };
