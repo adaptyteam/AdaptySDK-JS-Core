@@ -11,7 +11,7 @@ const mocks: Def['AdaptyPrice'][] = [
     currency_symbol: '$',
     localized_string: '$9.99',
   },
-  { amount: 9.99 },
+  { amount: 9.99, currency_code: 'USD', localized_string: '$9.99' },
 ];
 
 function toModel(mock: (typeof mocks)[number]): Model {

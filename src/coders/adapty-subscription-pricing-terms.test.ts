@@ -7,20 +7,36 @@ type Model = AdaptySubscriptionPricingTerms;
 const mocks: Def['AdaptySubscriptionPricingTerms'][] = [
   {
     billing_plan_id: 'monthly',
-    billing_price: { amount: 6.99, localized_string: '$6.99' },
+    billing_price: {
+      amount: 6.99,
+      currency_code: 'USD',
+      localized_string: '$6.99',
+    },
     billing_period: { unit: 'month', number_of_units: 1 },
     commitment_info: {
-      price: { amount: 83.88, localized_string: '$83.88' },
+      price: {
+        amount: 83.88,
+        currency_code: 'USD',
+        localized_string: '$83.88',
+      },
       period: { unit: 'year', number_of_units: 1 },
     },
   },
   {
     // Unknown plans are passed through as is
     billing_plan_id: 'quarterly',
-    billing_price: { amount: 59.99 },
+    billing_price: {
+      amount: 59.99,
+      currency_code: 'EUR',
+      localized_string: '59,99 €',
+    },
     billing_period: { unit: 'year', number_of_units: 1 },
     commitment_info: {
-      price: { amount: 59.99 },
+      price: {
+        amount: 59.99,
+        currency_code: 'EUR',
+        localized_string: '59,99 €',
+      },
       period: { unit: 'year', number_of_units: 1 },
     },
   },
@@ -29,7 +45,8 @@ const mocks: Def['AdaptySubscriptionPricingTerms'][] = [
 function toModel(mock: (typeof mocks)[number]): Model {
   const price = (p: Def['AdaptyPrice']) => ({
     amount: p.amount,
-    ...(p.localized_string && { localizedString: p.localized_string }),
+    currencyCode: p.currency_code,
+    localizedString: p.localized_string,
   });
   const period = (p: Def['AdaptySubscriptionPeriod']) => ({
     unit: p.unit as ProductPeriod,

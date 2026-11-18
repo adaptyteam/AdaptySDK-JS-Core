@@ -41,6 +41,7 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
       custom_attributes: {},
       subscriptions: {
         'monthly.premium.999': {
+          billing_plan_id: 'monthly',
           is_lifetime: false,
           vendor_product_id: 'monthly.premium.999',
           is_sandbox: true,
@@ -57,6 +58,7 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
           store: 'app_store',
         },
         'weekly.premium.599': {
+          billing_plan_id: 'monthly',
           is_lifetime: false,
           vendor_product_id: 'weekly.premium.599',
           is_sandbox: true,
@@ -101,6 +103,7 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
       custom_attributes: {},
       subscriptions: {
         'monthly.premium.999': {
+          billing_plan_id: 'monthly',
           is_lifetime: false,
           vendor_product_id: 'monthly.premium.999',
           is_sandbox: true,
@@ -117,6 +120,7 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
           store: 'app_store',
         },
         'weekly.premium.599': {
+          billing_plan_id: 'monthly',
           is_lifetime: false,
           vendor_product_id: 'weekly.premium.599',
           is_sandbox: true,
@@ -162,6 +166,7 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
       custom_attributes: {},
       subscriptions: {
         'monthly.premium.999': {
+          billing_plan_id: 'monthly',
           is_lifetime: false,
           vendor_product_id: 'monthly.premium.999',
           is_sandbox: true,
@@ -178,6 +183,7 @@ const mocks: TestAdaptyPurchaseResultDef[] = [
           store: 'app_store',
         },
         'weekly.premium.599': {
+          billing_plan_id: 'monthly',
           is_lifetime: false,
           vendor_product_id: 'weekly.premium.599',
           is_sandbox: true,

@@ -32,6 +32,7 @@ const mocks: Def['AdaptyProfile.Subscription'][] = [
   {
     activated_at: '2022-07-09T12:34:56.789Z',
     billing_issue_detected_at: '2023-08-09T12:34:56.789Z',
+    billing_plan_id: 'up_front',
     cancellation_reason: 'User Choice',
     expires_at: '2023-08-09T12:34:56.789Z',
     is_active: false,
