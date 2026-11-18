@@ -36,7 +36,7 @@ const mocks: Omit<
     custom_attributes: {},
     subscriptions: {
       'monthly.premium.999': {
-        billing_plan_id: 'monthly',
+        billing_plan_id: 'up_front',
         is_lifetime: false,
         vendor_product_id: 'monthly.premium.999',
         is_sandbox: true,
@@ -53,7 +53,7 @@ const mocks: Omit<
         store: 'app_store',
       },
       'weekly.premium.599': {
-        billing_plan_id: 'monthly',
+        billing_plan_id: 'up_front',
         is_lifetime: false,
         vendor_product_id: 'weekly.premium.599',
         is_sandbox: true,
@@ -133,7 +133,7 @@ const mocks: Omit<
     custom_attributes: {},
     subscriptions: {
       trial_sub_12: {
-        billing_plan_id: 'monthly',
+        billing_plan_id: 'up_front',
         is_lifetime: false,
         vendor_product_id: 'trial_sub_12',
         is_sandbox: true,
@@ -151,7 +151,7 @@ const mocks: Omit<
         cancellation_reason: 'billing_error',
       },
       'weekly.premium.599': {
-        billing_plan_id: 'monthly',
+        billing_plan_id: 'up_front',
         is_lifetime: false,
         vendor_product_id: 'weekly.premium.599',
         is_sandbox: true,
@@ -169,7 +169,7 @@ const mocks: Omit<
         cancellation_reason: 'voluntarily_cancelled',
       },
       'monthly.premium.999': {
-        billing_plan_id: 'monthly',
+        billing_plan_id: 'up_front',
         is_lifetime: false,
         vendor_product_id: 'monthly.premium.999',
         is_sandbox: true,
