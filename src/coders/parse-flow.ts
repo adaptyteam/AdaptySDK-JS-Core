@@ -282,8 +282,17 @@ function parseFlowUserAction(
         value: actionObj['value'] as string,
         openIn: actionObj['open_in'] as WebPresentation,
       };
-    case 'custom':
-      return { type, value: actionObj['value'] as string };
+    case 'custom': {
+      const args = actionObj['arguments'];
+      return {
+        type,
+        value: actionObj['value'] as string,
+        arguments:
+          typeof args === 'object' && args !== null && !Array.isArray(args)
+            ? (args as Record<string, unknown>)
+            : {},
+      };
+    }
     case 'close':
     case 'system_back':
       return { type };
