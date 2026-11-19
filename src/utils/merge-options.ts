@@ -20,8 +20,11 @@ function deepMerge(
   source: unknown,
   seen = new Set(),
 ): unknown {
-  // Handle null/undefined cases
-  if (source === null || source === undefined) {
+  // undefined means "not provided": keep the default; null overrides it
+  if (source === undefined) {
+    return target;
+  }
+  if (source === null) {
     return source;
   }
 
@@ -57,6 +60,17 @@ function deepMerge(
     for (const key of allKeys) {
       // Skip prototype pollution attempts
       if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        continue;
+      }
+
+      // Not provided in source: keep the target value, or omit the key
+      if (source[key] === undefined) {
+        if (Object.prototype.hasOwnProperty.call(target, key)) {
+          if (seen.has(target[key])) {
+            throw new Error('Converting circular structure to JSON');
+          }
+          result[key] = target[key];
+        }
         continue;
       }
 
@@ -98,6 +112,10 @@ function deepMerge(
 
 /**
  * Universal method for merging options with defaults
+ *
+ * Plain objects merge deeply; arrays and other values replace the default.
+ * `undefined` at any depth means "not provided" and keeps the default, while
+ * `null` is an explicit value that overrides it.
  * @param options - input options
  * @param defaults - default values
  * @returns merged object with TResult type
