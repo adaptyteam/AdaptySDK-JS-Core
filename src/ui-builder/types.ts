@@ -168,7 +168,16 @@ export interface FlowEventHandlers {
    * @param {AdaptyError} error - AdaptyError object with error code and message
    */
   onLoadingProductsFailed: (error: AdaptyError) => EventHandlerResult;
-  onCustomAction: (actionId: string) => EventHandlerResult;
+  /**
+   * Called when the user performs a custom action inside the flow.
+   *
+   * @param actionId - Custom action id configured in the dashboard
+   * @param args - Custom action arguments; empty object when none were configured
+   */
+  onCustomAction: (
+    actionId: string,
+    args: Record<string, unknown>,
+  ) => EventHandlerResult;
   /**
    * Called when the user taps a URL/link inside the paywall.
    *

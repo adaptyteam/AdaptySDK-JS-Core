@@ -87,6 +87,17 @@ export interface components {
       [{ error: components['defs']['AdaptyError'] }, { success: true }]
     >;
 
+    'AdaptyUISendAppMessage.Request': {
+      method: 'adapty_ui_send_app_message';
+      id: string;
+      message_id: string;
+      payload: Record<string, unknown>;
+    };
+
+    'AdaptyUISendAppMessage.Response': OneOf<
+      [{ error: components['defs']['AdaptyError'] }, { success: true }]
+    >;
+
     'AdaptyUIPresentOnboardingView.Request': {
       method: 'adapty_ui_present_onboarding_view';
       id: string;
@@ -790,7 +801,6 @@ export interface components {
     CustomerIdentityParameters: {
       app_account_token?: string;
       obfuscated_account_id?: string;
-      obfuscated_profile_id?: string;
     };
 
     'AdaptyPaywallProduct.Response': {
@@ -815,9 +825,9 @@ export interface components {
 
     AdaptyPrice: {
       amount: number;
-      currency_code?: string;
+      currency_code: string;
       currency_symbol?: string;
-      localized_string?: string;
+      localized_string: string;
     };
 
     'AdaptyPromotedProduct.Request': {
@@ -1081,7 +1091,7 @@ export interface components {
       active_promotional_offer_id?: string;
       offer_id?: string;
       cancellation_reason?: string;
-      billing_plan_id?: string;
+      billing_plan_id: string;
       commitment?: components['defs']['AdaptyProfile.SubscriptionCommitmentInfo'];
     };
 
@@ -1187,6 +1197,7 @@ export interface components {
         {
           type: 'custom';
           value: string;
+          arguments?: Record<string, unknown>;
         },
       ]
     >;

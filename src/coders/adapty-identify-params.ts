@@ -1,12 +1,9 @@
 import type { IPlatformAdapter } from '@/adapters/interfaces';
 import * as Input from '@/types/inputs';
+import type { Def } from '@/types/schema';
 
 type Model = Input.IdentifyParamsInput;
-type Serializable = {
-  app_account_token?: string;
-  obfuscated_account_id?: string;
-  obfuscated_profile_id?: string;
-};
+type Serializable = Def['CustomerIdentityParameters'];
 
 export class AdaptyIdentifyParamsCoder {
   constructor(private readonly platform: IPlatformAdapter) {}

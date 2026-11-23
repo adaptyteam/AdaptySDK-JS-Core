@@ -107,7 +107,7 @@ export function extractFlowCallbackArgs<T extends keyof FlowEventHandlers>(
         return [event.action.value, event.action.openIn] as ExtractedArgs<T>;
       }
       if (handlerName === 'onCustomAction' && event.action.type === 'custom') {
-        return [event.action.value] as ExtractedArgs<T>;
+        return [event.action.value, event.action.args] as ExtractedArgs<T>;
       }
       // onCloseButtonPress, onAndroidSystemBack don't take arguments
       return [] as ExtractedArgs<T>;

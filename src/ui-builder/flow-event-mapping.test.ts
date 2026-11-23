@@ -161,3 +161,27 @@ describe('flow-event-mapping — did appear', () => {
     expect(args).toEqual([]);
   });
 });
+
+describe('flow-event-mapping — did_perform_action', () => {
+  const customEvent = {
+    id: FlowEventId.DidPerformAction,
+    view,
+    action: {
+      type: 'custom' as const,
+      value: 'open_article',
+      args: { article_id: 42 },
+    },
+  };
+
+  it('resolves a custom action to onCustomAction', () => {
+    const resolver = NATIVE_EVENT_RESOLVER[FlowEventId.DidPerformAction];
+    expect(resolver(customEvent)).toBe('onCustomAction');
+  });
+
+  it('extracts custom action args as [actionId, arguments]', () => {
+    expect(extractFlowCallbackArgs('onCustomAction', customEvent)).toEqual([
+      'open_article',
+      { article_id: 42 },
+    ]);
+  });
+});

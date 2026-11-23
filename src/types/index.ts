@@ -73,7 +73,7 @@ export interface AdaptyPrice {
    * used to format the price of the product.
    * The ISO 4217 (USD, EUR).
    */
-  currencyCode?: string;
+  currencyCode: string;
   /**
    * The currency symbol of the locale
    * used to format the price of the product.
@@ -85,7 +85,7 @@ export interface AdaptyPrice {
    * by the preferred language set on the device.
    * On Android, the formatted price from Google Play as is.
    */
-  localizedString?: string;
+  localizedString: string;
 }
 
 /**
@@ -537,7 +537,7 @@ export interface AdaptyAccessLevel {
   readonly willRenew: boolean;
 
   /**
-   * Billing plan of the subscription. Set for App Store purchases only, see {@link store}.
+   * Billing plan of the subscription. May be absent when the native SDK does not report it.
    * @readonly
    */
   readonly billingPlan?: SubscriptionBillingPlan;
@@ -745,10 +745,10 @@ export interface AdaptySubscription {
   readonly willRenew: boolean;
 
   /**
-   * Billing plan of the subscription. Set for App Store purchases only, see {@link store}.
+   * Billing plan of the subscription. `up_front` unless the subscription is billed in installments.
    * @readonly
    */
-  readonly billingPlan?: SubscriptionBillingPlan;
+  readonly billingPlan: SubscriptionBillingPlan;
 
   /**
    * Commitment progress of a subscription bought with a commitment billing plan.

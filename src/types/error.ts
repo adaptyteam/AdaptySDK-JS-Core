@@ -152,12 +152,32 @@ const ErrorCodeMapping = Object.freeze({
    */
   3202: 'resolverFailure',
   /**
-   * Custom Android AdaptyUI codes.
+   * AdaptyUI codes.
    */
+  4001: 'platformNotSupported',
+  /**
+   * Adapty SDK must be activated before AdaptyUI.
+   */
+  4002: 'adaptyNotActivated',
+  /**
+   * AdaptyUI is not activated (e.g. a view is created without `activateUi`).
+   */
+  4003: 'adaptyUINotActivated',
+  4005: 'activateOnce',
+  4103: 'wrongComponentType',
   4104: 'wrongAssetType',
   4105: 'jsException',
   4106: 'navigatorNotFound',
   4107: 'invalidActionUrl',
+  /**
+   * In-app browser requested for a non-http(s) URL. iOS only.
+   */
+  4108: 'unsupportedUrlScheme',
+  4200: 'webKit',
+  /**
+   * Native platform view failed to initialize.
+   */
+  4300: 'platformView',
   9000: 'operationInterrupted',
 });
 
@@ -230,10 +250,18 @@ export const ErrorCodeName = Object.freeze({
   fetchTimeoutError: 3101,
   operationInProgress: 3201,
   resolverFailure: 3202,
+  platformNotSupported: 4001,
+  adaptyNotActivated: 4002,
+  adaptyUINotActivated: 4003,
+  activateOnce: 4005,
+  wrongComponentType: 4103,
   wrongAssetType: 4104,
   jsException: 4105,
   navigatorNotFound: 4106,
   invalidActionUrl: 4107,
+  unsupportedUrlScheme: 4108,
+  webKit: 4200,
+  platformView: 4300,
   operationInterrupted: 9000,
 } as const);
 export type ErrorCodeName = keyof typeof ErrorCodeName;

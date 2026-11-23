@@ -15,6 +15,7 @@ export const MethodNames = [
   'adapty_ui_dismiss_flow_view',
   'adapty_ui_present_flow_view',
   'adapty_ui_show_dialog',
+  'adapty_ui_send_app_message',
   'adapty_ui_create_onboarding_view',
   'adapty_ui_dismiss_onboarding_view',
   'adapty_ui_present_onboarding_view',
