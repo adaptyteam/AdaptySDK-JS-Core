@@ -40,6 +40,10 @@ export * from './types/error';
 export * from './types/bridge';
 export * from './types/flow-events';
 export * from './types/onboarding-events';
+export type {
+  AdaptyFlowMessage,
+  AdaptyFlowMessageValue,
+} from './types/flow-message';
 
 export type { components } from './types/api';
 
