@@ -1,4 +1,4 @@
-import type { AdaptySubscription } from '../types';
+import { type AdaptySubscription, SubscriptionBillingPlan } from '@/types';
 import type { Def } from '@/types/schema';
 import type { Properties } from './types';
 import { SimpleCoder } from './coder';
@@ -118,7 +118,7 @@ export class AdaptySubscriptionCoder extends SimpleCoder<Model, Serializable> {
     },
     billingPlan: {
       key: 'billing_plan_id',
-      required: false,
+      required: true,
       type: 'string',
     },
     commitmentInfo: {
@@ -135,4 +135,12 @@ export class AdaptySubscriptionCoder extends SimpleCoder<Model, Serializable> {
       type: 'string',
     },
   };
+
+  // Native SDKs default a missing billing plan to up_front
+  override decode(data: Serializable): Model {
+    return super.decode({
+      ...data,
+      billing_plan_id: data.billing_plan_id ?? SubscriptionBillingPlan.UpFront,
+    });
+  }
 }

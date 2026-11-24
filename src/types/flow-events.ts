@@ -112,7 +112,7 @@ export type FlowUserAction =
   | { type: 'close' }
   | { type: 'system_back' }
   | { type: 'open_url'; value: string; openIn: WebPresentation }
-  | { type: 'custom'; value: string };
+  | { type: 'custom'; value: string; args: Record<string, unknown> };
 
 export interface FlowDidPerformActionEvent extends BaseFlowEvent {
   id: typeof FlowEventId.DidPerformAction;

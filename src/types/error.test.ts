@@ -24,10 +24,18 @@ describe('error codes', () => {
     [1050, 'paymentPendingError'],
     [1060, 'billingPlanUnavailable'],
     [3020, 'unidentifiedUserLogout'],
+    [4001, 'platformNotSupported'],
+    [4002, 'adaptyNotActivated'],
+    [4003, 'adaptyUINotActivated'],
+    [4005, 'activateOnce'],
+    [4103, 'wrongComponentType'],
     [4104, 'wrongAssetType'],
     [4105, 'jsException'],
     [4106, 'navigatorNotFound'],
     [4107, 'invalidActionUrl'],
+    [4108, 'unsupportedUrlScheme'],
+    [4200, 'webKit'],
+    [4300, 'platformView'],
   ] as const)('maps native code %i to %s', (code, name) => {
     expect(getErrorPrompt(code)).toBe(name);
     expect(getErrorCode(name)).toBe(code);
@@ -53,5 +61,19 @@ describe('error codes', () => {
     );
     expect(error.codeName).toBe('billingPlanUnavailable');
     expect(error.message).toBe('#1060 (billingPlanUnavailable): Unavailable');
+  });
+
+  it('names an AdaptyUI code', () => {
+    const error = new AdaptyError({
+      adaptyCode: 4003,
+      message: 'AdaptyUIError.adaptyUINotActivated',
+    });
+
+    expect(getErrorCodeName(4003)).toBe('adaptyUINotActivated');
+    expect(error.codeName).toBe('adaptyUINotActivated');
+    expect(error.message).toBe(
+      '#4003 (adaptyUINotActivated): AdaptyUIError.adaptyUINotActivated',
+    );
+    expect(error.message).not.toContain('unknown code');
   });
 });

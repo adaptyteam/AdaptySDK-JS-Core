@@ -26,7 +26,7 @@ const androidProduct: Def['AdaptyPaywallProduct.Response'] = {
   paywall_name: 'Paywall',
   localized_description: 'Premium',
   localized_title: 'Premium Yearly',
-  price: { amount: 69.99, localized_string: '$69.99' },
+  price: { amount: 69.99, currency_code: 'USD', localized_string: '$69.99' },
   subscription: {
     base_plan_id: 'yearly-base',
     renewal_type: 'autorenewable',

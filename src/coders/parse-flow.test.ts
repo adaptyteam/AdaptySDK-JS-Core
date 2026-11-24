@@ -86,6 +86,49 @@ describe('parseFlowEvent — notification events', () => {
   });
 });
 
+describe('parseFlowEvent — did_perform_action custom', () => {
+  const parseAction = (action: Record<string, unknown>) =>
+    parseFlowEvent(
+      factory,
+      JSON.stringify({
+        id: 'flow_view_did_perform_action',
+        view: rawView,
+        action,
+      }),
+    );
+
+  it('parses custom action value and arguments', () => {
+    expect(
+      parseAction({
+        type: 'custom',
+        value: 'open_article',
+        arguments: { article_id: 42, tags: ['a', 'b'] },
+      }),
+    ).toEqual({
+      id: 'flow_view_did_perform_action',
+      view: decodedView,
+      action: {
+        type: 'custom',
+        value: 'open_article',
+        args: { article_id: 42, tags: ['a', 'b'] },
+      },
+    });
+  });
+
+  it.each([undefined, null, 'str', ['a']])(
+    'defaults invalid arguments (%p) to an empty object',
+    args => {
+      expect(
+        parseAction({ type: 'custom', value: 'open_article', arguments: args }),
+      ).toEqual({
+        id: 'flow_view_did_perform_action',
+        view: decodedView,
+        action: { type: 'custom', value: 'open_article', args: {} },
+      });
+    },
+  );
+});
+
 describe('parseFlowEvent — did_ask_permission', () => {
   it('parses event_id, permission and custom_args (snake_case → camelCase)', () => {
     const input = JSON.stringify({
